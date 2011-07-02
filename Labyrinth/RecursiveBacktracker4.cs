@@ -90,9 +90,6 @@ namespace Labyrinth
 			Tuple<int, int> selectedCell;
 			while((selectedCell = SelectRandomUnvisitedNeighbor(ref visitMap, widthCoord, heightCoord)) != null)
 			{
-				//	2.2 add the current cell to the stack
-				backtrace.Push(currentCell);
-
 				//  2.3 remove the wall between the current cell and the chosen cell
 				RemoveWallBetween(ref cells, currentCell, selectedCell);
 
@@ -100,11 +97,6 @@ namespace Labyrinth
 				//  2.5 Recursively call this function
 				Backtrack(ref cells, ref visitMap, selectedCell, backtrace);
 			}
-
-			// 3. else
-			//	3.1 remove the last current cell from the stack
-			//  3.2 Backtrack to the previous execution of this function
-			if (backtrace.Count > 0) backtrace.Pop();
 		}
 
 		/// <summary>
