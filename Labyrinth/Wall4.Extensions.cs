@@ -36,55 +36,55 @@ namespace Labyrinth
 							break;
 
 						case Wall4.None:
-							builder.Append("╬"); // 256C
+							builder.Append("\u256c"); // ╬
 							break;
 
 						case Wall4.North:
-							builder.Append("╦"); // 2566
+							builder.Append("\u2566"); // ╦
 							break;
 						case Wall4.North | Wall4.South:
-							builder.Append("═"); // 2550
+							builder.Append("\u2550"); // ═
 							break;
 						case Wall4.North | Wall4.East:
-							builder.Append("╗"); // 2557
+							builder.Append("\u2557"); // ╗
 							break;
 						case Wall4.North | Wall4.West:
-							builder.Append("╔"); // 2554
+							builder.Append("\u2554"); // ╔
 							break;
 
 						case Wall4.South:
-							builder.Append("╩"); // 2569
+							builder.Append("\u2569"); // ╩
 							break;
 						case Wall4.South | Wall4.East:
-							builder.Append("╝"); // 255D
+							builder.Append("\u255D"); // ╝
 							break;
 						case Wall4.South | Wall4.West:
-							builder.Append("╚"); // 255A
+							builder.Append("\u255A"); // ╚
 							break;
 
 						case Wall4.East:
-							builder.Append("╣"); // 2563
+							builder.Append("\u2563"); // ╣
 							break;
 						case Wall4.East | Wall4.West:
-							builder.Append("║"); // 2551
+							builder.Append("\u2551"); // ║
 							break;
 						
 						case Wall4.East | Wall4.West | Wall4.South:
-							builder.Append("╨"); // 2568
+							builder.Append("\u2568"); // ╨
 							break;
 						case Wall4.East | Wall4.West | Wall4.North:
-							builder.Append("╥"); // 2565
+							builder.Append("\u2565"); // ╥
 							break;
 
 						case Wall4.North | Wall4.South| Wall4.West:
-							builder.Append("╞"); // 255E
+							builder.Append("\u255E"); // ╞
 							break;
 						case Wall4.North | Wall4.South | Wall4.East:
-							builder.Append("╡"); // 2561
+							builder.Append("\u2561"); // ╡
 							break;
 
 						case Wall4.West:
-							builder.Append("╠"); // 2560
+							builder.Append("\u2560"); // ╠
 							break;
 					}
 				}

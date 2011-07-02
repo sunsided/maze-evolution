@@ -8,7 +8,7 @@ namespace Labyrinth
 	/// <summary>
 	/// Implementierung des Recursive Backtracking-Algorithmus
 	/// </summary>
-	public sealed class RecursiveBacktracker4
+	public sealed class RecursiveBacktracker4 : IMazeGenerator
 	{
 		/// <summary>
 		/// Randomizer für die Nachbarschaftsauswahl
@@ -41,10 +41,6 @@ namespace Labyrinth
 		/// <returns>Das Labyrinth</returns>
 		public Wall4[,] Generate(int width, int height)
 		{
-			Contract.Requires(width > 0);
-			Contract.Requires(height > 0);
-			Contract.Ensures(Contract.Result<Wall4[,]>() != null);
-
 			// Startkoordinaten
 			const int startCellWidthCoord = 0;
 			const int startCellHeightCoord = 0;
