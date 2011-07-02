@@ -79,24 +79,39 @@ namespace Labyrinth
 			Contract.Ensures(cells != null);
 			Contract.Ensures(visitMap != null);
 
-			int widthCoord = currentCell.Item1;
-			int heightCoord = currentCell.Item2;
-
-			// 1. Mark the current cell as 'Visited'
-			visitMap[widthCoord, heightCoord] = true;
-
-			// 2. If the current cell has any neighbours which have not been visited 
-			//	2.1 Choose randomly one of the unvisited neighbours
-			Tuple<int, int> selectedCell;
-			while((selectedCell = SelectRandomUnvisitedNeighbor(ref visitMap, widthCoord, heightCoord)) != null)
+			do
 			{
-				//  2.3 remove the wall between the current cell and the chosen cell
-				RemoveWallBetween(ref cells, currentCell, selectedCell);
+				int widthCoord = currentCell.Item1;
+				int heightCoord = currentCell.Item2;
 
-				//  2.4 Make the chosen cell the current cell
-				//  2.5 Recursively call this function
-				Backtrack(ref cells, ref visitMap, selectedCell, backtrace);
-			}
+				// 1. Mark the current cell as 'Visited'
+				visitMap[widthCoord, heightCoord] = true;
+
+				// 2. If the current cell has any neighbours which have not been visited 
+				//	2.1 Choose randomly one of the unvisited neighbours
+				Tuple<int, int> selectedCell;
+				if ((selectedCell = SelectRandomUnvisitedNeighbor(ref visitMap, widthCoord, heightCoord)) != null)
+				{
+					//	2.2 add the current cell to the stack
+					backtrace.Push(currentCell);
+
+					//  2.3 remove the wall between the current cell and the chosen cell
+					RemoveWallBetween(ref cells, currentCell, selectedCell);
+
+					//  2.4 Make the chosen cell the current cell
+					currentCell = selectedCell;
+					
+					//  2.5 Recursively call this function
+					continue;
+				}
+				
+				// 3. else
+				//	3.1 remove the last current cell from the stack
+				if (backtrace.Count == 0) break;
+				currentCell = backtrace.Pop();
+
+				//  3.2 Backtrack to the previous execution of this function
+			} while (true);
 		}
 
 		/// <summary>
