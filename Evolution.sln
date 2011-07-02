@@ -3,6 +3,8 @@ Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Labyrinth", "Labyrinth\Labyrinth.csproj", "{96F3EB25-96D2-4E8A-AC47-371D49ADB975}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Labyrinth.Tests", "Labyrinth.Tests\Labyrinth.Tests.csproj", "{BD9A7CA6-90AC-445F-AF23-9DF65DD1F3F2}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -13,6 +15,10 @@ Global
 		{96F3EB25-96D2-4E8A-AC47-371D49ADB975}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{96F3EB25-96D2-4E8A-AC47-371D49ADB975}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{96F3EB25-96D2-4E8A-AC47-371D49ADB975}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BD9A7CA6-90AC-445F-AF23-9DF65DD1F3F2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BD9A7CA6-90AC-445F-AF23-9DF65DD1F3F2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BD9A7CA6-90AC-445F-AF23-9DF65DD1F3F2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BD9A7CA6-90AC-445F-AF23-9DF65DD1F3F2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
