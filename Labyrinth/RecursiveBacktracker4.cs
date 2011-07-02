@@ -101,7 +101,7 @@ namespace Labyrinth
 				Backtrack(ref cells, ref visitMap, selectedCell, backtrace);
 			}
 
-			// e. else
+			// 3. else
 			//	3.1 remove the last current cell from the stack
 			//  3.2 Backtrack to the previous execution of this function
 			if (backtrace.Count > 0) backtrace.Pop();
