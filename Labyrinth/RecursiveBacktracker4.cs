@@ -134,7 +134,7 @@ namespace Labyrinth
 		/// <param name="widthCoord">Die Breitenkoordinate der gewünschten Zelle</param>
 		/// <param name="neighbors">Die Liste der Nachbarn</param>
 		/// <param name="visitMap">Die Map der besuchten Zellen</param>
-		private static void AddIfUnvisited(IList<Tuple<int, int>> neighbors, bool[,] visitMap, int widthCoord, int heightCoord)
+		private static void AddIfUnvisited(ICollection<Tuple<int, int>> neighbors, bool[,] visitMap, int widthCoord, int heightCoord)
 		{
 			Contract.Requires(visitMap != null);
 			Contract.Requires(neighbors != null);

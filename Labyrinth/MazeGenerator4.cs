@@ -37,9 +37,10 @@ namespace Labyrinth
 		/// <param name="width">Die Breite</param>
 		/// <param name="height">Die Höhe</param>
 		/// <returns></returns>
+		[Pure]
 		protected Wall4[,] PrepareWalls(int width, int height)
 		{
-			Contract.Requires(width > 0 || height > 0);
+			Contract.Requires(width > 0 && height > 0);
 			Contract.Ensures(Contract.Result<Wall4[,]>() != null);
 
 			// Array vorbereiten und Affentest durchführen
