@@ -93,5 +93,16 @@ namespace Labyrinth
 
 			return builder.ToString().Trim();
 		}
+
+		/// <summary>
+		/// Ermittelt, ob die in <paramref name="wall"/> gegebenen Wände vorhanden sind.
+		/// </summary>
+		/// <param name="item">Das Referenzelement</param>
+		/// <param name="wall">Die zu testenden Wände</param>
+		/// <returns><c>true</c>, wenn vorhanden, ansonsten <c>false</c></returns>
+		public static bool ContainsWall(this Wall4 item, Wall4 wall)
+		{
+			return (item & wall) == wall;
+		}
 	}
 }
