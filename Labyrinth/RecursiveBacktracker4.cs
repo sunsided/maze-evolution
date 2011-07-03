@@ -1,14 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
-using System.Threading;
 
 namespace Labyrinth
 {
 	/// <summary>
 	/// Implementierung des Recursive Backtracking-Algorithmus
 	/// </summary>
-	public sealed class RecursiveBacktracker4 : IMazeGenerator
+	public sealed class RecursiveBacktracker4 : MazeGenerator4, IMazeGenerator
 	{
 		/// <summary>
 		/// Randomizer für die Nachbarschaftsauswahl
@@ -39,16 +38,14 @@ namespace Labyrinth
 		/// <param name="width">Die Breite des Labyrinths in Zellen</param>
 		/// <param name="height">Die Höhe des Labyrinths in Zellen</param>
 		/// <returns>Das Labyrinth</returns>
-		public Wall4[,] Generate(int width, int height)
+		public override Wall4[,] Generate(int width, int height)
 		{
 			// Startkoordinaten
 			const int startCellWidthCoord = 0;
 			const int startCellHeightCoord = 0;
 
 			// Array vorbereiten und Affentest durchführen
-			Wall4[,] cells = new Wall4[width,height];
-			for (int y = 0; y < height; ++y) for (int x = 0; x < width; ++x) cells[x, y] = Wall4.All;
-			if (width == 1 || height == 1) return cells;
+			Wall4[,] cells = PrepareWalls(width, height);
 
 			// Besuchskarte erzeugen
 			bool[,] visitMap = new bool[width,height];
@@ -108,44 +105,6 @@ namespace Labyrinth
 
 				//  3.2 Backtrack to the previous execution of this function
 			} while (true);
-		}
-
-		/// <summary>
-		/// Entfernt die Wand zwischen den beiden Zellen
-		/// </summary>
-		/// <param name="cells">Die Zellen</param>
-		/// <param name="current">Die aktuelle Zelle</param>
-		/// <param name="selected">Die ausgewählte Zelle</param>
-		private static void RemoveWallBetween(ref Wall4[,] cells, Tuple<int, int> current, Tuple<int, int> selected)
-		{
-			Contract.Requires(cells != null);
-			Contract.Requires(current != null);
-			Contract.Requires(selected != null);
-			Contract.Ensures(cells != null);
-
-			// X-Achse
-			if (current.Item1 > selected.Item1)
-			{
-				cells[selected.Item1, selected.Item2] = cells[selected.Item1, selected.Item2] & ~Wall4.East;
-				cells[current.Item1, current.Item2] = cells[current.Item1, current.Item2] & ~Wall4.West;
-			}
-			else if (current.Item1 < selected.Item1)
-			{
-				cells[selected.Item1, selected.Item2] = cells[selected.Item1, selected.Item2] & ~Wall4.West;
-				cells[current.Item1, current.Item2] = cells[current.Item1, current.Item2] & ~Wall4.East;
-			}
-
-			// Y-Achse
-			if (current.Item2 > selected.Item2)
-			{
-				cells[selected.Item1, selected.Item2] = cells[selected.Item1, selected.Item2] & ~Wall4.South;
-				cells[current.Item1, current.Item2] = cells[current.Item1, current.Item2] & ~Wall4.North;
-			}
-			else if (current.Item2 < selected.Item2)
-			{
-				cells[selected.Item1, selected.Item2] = cells[selected.Item1, selected.Item2] & ~Wall4.North;
-				cells[current.Item1, current.Item2] = cells[current.Item1, current.Item2] & ~Wall4.South;
-			}
 		}
 
 		/// <summary>
