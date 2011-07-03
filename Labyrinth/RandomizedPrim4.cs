@@ -54,25 +54,22 @@ namespace Labyrinth
 			while (wallList.Count > 0)
 			{
 				//	3.1 Pick a random wall from the list. If the cell on the opposite side isn't in the maze yet: 
-				var wall = PickRandomWall(wallList);
+				var wall = PickAndRemoveRandomWall(wallList);
 				Contract.Assume(wall != null);
 
 				Tuple<int, int> oppositeCell;
-				if (CellOnOppositeSideOfWallIsOnMaze(mazeMap, wall, out oppositeCell))
+				if (!CellOnOppositeSideOfWallIsOnMaze(mazeMap, wall, out oppositeCell))
 				{
 					//		3.1.1 Make the wall a passage and mark the cell on the opposite side as part of the maze.
 					RemoveWallBetween(ref cells, new Tuple<int, int>(wall.Item1, wall.Item2), oppositeCell);
 					Contract.Assume(oppositeCell.Item1 >= 0);
 					Contract.Assume(oppositeCell.Item2 >= 0);
+					mazeMap[oppositeCell.Item1, oppositeCell.Item2] = true;
 
 					//		3.1.2 Add the neighboring walls of the cell to the wall list.
 					AddWallsToWallList(ref cells, oppositeCell, ref wallList);
 				}
-				else
-				{
-					//	3.2 If the cell on the opposite side already was in the maze, remove it from the list.
-				}
-
+				//	3.2 If the cell on the opposite side already was in the maze, remove it from the list.
 			}
 			return cells;
 		}
@@ -126,11 +123,11 @@ namespace Labyrinth
 					oppositeCell = new Tuple<int, int>(cell.Item1, cell.Item2 + 1);
 					return mazeMap[oppositeCell.Item1, oppositeCell.Item2];
 				case Wall4.East:
-					Contract.Assume(cell.Item1 > 0);
+					Contract.Assume(cell.Item1 < mazeMap.GetLength(0) - 1);
 					oppositeCell = new Tuple<int, int>(cell.Item1 + 1, cell.Item2);
 					return mazeMap[oppositeCell.Item1, oppositeCell.Item2];
 				case Wall4.West:
-					Contract.Assume(cell.Item1 < mazeMap.GetLength(0) - 1);
+					Contract.Assume(cell.Item1 > 0);					
 					oppositeCell = new Tuple<int, int>(cell.Item1 - 1, cell.Item2);
 					return mazeMap[oppositeCell.Item1, oppositeCell.Item2];
 				default:
@@ -155,25 +152,25 @@ namespace Labyrinth
 			Contract.Ensures(wallList != null);
 
 			// Nordwand
-			if (cell.Item2 > 0 && cells[cell.Item1, cell.Item1].ContainsWall(Wall4.North))
+			if (cell.Item2 > 0 && cells[cell.Item1, cell.Item2].ContainsWall(Wall4.North))
 			{
 				wallList.Add(new Tuple<int, int, Wall4>(cell.Item1, cell.Item2, Wall4.North));
 			}
 
 			// Südwand
-			if (cell.Item2 < cells.GetLength(1) - 1 && cells[cell.Item1, cell.Item1].ContainsWall(Wall4.South))
+			if (cell.Item2 < cells.GetLength(1) - 1 && cells[cell.Item1, cell.Item2].ContainsWall(Wall4.South))
 			{
 				wallList.Add(new Tuple<int, int, Wall4>(cell.Item1, cell.Item2, Wall4.South));
 			}
 
 			// Ostwand
-			if (cell.Item1 < cells.GetLength(0) - 1 && cells[cell.Item1, cell.Item1].ContainsWall(Wall4.East))
+			if (cell.Item1 < cells.GetLength(0) - 1 && cells[cell.Item1, cell.Item2].ContainsWall(Wall4.East))
 			{
 				wallList.Add(new Tuple<int, int, Wall4>(cell.Item1, cell.Item2, Wall4.East));
 			}
 
 			// Westwand
-			if (cell.Item1 > 0 && cells[cell.Item1, cell.Item1].ContainsWall(Wall4.West))
+			if (cell.Item1 > 0 && cells[cell.Item1, cell.Item2].ContainsWall(Wall4.West))
 			{
 				wallList.Add(new Tuple<int, int, Wall4>(cell.Item1, cell.Item2, Wall4.West));
 			}
@@ -184,19 +181,14 @@ namespace Labyrinth
 		/// </summary>
 		/// <param name="wallList">Die Liste der Wände</param>
 		/// <returns>Das Element oder <c>null</c>, wenn die Liste leer war</returns>
-		private Tuple<int, int, Wall4> PickRandomWall(IList<Tuple<int, int, Wall4>> wallList)
+		private Tuple<int, int, Wall4> PickAndRemoveRandomWall(IList<Tuple<int, int, Wall4>> wallList)
 		{
 			Contract.Requires(wallList != null);
-			Contract.Ensures((Contract.OldValue(wallList.Count) == wallList.Count && Contract.Result<Tuple<int, int, Wall4>>() == null) || (Contract.OldValue(wallList.Count) > wallList.Count && Contract.Result<Tuple<int, int, Wall4>>() != null));
 			
 			if (wallList.Count == 0) return null;
 			int index = Randomizer.Next(0, wallList.Count - 1);
 			var element = wallList[index];
-			Contract.Assume(element != null);
-
 			wallList.RemoveAt(index);
-			Contract.Assume(Contract.OldValue(wallList.Count) == wallList.Count + 1);
-
 			return element;
 		}
 	}
