@@ -61,10 +61,7 @@ namespace Labyrinth
 
 				// 2.1 If the cells divided by this wall belong to distinct sets: 
 				var oppositeCellCoords = SelectCellOnOppositeSideOfWall(wall);
-				if (sets[wall.Item1, wall.Item2] == sets[oppositeCellCoords.Item1, oppositeCellCoords.Item2])
-				{
-					continue;
-				}
+				if (sets[wall.Item1, wall.Item2] == sets[oppositeCellCoords.Item1, oppositeCellCoords.Item2]) continue;
 
 				// 2.1.1 Remove the current wall.
 				RemoveWallBetween(ref cells, new Tuple<int, int>(wall.Item1, wall.Item2), oppositeCellCoords);
