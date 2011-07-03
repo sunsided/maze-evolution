@@ -100,9 +100,31 @@ namespace Labyrinth
 		/// <param name="item">Das Referenzelement</param>
 		/// <param name="wall">Die zu testenden Wände</param>
 		/// <returns><c>true</c>, wenn vorhanden, ansonsten <c>false</c></returns>
+		[Pure]
 		public static bool ContainsWall(this Wall4 item, Wall4 wall)
 		{
 			return (item & wall) == wall;
+		}
+
+		/// <summary>
+		/// Ermittelt, ob exakt eine Wand gesetzt ist
+		/// </summary>
+		/// <param name="item">Der zu testende Wert</param>
+		/// <returns><c>true</c>, wenn exakt eine Wand gesetzt ist, ansonsten <c>false</c></returns>
+		[Pure]
+		public static bool ExactlyOneWallSet(this Wall4 item)
+		{
+			// Die Idee ist, den Zahlenwert des Flags von allen
+			// rechtsseitigen Nullen zu befreien und dann zu testen,
+			// ob die noch gesetzten Bits einen Zahlenwert gleich 1 haben.
+			// 0100 --> 0001 --> 1 --> true  (genau eine Wand)
+			// 1100 --> 0011 --> 3 --> false (mehr als eine Wand)
+			// 0000 --> 0000 --> 0 --> false (keine Wand)
+
+			int value = (int)item;
+			if (value == 0) return false;
+			while ((value & 1) == 0) value = value >> 1;
+			return value == 1;
 		}
 	}
 }
