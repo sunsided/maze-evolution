@@ -32,7 +32,7 @@ namespace Labyrinth
 					switch(value)
 					{
 						case Wall4.All:
-							builder.Append(" ");
+							builder.Append("\u2591"); // ░
 							break;
 
 						case Wall4.None:

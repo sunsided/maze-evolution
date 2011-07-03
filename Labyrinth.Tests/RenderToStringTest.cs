@@ -23,5 +23,14 @@ namespace Labyrinth.Tests
 			string rendered = labyrinth.RenderToString();
 			Console.WriteLine(rendered);
 		}
+
+		[Test]
+		public void TestRandomizedKruskal()
+		{
+			IMazeGenerator generator = new RandomizedKruskal4();
+			var labyrinth = generator.Generate(30, 10);
+			string rendered = labyrinth.RenderToString();
+			Console.WriteLine(rendered);
+		}
 	}
 }

@@ -66,6 +66,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="RandomizedKruskal4.cs" />
     <Compile Include="RandomizedPrim4.cs" />
     <Compile Include="MazeGenerator4.cs" />
     <Compile Include="IMazeGenerator.cs" />
