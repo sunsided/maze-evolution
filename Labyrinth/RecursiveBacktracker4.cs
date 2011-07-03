@@ -7,20 +7,14 @@ namespace Labyrinth
 	/// <summary>
 	/// Implementierung des Recursive Backtracking-Algorithmus
 	/// </summary>
-	public sealed class RecursiveBacktracker4 : MazeGenerator4, IMazeGenerator
+	public sealed class RecursiveBacktracker4 : MazeGenerator4
 	{
-		/// <summary>
-		/// Randomizer für die Nachbarschaftsauswahl
-		/// </summary>
-		private readonly Random _randomizer;
-
 		/// <summary>
 		/// Initializes a new instance of the <see cref="T:System.Object"/> class.
 		/// </summary>
 		/// <remarks></remarks>
 		public RecursiveBacktracker4()
 		{
-			_randomizer = new Random();
 		}
 
 		/// <summary>
@@ -28,8 +22,8 @@ namespace Labyrinth
 		/// </summary>
 		/// <remarks></remarks>
 		public RecursiveBacktracker4(int seed)
+			: base(seed)
 		{
-			_randomizer = new Random(seed);
 		}
 
 		/// <summary>
@@ -125,7 +119,7 @@ namespace Labyrinth
 			if (heightCoord < 0 || heightCoord > maxHeightCoord) return null;
 
 			// Basiswert ermitteln
-			int value = _randomizer.Next(0, 40);
+			int value = Randomizer.Next(0, 40);
 
 			// Wert finden
 			IList<Tuple<int, int>> neighbors = SelectUnvisitedNeibhbors(ref visitMap, widthCoord, heightCoord);
