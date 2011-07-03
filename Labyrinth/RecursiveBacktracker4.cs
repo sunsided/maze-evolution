@@ -10,7 +10,7 @@ namespace Labyrinth
 	public sealed class RecursiveBacktracker4 : MazeGenerator4
 	{
 		/// <summary>
-		/// Initializes a new instance of the <see cref="T:System.Object"/> class.
+		/// Initializes a new instance of the <see cref="RecursiveBacktracker4"/> class.
 		/// </summary>
 		/// <remarks></remarks>
 		public RecursiveBacktracker4()
@@ -18,7 +18,7 @@ namespace Labyrinth
 		}
 
 		/// <summary>
-		/// Initializes a new instance of the <see cref="T:System.Object"/> class.
+		/// Initializes a new instance of the <see cref="RecursiveBacktracker4"/> class.
 		/// </summary>
 		/// <remarks></remarks>
 		public RecursiveBacktracker4(int seed)
