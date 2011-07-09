@@ -7,6 +7,7 @@ using System.Drawing;
 using System.Data;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Windows.Forms;
 using Labyrinth;
 
@@ -17,6 +18,8 @@ namespace MazeEvolution
 	/// </summary>
 	public partial class MazePanel : Panel
 	{
+		private object lockObject = new object();
+
 		/// <summary>
 		/// Initializes a new instance of the <see cref="T:System.Windows.Forms.Panel"/> class.
 		/// </summary>
@@ -41,13 +44,21 @@ namespace MazeEvolution
 		{
 			Contract.Requires(maze != null);
 
-			// Altes Binding entfernen
-			if (Maze != null) Maze.MazeChanged -= OnMazeChanged;
+			lock (lockObject)
+			{
+				_sourceCellX = null;
+				_sourceCellY = null;
+				_deadEnds.Clear();
 
-			// Neu setzen
-			Maze = maze;
-			maze.MazeChanged += OnMazeChanged;
-			RecalculateBlockSizes();
+				// Altes Binding entfernen
+				if (Maze != null) Maze.MazeChanged -= OnMazeChanged;
+
+				// Neu setzen
+				Maze = maze;
+				maze.MazeChanged += OnMazeChanged;
+				RecalculateBlockSizes();
+			}
+			Invalidate();
 		}
 
 		/// <summary>
@@ -106,135 +117,144 @@ namespace MazeEvolution
 		/// <remarks></remarks>
 		protected override void OnPaint(PaintEventArgs e)
 		{
-			// base.OnPaint(e);
-			Graphics gr = e.Graphics;
-			//gr.Clear(Color.Red);
-
-			Maze4 maze = Maze;
-			if (maze == null) return;
-
-			int mazeWidth = maze.Rooms.GetLength(0);
-			int mazeHeight = maze.Rooms.GetLength(1);
-
-			float wallWidth = Math.Max(_blockWidth/10.0f, 1.0f);
-			float wallHeight = Math.Max(_blockHeight/10.0f, 1.0f);
-
-			Brush floorBrush = new SolidBrush(Color.White);
-			Brush sourceFloorBrush = new SolidBrush(Color.DarkGreen);
-			Brush wallBrush = new SolidBrush(Color.Black);
-
-			for (int y = 0; y < mazeHeight; ++y)
+			lock (lockObject)
 			{
-				for (int x = 0; x < mazeWidth; ++x)
+
+				// base.OnPaint(e);
+				Graphics gr = e.Graphics;
+				//gr.Clear(Color.Red);
+
+				Maze4 maze = Maze;
+				if (maze == null) return;
+
+				int mazeWidth = maze.Rooms.GetLength(0);
+				int mazeHeight = maze.Rooms.GetLength(1);
+
+				float wallWidth = Math.Max(_blockWidth/10.0f, 1.0f);
+				float wallHeight = Math.Max(_blockHeight/10.0f, 1.0f);
+
+				Brush floorBrush = new SolidBrush(Color.White);
+				Brush deadEndBrush = new SolidBrush(Color.IndianRed);
+				Brush sourceFloorBrush = new SolidBrush(Color.DarkGreen);
+				Brush wallBrush = new SolidBrush(Color.Black);
+
+				for (int y = 0; y < mazeHeight; ++y)
 				{
-					// Fläche zeichnen
-
-					float sx = x*_blockWidth;
-					float sy = y*_blockHeight;
-
-					Brush brush = floorBrush;
-					if ((x == _sourceCellX) && (y == _sourceCellY))
+					for (int x = 0; x < mazeWidth; ++x)
 					{
-						brush = sourceFloorBrush;
-					}
-
-					RectangleF rect = new RectangleF(sx, sy, _blockWidth, _blockHeight);
-					gr.FillRectangle(brush, rect);
-				}
-			}
-
-			// Pfad rendern
-			floorBrush = new SolidBrush(Color.Crimson);
-			Brush targetBrush = new SolidBrush(Color.Orange);
-			if (SourceCellSelected && _hoverCellX.HasValue && _hoverCellY.HasValue)
-			{
-				int x = _hoverCellX.Value;
-				int y = _hoverCellY.Value;
-
-				if (x != _sourceCellX || y != _sourceCellY)
-				{
-
-					while (true)
-					{
-						int distance = _distances[x, y];
-						if (distance == 0) break;
+						// Fläche zeichnen
 
 						float sx = x*_blockWidth;
 						float sy = y*_blockHeight;
 
-						RectangleF rect = new RectangleF(sx, sy, _blockWidth, _blockHeight);
-						if (x == _hoverCellX.Value && y == _hoverCellY.Value)
+						Brush brush = floorBrush;
+						if ((x == _sourceCellX) && (y == _sourceCellY))
 						{
-							gr.FillRectangle(targetBrush, rect);
+							brush = sourceFloorBrush;
 						}
-						else
+						else if (_deadEnds != null && _deadEnds.Contains(new Tuple<int, int>(x, y)))
 						{
-							gr.FillRectangle(floorBrush, rect);
+							brush = deadEndBrush;
 						}
 
-						// Weiterwandern
-						if (x - 1 >= 0 && _distances[x - 1, y] == distance - 1 && maze.Rooms[x, y].HasWestRoom)
+						RectangleF rect = new RectangleF(sx, sy, _blockWidth, _blockHeight);
+						gr.FillRectangle(brush, rect);
+					}
+				}
+
+				// Pfad rendern
+				floorBrush = new SolidBrush(Color.Crimson);
+				Brush targetBrush = new SolidBrush(Color.Orange);
+				if (SourceCellSelected && _hoverCellX.HasValue && _hoverCellY.HasValue)
+				{
+					int x = _hoverCellX.Value;
+					int y = _hoverCellY.Value;
+
+					if (x != _sourceCellX || y != _sourceCellY)
+					{
+
+						while (true)
 						{
-							--x;
-							continue;
-						}
-						if (y - 1 >= 0 && _distances[x, y - 1] == distance - 1 && maze.Rooms[x, y].HasNorthRoom)
-						{
-							--y;
-							continue;
-						}
-						if (x + 1 < mazeWidth && _distances[x + 1, y] == distance - 1 && maze.Rooms[x, y].HasEastRoom)
-						{
-							++x;
-							continue;
-						}
-						if (y + 1 < mazeHeight && _distances[x, y + 1] == distance - 1 && maze.Rooms[x, y].HasSouthRoom)
-						{
-							++y;
-							continue;
+							int distance = _distances[x, y];
+							if (distance == 0) break;
+
+							float sx = x*_blockWidth;
+							float sy = y*_blockHeight;
+
+							RectangleF rect = new RectangleF(sx, sy, _blockWidth, _blockHeight);
+							if (x == _hoverCellX.Value && y == _hoverCellY.Value)
+							{
+								gr.FillRectangle(targetBrush, rect);
+							}
+							else
+							{
+								gr.FillRectangle(floorBrush, rect);
+							}
+
+							// Weiterwandern
+							if (x - 1 >= 0 && _distances[x - 1, y] == distance - 1 && maze.Rooms[x, y].HasWestRoom)
+							{
+								--x;
+								continue;
+							}
+							if (y - 1 >= 0 && _distances[x, y - 1] == distance - 1 && maze.Rooms[x, y].HasNorthRoom)
+							{
+								--y;
+								continue;
+							}
+							if (x + 1 < mazeWidth && _distances[x + 1, y] == distance - 1 && maze.Rooms[x, y].HasEastRoom)
+							{
+								++x;
+								continue;
+							}
+							if (y + 1 < mazeHeight && _distances[x, y + 1] == distance - 1 && maze.Rooms[x, y].HasSouthRoom)
+							{
+								++y;
+								continue;
+							}
 						}
 					}
 				}
-			}
 
-			// Wände rendern
-			for (int y = 0; y < mazeHeight; ++y)
-			{
-				for (int x = 0; x < mazeWidth; ++x)
+				// Wände rendern
+				for (int y = 0; y < mazeHeight; ++y)
 				{
-					float sx = x*_blockWidth;
-					float sy = y*_blockHeight;
-
-					// W#nde zeichnen
-
-					IRoom4 room = maze.Rooms[x, y];
-
-					// Nordwand zeichnen
-					if (!room.HasNorthRoom)
+					for (int x = 0; x < mazeWidth; ++x)
 					{
-						RectangleF wall = new RectangleF(sx, sy, _blockWidth, wallHeight);
-						gr.FillRectangle(wallBrush, wall);
-					}
+						float sx = x*_blockWidth;
+						float sy = y*_blockHeight;
 
-					// Westwand zeichnen
-					if (!room.HasWestRoom)
-					{
-						RectangleF wall = new RectangleF(sx, sy, wallWidth, _blockHeight);
-						gr.FillRectangle(wallBrush, wall);
-					}
+						// W#nde zeichnen
 
-					// Ostwand zeichnen
-					if (!room.HasEastRoom)
-					{
-						RectangleF wall = new RectangleF(sx + _blockWidth - wallWidth, sy, wallWidth, _blockHeight);
-						gr.FillRectangle(wallBrush, wall);
-					}
+						IRoom4 room = maze.Rooms[x, y];
 
-					// Südwand zeichnen
-					if (!room.HasSouthRoom)
-					{
-						RectangleF wall = new RectangleF(sx, sy + _blockHeight - wallHeight, _blockWidth, wallHeight);
-						gr.FillRectangle(wallBrush, wall);
+						// Nordwand zeichnen
+						if (!room.HasNorthRoom)
+						{
+							RectangleF wall = new RectangleF(sx, sy, _blockWidth, wallHeight);
+							gr.FillRectangle(wallBrush, wall);
+						}
+
+						// Westwand zeichnen
+						if (!room.HasWestRoom)
+						{
+							RectangleF wall = new RectangleF(sx, sy, wallWidth, _blockHeight);
+							gr.FillRectangle(wallBrush, wall);
+						}
+
+						// Ostwand zeichnen
+						if (!room.HasEastRoom)
+						{
+							RectangleF wall = new RectangleF(sx + _blockWidth - wallWidth, sy, wallWidth, _blockHeight);
+							gr.FillRectangle(wallBrush, wall);
+						}
+
+						// Südwand zeichnen
+						if (!room.HasSouthRoom)
+						{
+							RectangleF wall = new RectangleF(sx, sy + _blockHeight - wallHeight, _blockWidth, wallHeight);
+							gr.FillRectangle(wallBrush, wall);
+						}
 					}
 				}
 			}
@@ -259,6 +279,8 @@ namespace MazeEvolution
 		/// Y-Koordinate der aktiv gesetzten Zelle
 		/// </summary>
 		private int? _hoverCellY;
+
+		private HashSet<Tuple<int, int>> _deadEnds = new HashSet<Tuple<int, int>>();
 
 		/// <summary>
 		/// Gibt an, ob eine Zielzelle gewählt wurde
@@ -286,12 +308,30 @@ namespace MazeEvolution
 
 			int controlWidth = ClientRectangle.Width;
 			int controlHeight = ClientRectangle.Height;
-			_sourceCellX = (int) (((float) me.X/controlWidth)*mazeWidth);
-			_sourceCellY = (int) (((float) me.Y/controlHeight)*mazeHeight);
+			int sourceCellX = (int) (((float) me.X/controlWidth)*mazeWidth);
+			int sourceCellY = (int) (((float) me.Y/controlHeight)*mazeHeight);
 
-			int[,] distances;
-			maze.SetStartingPoint(_sourceCellX.Value, _sourceCellY.Value, out distances);
-			_distances = distances;
+			if (sourceCellX != _sourceCellX || sourceCellY != _sourceCellY)
+			{
+				_sourceCellX = sourceCellX;
+				_sourceCellY = sourceCellY;
+
+				int[,] distances;
+				var deadEnds = maze.SetStartingPoint(_sourceCellX.Value, _sourceCellY.Value, out distances);
+				_distances = distances;
+
+				_deadEnds.Clear();
+				foreach (var entry in deadEnds.Where(entry => entry.Item1 == deadEnds[0].Item1))
+				{
+					_deadEnds.Add(maze.GetPosition(entry.Item2));
+				}
+			}
+			else
+			{
+				_sourceCellX = null;
+				_sourceCellY = null;
+				_deadEnds.Clear();
+			}
 
 			Invalidate();
 		}
