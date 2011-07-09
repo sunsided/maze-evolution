@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using Labyrinth;
 
 namespace MazeEvolution
 {
@@ -14,6 +15,15 @@ namespace MazeEvolution
 		public MainForm()
 		{
 			InitializeComponent();
+		}
+
+		protected override void OnLoad(EventArgs e)
+		{
+			base.OnLoad(e);
+			
+			Maze4 maze = new Maze4(new RecursiveBacktracker4());
+			maze.GenerateNew(30, 30);
+			mazePanel.SetMaze(maze);
 		}
 	}
 }

@@ -28,20 +28,53 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
+			this.toolStripContainer = new System.Windows.Forms.ToolStripContainer();
+			this.mazePanel = new MazeEvolution.MazePanel();
+			this.toolStripContainer.ContentPanel.SuspendLayout();
+			this.toolStripContainer.SuspendLayout();
 			this.SuspendLayout();
+			// 
+			// toolStripContainer
+			// 
+			// 
+			// toolStripContainer.ContentPanel
+			// 
+			this.toolStripContainer.ContentPanel.Controls.Add(this.mazePanel);
+			this.toolStripContainer.ContentPanel.Size = new System.Drawing.Size(484, 462);
+			this.toolStripContainer.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.toolStripContainer.Location = new System.Drawing.Point(0, 0);
+			this.toolStripContainer.Name = "toolStripContainer";
+			this.toolStripContainer.Size = new System.Drawing.Size(484, 462);
+			this.toolStripContainer.TabIndex = 0;
+			this.toolStripContainer.Text = "toolStripContainer1";
+			// 
+			// mazePanel
+			// 
+			this.mazePanel.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.mazePanel.Location = new System.Drawing.Point(0, 0);
+			this.mazePanel.Name = "mazePanel";
+			this.mazePanel.Size = new System.Drawing.Size(484, 462);
+			this.mazePanel.TabIndex = 0;
 			// 
 			// MainForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(544, 303);
+			this.ClientSize = new System.Drawing.Size(484, 462);
+			this.Controls.Add(this.toolStripContainer);
 			this.Name = "MainForm";
 			this.Text = "Maze Evolution";
+			this.toolStripContainer.ContentPanel.ResumeLayout(false);
+			this.toolStripContainer.ResumeLayout(false);
+			this.toolStripContainer.PerformLayout();
 			this.ResumeLayout(false);
 
 		}
 
 		#endregion
+
+		private System.Windows.Forms.ToolStripContainer toolStripContainer;
+		private MazePanel mazePanel;
 	}
 }
 

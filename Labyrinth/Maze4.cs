@@ -110,6 +110,9 @@ namespace Labyrinth
 			_roomIndexLookup = lookup;
 			_rooms = rooms;
 			_walls = walls;
+
+			// Feuer frei.
+			OnMazeChanged(EventArgs.Empty);
 		}
 
 		/// <summary>
@@ -154,7 +157,9 @@ namespace Labyrinth
 			Contract.Ensures(Contract.Result<IList<Tuple<int, IRoom4>>>() != null);
 			Contract.Ensures(Contract.ValueAtReturn(out distances) != null);
 
-			return SetStartingPoint(Rooms[x, y], out distances);
+			IRoom4 room = Rooms[x, y];
+			Contract.Assume(room != null);
+			return SetStartingPoint(room, out distances);
 		}
 		
 		/// <summary>
@@ -189,7 +194,6 @@ namespace Labyrinth
 
 			// Die Zielwerte
 			List<Tuple<int, IRoom4>> deadEnds = new List<Tuple<int, IRoom4>>();
-			int maxDistance = 0;
 
 			// Bewegungs-Hilfsklasse erzeugen
 			Marcher4 marcher = new Marcher4(Door4.East, startPosition.Item1, startPosition.Item2);
@@ -295,6 +299,26 @@ namespace Labyrinth
 		{
 			return _walls == null ? String.Empty : _walls.RenderToString(true);
 		}
+
+		#region Events 
+
+		/// <summary>
+		/// Wird gerufen, wenn sich das Labyrinth verändert hat
+		/// </summary>
+		public event EventHandler MazeChanged;
+
+		/// <summary>
+		/// Raises the <see cref="MazeChanged"/> event.
+		/// </summary>
+		/// <param name="e">The <see cref="System.EventArgs"/> instance containing the event data.</param>
+		/// <remarks></remarks>
+		private void OnMazeChanged(EventArgs e)
+		{
+			EventHandler handler = MazeChanged;
+			if (handler != null) handler(this, e);
+		}
+
+		#endregion Events
 
 		#region Tracking der Distanzmessung
 

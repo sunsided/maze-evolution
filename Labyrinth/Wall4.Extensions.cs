@@ -209,6 +209,8 @@ namespace Labyrinth
 
 			int width = walls.GetLength(0);
 			int height = walls.GetLength(1);
+			Contract.Assert(width >= 0 && height >= 0);
+
 			Door4[,] doors = new Door4[width, height];
 			for (int y=0; y<height; ++y)
 			{
