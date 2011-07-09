@@ -56,8 +56,10 @@ namespace Labyrinth
 			while(wallList.Count > 0)
 			{
 				int index = Randomizer.Next(0, wallList.Count - 1);
+				Contract.Assume(index < wallList.Count);
 				var wall = wallList[index];
 				wallList.RemoveAt(index);
+				Contract.Assume(wall != null);
 
 				// 2.1 If the cells divided by this wall belong to distinct sets: 
 				var oppositeCellCoords = SelectCellOnOppositeSideOfWall(wall);
@@ -86,6 +88,9 @@ namespace Labyrinth
 		/// <exception cref="ArgumentException">Ein ungültiger Wert für <paramref name="wall"/> wurde übergeben.</exception>
 		private static Tuple<int, int> SelectCellOnOppositeSideOfWall(Tuple<int, int, Wall4> wall)
 		{
+			Contract.Requires(wall != null);
+			Contract.Requires(wall.Item3.ExactlyOneValueSet());
+			Contract.Requires(wall.Item1 >= 0 && wall.Item2 >= 0);
 			return SelectCellOnOppositeSideOfWall(new Tuple<int, int>(wall.Item1, wall.Item2), wall.Item3);
 		}
 
@@ -100,7 +105,7 @@ namespace Labyrinth
 		private static Tuple<int, int> SelectCellOnOppositeSideOfWall(Tuple<int, int> cell, Wall4 wall)
 		{
 			Contract.Requires(cell != null);
-			Contract.Requires(wall.ExactlyOneWallSet());
+			Contract.Requires(wall.ExactlyOneValueSet());
 			Contract.Requires(cell.Item1 >= 0 && cell.Item2 >= 0);
 
 			switch (wall)

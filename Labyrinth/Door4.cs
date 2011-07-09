@@ -3,38 +3,38 @@
 namespace Labyrinth
 {
 	/// <summary>
-	/// Enumeration, die die Türen in einem rechteckigen Raum angibt
+	/// Enumeration, die die Wände in einem rechteckigen Raum angibt
 	/// </summary>
 	[Flags]
-	public enum Door4
+	public enum Wall4
 	{
 		/// <summary>
-		/// Keine Türem
+		/// Keine Wände
 		/// </summary>
 		None = 0,
 
 		/// <summary>
-		/// Nordtür
+		/// Nordwand
 		/// </summary>
 		North = 1,
 
 		/// <summary>
-		/// Südtür
+		/// Südwand
 		/// </summary>
 		South = 2,
 
 		/// <summary>
-		/// Osttür
+		/// Ostwand
 		/// </summary>
 		East = 4,
 
 		/// <summary>
-		/// Westtür
+		/// Westwand
 		/// </summary>
 		West = 8,
 
 		/// <summary>
-		/// Alle Türen
+		/// Alle Wände
 		/// </summary>
 		All = North | South | East | West
 	}

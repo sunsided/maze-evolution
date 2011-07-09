@@ -87,7 +87,7 @@ namespace Labyrinth
 		{
 			Contract.Requires(mazeMap != null);
 			Contract.Requires(wall != null);
-			Contract.Requires(wall.Item3.ExactlyOneWallSet());
+			Contract.Requires(wall.Item3.ExactlyOneValueSet());
 			Contract.Requires(wall.Item1 >= 0 && wall.Item2 >= 0);
 			Contract.Ensures(Contract.ValueAtReturn(out oppositeCell) != null);
 
@@ -108,7 +108,7 @@ namespace Labyrinth
 		{
 			Contract.Requires(mazeMap != null);
 			Contract.Requires(cell != null);
-			Contract.Requires(wall.ExactlyOneWallSet());
+			Contract.Requires(wall.ExactlyOneValueSet());
 			Contract.Requires(cell.Item1 >= 0 && cell.Item2 >= 0);
 			Contract.Ensures(Contract.ValueAtReturn(out oppositeCell) != null);
 

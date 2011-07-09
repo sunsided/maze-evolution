@@ -57,23 +57,22 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Xml" />
-  </ItemGroup>
-  <ItemGroup>
+    <Compile Include="Door4.cs" />
+    <Compile Include="IRoom4.cs" />
+    <Compile Include="Marcher4.cs" />
+    <Compile Include="Maze4.cs" />
     <Compile Include="RandomizedKruskal4.cs" />
     <Compile Include="RandomizedPrim4.cs" />
     <Compile Include="MazeGenerator4.cs" />
     <Compile Include="IMazeGenerator.cs" />
+    <Compile Include="Room4.cs" />
     <Compile Include="Wall4.Extensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RecursiveBacktracker4.cs" />
     <Compile Include="Wall4.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="System" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
