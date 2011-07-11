@@ -165,17 +165,6 @@ namespace MazeEvolution
 		}
 
 		/// <summary>
-		/// Handles the Click event of the toolStripButtonGenerate control.
-		/// </summary>
-		/// <param name="sender">The source of the event.</param>
-		/// <param name="e">The <see cref="System.EventArgs"/> instance containing the event data.</param>
-		/// <remarks></remarks>
-		private void ToolStripButtonGenerateClick(object sender, EventArgs e)
-		{
-			UpdateMaze();
-		}
-
-		/// <summary>
 		/// Handles the Click event of the toolStripButtonEvolution control.
 		/// </summary>
 		/// <param name="sender">The source of the event.</param>
@@ -244,34 +233,74 @@ namespace MazeEvolution
 			UseWaitCursor = false;
 		}
 
-		private void x10ToolStripMenuItem_Click(object sender, EventArgs e)
+		#region Labyrinth neugenerieren
+
+		/// <summary>
+		/// Handles the Click event of the x10ToolStripMenuItem control.
+		/// </summary>
+		/// <param name="sender">The source of the event.</param>
+		/// <param name="e">The <see cref="System.EventArgs"/> instance containing the event data.</param>
+		/// <remarks></remarks>
+		private void X10ToolStripMenuItemClick(object sender, EventArgs e)
 		{
 			UpdateMaze(10, 10);
 		}
 
-		private void x15ToolStripMenuItem_Click(object sender, EventArgs e)
+		/// <summary>
+		/// Handles the Click event of the x15ToolStripMenuItem control.
+		/// </summary>
+		/// <param name="sender">The source of the event.</param>
+		/// <param name="e">The <see cref="System.EventArgs"/> instance containing the event data.</param>
+		/// <remarks></remarks>
+		private void X15ToolStripMenuItemClick(object sender, EventArgs e)
 		{
 			UpdateMaze(15, 15);
 		}
 
-		private void x20ToolStripMenuItem_Click(object sender, EventArgs e)
+		/// <summary>
+		/// Handles the Click event of the x20ToolStripMenuItem control.
+		/// </summary>
+		/// <param name="sender">The source of the event.</param>
+		/// <param name="e">The <see cref="System.EventArgs"/> instance containing the event data.</param>
+		/// <remarks></remarks>
+		private void X20ToolStripMenuItemClick(object sender, EventArgs e)
 		{
 			UpdateMaze(20, 20);
 		}
 
-		private void x25ToolStripMenuItem_Click(object sender, EventArgs e)
+		/// <summary>
+		/// Handles the Click event of the x25ToolStripMenuItem control.
+		/// </summary>
+		/// <param name="sender">The source of the event.</param>
+		/// <param name="e">The <see cref="System.EventArgs"/> instance containing the event data.</param>
+		/// <remarks></remarks>
+		private void X25ToolStripMenuItemClick(object sender, EventArgs e)
 		{
 			UpdateMaze(25, 25);
 		}
 
-		private void x30ToolStripMenuItem_Click(object sender, EventArgs e)
+		/// <summary>
+		/// Handles the Click event of the x30ToolStripMenuItem control.
+		/// </summary>
+		/// <param name="sender">The source of the event.</param>
+		/// <param name="e">The <see cref="System.EventArgs"/> instance containing the event data.</param>
+		/// <remarks></remarks>
+		private void X30ToolStripMenuItemClick(object sender, EventArgs e)
 		{
 			UpdateMaze(30, 30);
 		}
 
-		private void toolStripSplitButtonGenerate_ButtonClick(object sender, EventArgs e)
+		/// <summary>
+		/// Handles the ButtonClick event of the toolStripSplitButtonGenerate control.
+		/// </summary>
+		/// <param name="sender">The source of the event.</param>
+		/// <param name="e">The <see cref="System.EventArgs"/> instance containing the event data.</param>
+		/// <remarks></remarks>
+		private void ToolStripSplitButtonGenerateButtonClick(object sender, EventArgs e)
 		{
 			UpdateMaze();
 		}
+
+		#endregion Labyrinth neugenerieren
 	}
 }

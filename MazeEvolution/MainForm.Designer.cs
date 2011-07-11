@@ -132,42 +132,42 @@
 			this.toolStripSplitButtonGenerate.Name = "toolStripSplitButtonGenerate";
 			this.toolStripSplitButtonGenerate.Size = new System.Drawing.Size(69, 22);
 			this.toolStripSplitButtonGenerate.Text = "&generate";
-			this.toolStripSplitButtonGenerate.ButtonClick += new System.EventHandler(this.toolStripSplitButtonGenerate_ButtonClick);
+			this.toolStripSplitButtonGenerate.ButtonClick += new System.EventHandler(this.ToolStripSplitButtonGenerateButtonClick);
 			// 
 			// x10ToolStripMenuItem
 			// 
 			this.x10ToolStripMenuItem.Name = "x10ToolStripMenuItem";
 			this.x10ToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
 			this.x10ToolStripMenuItem.Text = "10x10";
-			this.x10ToolStripMenuItem.Click += new System.EventHandler(this.x10ToolStripMenuItem_Click);
+			this.x10ToolStripMenuItem.Click += new System.EventHandler(this.X10ToolStripMenuItemClick);
 			// 
 			// x15ToolStripMenuItem
 			// 
 			this.x15ToolStripMenuItem.Name = "x15ToolStripMenuItem";
 			this.x15ToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
 			this.x15ToolStripMenuItem.Text = "15x15";
-			this.x15ToolStripMenuItem.Click += new System.EventHandler(this.x15ToolStripMenuItem_Click);
+			this.x15ToolStripMenuItem.Click += new System.EventHandler(this.X15ToolStripMenuItemClick);
 			// 
 			// x20ToolStripMenuItem
 			// 
 			this.x20ToolStripMenuItem.Name = "x20ToolStripMenuItem";
 			this.x20ToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
 			this.x20ToolStripMenuItem.Text = "20x20";
-			this.x20ToolStripMenuItem.Click += new System.EventHandler(this.x20ToolStripMenuItem_Click);
+			this.x20ToolStripMenuItem.Click += new System.EventHandler(this.X20ToolStripMenuItemClick);
 			// 
 			// x25ToolStripMenuItem
 			// 
 			this.x25ToolStripMenuItem.Name = "x25ToolStripMenuItem";
 			this.x25ToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
 			this.x25ToolStripMenuItem.Text = "25x25";
-			this.x25ToolStripMenuItem.Click += new System.EventHandler(this.x25ToolStripMenuItem_Click);
+			this.x25ToolStripMenuItem.Click += new System.EventHandler(this.X25ToolStripMenuItemClick);
 			// 
 			// x30ToolStripMenuItem
 			// 
 			this.x30ToolStripMenuItem.Name = "x30ToolStripMenuItem";
 			this.x30ToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
 			this.x30ToolStripMenuItem.Text = "30x30";
-			this.x30ToolStripMenuItem.Click += new System.EventHandler(this.x30ToolStripMenuItem_Click);
+			this.x30ToolStripMenuItem.Click += new System.EventHandler(this.X30ToolStripMenuItemClick);
 			// 
 			// mazePanel
 			// 
