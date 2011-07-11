@@ -27,10 +27,9 @@ namespace Evolution.Tests
 		{
 			var obj = new SimpleClass();
 			var generator = new Generator<SimpleClass>();
-			var lambda = generator.BuildRandomExpressionTree(obj);
+			var func = generator.BuildRandomExpressionTree();
 
-			Action func = lambda.Compile();
-			func();
+			func.Execute(obj);
 		}
 	}
 }

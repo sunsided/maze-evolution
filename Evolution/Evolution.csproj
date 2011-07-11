@@ -67,6 +67,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ClassDecorationException.cs" />
+    <Compile Include="CodeExpression.cs" />
+    <Compile Include="ConditionalCodeExpression.cs" />
     <Compile Include="MethodSignatureException.cs" />
     <Compile Include="EvolutionaryClassAttribute.cs" />
     <Compile Include="EvolutionaryMethodAttribute.cs" />

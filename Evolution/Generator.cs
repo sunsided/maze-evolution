@@ -37,7 +37,6 @@ namespace Evolution
 		/// <summary>
 		/// Bezieht oder setzt die Funktion, die zum Gewinnen von Zufallswerten verwendet wird.
 		/// <seealso cref="GetRandomValue()"/>
-		/// <seealso cref="GetRandomValue(double,double)"/>
 		/// <seealso cref="GetRandomValue(int,int)"/>
 		/// </summary>
 		/// <value>Die Zufallsfunktion.</value>
@@ -54,7 +53,6 @@ namespace Evolution
 		/// <summary>
 		/// Initializes a new instance of the <see cref="Generator&lt;T&gt;"/> class.
 		/// </summary>
-		/// <param name="object">The @object.</param>
 		/// <exception cref="ClassDecorationException">Klasse ist nicht mit dem <see cref="EvolutionaryClassAttribute"/> markiert.</exception>
 		/// <exception cref="MethodSignatureException">Eine oder mehrere Methoden, die mit dem <see cref="EvolutionaryMethodAttribute"/> markiert sind, haben eine ungültige Signatur.</exception>
 		/// <exception cref="GeneratorException">Es wurden keine Terminalmethoden ermittelt.</exception>
@@ -80,7 +78,6 @@ namespace Evolution
 		/// Bezieht eine Zufallszahl im Bereich <paramref name="minValue"/>..<paramref name="maxValue"/>
 		/// <para>>Ist keine Zufallsfunktion in <see cref="RandomFunction"/> gesetzt, wird die Standardimplementierung verwendet.</para>
 		/// <seealso cref="GetRandomValue()"/>
-		/// <seealso cref="GetRandomValue(double,double)"/>
 		/// </summary>
 		/// <returns>Die Zufallszahl.</returns>
 		private int GetRandomValue(int minValue, int maxValue)
@@ -93,25 +90,8 @@ namespace Evolution
 		}
 
 		/// <summary>
-		/// Bezieht eine Zufallszahl im Bereich <paramref name="minValue"/>..<paramref name="maxValue"/>
-		/// <para>>Ist keine Zufallsfunktion in <see cref="RandomFunction"/> gesetzt, wird die Standardimplementierung verwendet.</para>
-		/// <seealso cref="GetRandomValue()"/>
-		/// <seealso cref="GetRandomValue(int,int)"/>
-		/// </summary>
-		/// <returns>Die Zufallszahl.</returns>
-		private double GetRandomValue(double minValue, double maxValue)
-		{
-			Contract.Requires(minValue <= maxValue);
-			Contract.Ensures(Contract.Result<double>() >= minValue && Contract.Result<double>() <= maxValue);
-
-			double randomValue = GetRandomValue();
-			return (int)(randomValue * (maxValue - minValue) + minValue);
-		}
-
-		/// <summary>
 		/// Baut einen zufälligen Ausdrucksbaum auf
 		/// </summary>
-		/// <param name="obj">Das Objekt, für das der Baum zu generieren ist</param>
 		/// <exception cref="ClassDecorationException">Klasse ist nicht mit dem <see cref="EvolutionaryClassAttribute"/> markiert.</exception>
 		/// <exception cref="MethodSignatureException">Eine oder mehrere Methoden, die mit dem <see cref="EvolutionaryMethodAttribute"/> markiert sind, haben eine ungültige Signatur.</exception>
 		/// <exception cref="GeneratorException">Es wurden keine Terminalmethoden ermittelt.</exception>
@@ -123,8 +103,7 @@ namespace Evolution
 			// Affentest
 			Type type = typeof(T);
 			if (type.GetCustomAttributes(typeof(EvolutionaryClassAttribute), true).Length == 0)
-				throw new ClassDecorationException("Klasse ist nicht mit dem EvolutionaryClass-Attribut markiert",
-				                                   new ArgumentException( "Objekt ist nicht mit dem EvolutionaryClass-Attribut markiert", "obj"));
+				throw new ClassDecorationException("Klasse ist nicht mit dem EvolutionaryClass-Attribut markiert");
 
 			// Alle Methoden ermitteln
 			IEnumerable<MethodInfo> methods =
@@ -153,19 +132,18 @@ namespace Evolution
 				{
 					builder.AppendLine("- " + invalidMethodList[i]);
 				}
-				throw new MethodSignatureException(builder.ToString(), new ArgumentException("Eine oder mehrere Methoden des Objektes haben eine ungültige Signatur", "obj"));
+				throw new MethodSignatureException(builder.ToString());
 			}
-			if (_terminals.Count == 0) throw new GeneratorException("Es wurden keine Terminalmethoden ermittelt.", new ArgumentException("Keine Terminalmethoden ermittelt.", "obj"));
+			if (_terminals.Count == 0) throw new GeneratorException("Es wurden keine Terminalmethoden ermittelt.");
 		}
 
 		/// <summary>
 		/// Erzeugt einen zufälligen Ausdrucksbaum
 		/// </summary>
-		/// <param name="target">Das Objekt, für das die Expression erzeugt wird</param>
 		/// <returns>Der Ausdrucksbaum</returns>
-		internal Expression<Action> BuildRandomExpressionTree(T target)
+		internal CodeExpression<T> BuildRandomExpressionTree()
 		{
-			Contract.Ensures(Contract.Result<Expression>() != null);
+			Contract.Ensures(Contract.Result<CodeExpression<T>>() != null);
 
 			int complexityHelperValue = Math.Min(_terminals.Count, _decisions.Count);
 			int randomComplexity = GetRandomValue(1 + complexityHelperValue, 1 + complexityHelperValue*4);
@@ -174,70 +152,41 @@ namespace Evolution
 			Contract.Assert(randomComplexity >= 1);
 			Contract.Assume(_terminals.Count > 0);
 
-			Expression tree = BuildExpressionTreeRecursive(target, randomComplexity, _decisions.Count > 0);
-			Expression<Action> lambda = Expression.Lambda<Action>(tree);
-			Contract.Assert(lambda != null);
-
-			return lambda;
+			CodeExpression<T> action = BuildExpressionTreeRecursive(randomComplexity, _decisions.Count > 0);
+			return action;
 		}
-
+		
 		/// <summary>
 		/// Baut den Entscheidungsbaum rekursiv auf
 		/// </summary>
-		/// <param name="targetObject">Das Objekt, für das die Expression erzeugt wird</param>
 		/// <param name="complexity">Die maximale Tiefe des Baumes</param>
 		/// <param name="forceDecision">Gibt an, ob mit einer Entscheidungsfunktion begonnen werden muss</param>
 		/// <returns></returns>
-		private Expression BuildExpressionTreeRecursive(T targetObject, int complexity, bool forceDecision)
+		private CodeExpression<T> BuildExpressionTreeRecursive(int complexity, bool forceDecision)
 		{
 			Contract.Requires(complexity > 0);
 			Contract.Requires(_terminals.Count > 0);
 			Contract.Requires(forceDecision && _decisions.Count > 0 || !forceDecision);
-			Contract.Ensures(Contract.Result<Expression>() != null);
+			Contract.Ensures(Contract.Result<CodeExpression<T>>() != null);
 
-			var targetParameter = Expression.Parameter(typeof(T));
+			// Zufällig Entscheidung oder Terminal erzeugen
+			bool isDecisionNode = forceDecision || (GetRandomValue() > 0.5);
 
 			// Einfaches Terminal verwenden, wenn:
 			// - Komplexität ist eins
 			// - Komplxität ist höher, aber keine Entscheidungsfunktionen vorhanden
-			if (complexity == 1 || _decisions.Count == 0)
+			if (complexity == 1 || _decisions.Count == 0 || !isDecisionNode)
 			{
 				MethodInfo method = SelectRandomTerminal();
-
-
-
-				return Expression.Call(targetParameter, method);
+				return new CodeExpression<T>(method);
 			}
-
-			// Zufällig Entscheidung oder Terminal erzeugen
-			bool isDecisionNode = forceDecision || (GetRandomValue() > 0.5);
-			Expression expression;
-			if (isDecisionNode && _decisions.Count > 0)
-			{
-				MethodInfo method = SelectRandomDecision();
-				Contract.Assume(method != null);
-				Expression testFunction = Expression.Call(targetParameter, method);
-		
-				// linken Baum erzeugen
-				Contract.Assume(_terminals.Count > 0);
-				Expression ifTrue = BuildExpressionTreeRecursive(targetObject, complexity - 1, false);
-
-				// rechten Baum erzeugen
-				Contract.Assume(_terminals.Count > 0);
-				Expression ifFalse = BuildExpressionTreeRecursive(targetObject, complexity - 1, false);
-
-				expression = Expression.IfThenElse(testFunction, ifTrue, ifFalse);
-			}
-			else
-			{
-				Contract.Assume(_terminals.Count > 0);
-				MethodInfo method = SelectRandomTerminal();
-				Contract.Assume(method != null);
-				expression = Expression.Call(targetParameter, method);
-			}
-
-			Contract.Assert(expression != null);
-			return expression;
+			
+			MethodInfo decisionMethod = SelectRandomDecision();
+			Contract.Assume(decisionMethod != null);
+			CodeExpression<T> leftAction = BuildExpressionTreeRecursive(complexity - 1, false);
+			CodeExpression<T> rightAction = BuildExpressionTreeRecursive(complexity - 1, false);
+			ConditionalCodeExpression<T> decisionFunc = new ConditionalCodeExpression<T>(decisionMethod, leftAction, rightAction);
+			return decisionFunc;
 		}
 
 		/// <summary>
