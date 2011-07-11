@@ -163,7 +163,7 @@ namespace Evolution
 		/// </summary>
 		/// <param name="target">Das Objekt, für das die Expression erzeugt wird</param>
 		/// <returns>Der Ausdrucksbaum</returns>
-		internal Expression<Action> BuildRandomExpressionTree(T target)
+		internal Expression<Action<T>> BuildRandomExpressionTree()
 		{
 			Contract.Ensures(Contract.Result<Expression>() != null);
 
@@ -174,11 +174,36 @@ namespace Evolution
 			Contract.Assert(randomComplexity >= 1);
 			Contract.Assume(_terminals.Count > 0);
 
-			Expression tree = BuildExpressionTreeRecursive(target, randomComplexity, _decisions.Count > 0);
-			Expression<Action> lambda = Expression.Lambda<Action>(tree);
-			Contract.Assert(lambda != null);
+			Expression<Action<T>> action = BuildExpressionTreeRecursive(randomComplexity, _decisions.Count > 0);
+			return action;
+		}
 
-			return lambda;
+		/// <summary>
+		/// Erzeugt eine Aktion aus einer <see cref="MethodInfo"/>
+		/// </summary>
+		/// <param name="methodInfo">Die aufzurufende Methode</param>
+		/// <returns></returns>
+		private Expression<Action<T>> CreateAction(MethodInfo methodInfo)
+		{
+			Contract.Requires(methodInfo != null);
+			Contract.Ensures(Contract.Result<Expression<Action<T>>>() != null);
+
+			Expression<Action<T>> expression = obj => methodInfo.Invoke(obj, null);
+			return expression;
+		}
+
+		/// <summary>
+		/// Erzeugt eine Funktion aus einer <see cref="MethodInfo"/>
+		/// </summary>
+		/// <param name="methodInfo">Die aufzurufende Funktion</param>
+		/// <returns></returns>
+		private Expression<Func<T, bool>> CreateFunc(MethodInfo methodInfo)
+		{
+			Contract.Requires(methodInfo != null);
+			Contract.Ensures(Contract.Result<Expression<Func<T, bool>>>() != null);
+
+			Expression<Func<T, bool>> expression = obj => (bool)methodInfo.Invoke(obj, null);
+			return expression;
 		}
 
 		/// <summary>
@@ -188,7 +213,7 @@ namespace Evolution
 		/// <param name="complexity">Die maximale Tiefe des Baumes</param>
 		/// <param name="forceDecision">Gibt an, ob mit einer Entscheidungsfunktion begonnen werden muss</param>
 		/// <returns></returns>
-		private Expression BuildExpressionTreeRecursive(T targetObject, int complexity, bool forceDecision)
+		private Expression<Action<T>> BuildExpressionTreeRecursive(int complexity, bool forceDecision)
 		{
 			Contract.Requires(complexity > 0);
 			Contract.Requires(_terminals.Count > 0);
@@ -197,46 +222,27 @@ namespace Evolution
 
 			var targetParameter = Expression.Parameter(typeof(T));
 
+			// Zufällig Entscheidung oder Terminal erzeugen
+			bool isDecisionNode = forceDecision || (GetRandomValue() > 0.5);
+
 			// Einfaches Terminal verwenden, wenn:
 			// - Komplexität ist eins
 			// - Komplxität ist höher, aber keine Entscheidungsfunktionen vorhanden
-			if (complexity == 1 || _decisions.Count == 0)
+			if (complexity == 1 || _decisions.Count == 0 || !isDecisionNode)
 			{
 				MethodInfo method = SelectRandomTerminal();
-
-
-
-				return Expression.Call(targetParameter, method);
+				return CreateAction(method);
 			}
+			
+			MethodInfo decisionMethod = SelectRandomDecision();
+			Contract.Assume(decisionMethod != null);
+			Expression<Func<T, bool>> decisionFunc = CreateFunc(decisionMethod);
+			Expression<Action<T>> leftAction = BuildExpressionTreeRecursive(complexity - 1, false);
+			Expression<Action<T>> rightAction = BuildExpressionTreeRecursive(complexity - 1, false);
 
-			// Zufällig Entscheidung oder Terminal erzeugen
-			bool isDecisionNode = forceDecision || (GetRandomValue() > 0.5);
-			Expression expression;
-			if (isDecisionNode && _decisions.Count > 0)
-			{
-				MethodInfo method = SelectRandomDecision();
-				Contract.Assume(method != null);
-				Expression testFunction = Expression.Call(targetParameter, method);
-		
-				// linken Baum erzeugen
-				Contract.Assume(_terminals.Count > 0);
-				Expression ifTrue = BuildExpressionTreeRecursive(targetObject, complexity - 1, false);
-
-				// rechten Baum erzeugen
-				Contract.Assume(_terminals.Count > 0);
-				Expression ifFalse = BuildExpressionTreeRecursive(targetObject, complexity - 1, false);
-
-				expression = Expression.IfThenElse(testFunction, ifTrue, ifFalse);
-			}
-			else
-			{
-				Contract.Assume(_terminals.Count > 0);
-				MethodInfo method = SelectRandomTerminal();
-				Contract.Assume(method != null);
-				expression = Expression.Call(targetParameter, method);
-			}
-
-			Contract.Assert(expression != null);
+			Expression ifthenelse = Expression.IfThenElse(decisionFunc, leftAction, rightAction);
+			Expression<Action<T>> expression = Expression.Lambda<Action<T>>(ifthenelse);
+			 
 			return expression;
 		}
 
