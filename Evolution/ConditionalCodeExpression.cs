@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Reflection;
@@ -29,17 +30,32 @@ namespace Evolution
 		/// <summary>
 		/// Initializes a new instance of the <see cref="CodeExpression&lt;T&gt;"/> class.
 		/// </summary>
+		/// <param name="parent">The parent.</param>
 		/// <param name="decision">The decision.</param>
 		/// <param name="leftAction">The left action.</param>
 		/// <param name="rightAction">The right action.</param>
 		/// <remarks></remarks>
-		public ConditionalCodeExpression(MethodInfo decision, CodeExpression<T> leftAction, CodeExpression<T> rightAction)
+		public ConditionalCodeExpression(CodeExpression<T> parent, MethodInfo decision, CodeExpression<T> leftAction, CodeExpression<T> rightAction)
+			: base(parent)
 		{
 			Contract.Requires(decision != null);
 			Contract.Requires(leftAction != null);
 			Contract.Requires(rightAction != null);
 			LeftAction = leftAction;
 			RightAction = rightAction;
+			Decision = decision;
+		}
+
+		/// <summary>
+		/// Initializes a new instance of the <see cref="CodeExpression&lt;T&gt;"/> class.
+		/// </summary>
+		/// <param name="parent">The parent.</param>
+		/// <param name="decision">The decision.</param>
+		/// <remarks></remarks>
+		public ConditionalCodeExpression(CodeExpression<T> parent, MethodInfo decision)
+			: base(parent)
+		{
+			Contract.Requires(decision != null);
 			Decision = decision;
 		}
 
@@ -74,11 +90,38 @@ namespace Evolution
 		/// <remarks></remarks>
 		internal override string ToString(int indentationLevel)
 		{
-			return String.Concat(Enumerable.Repeat("\t", indentationLevel)) + "if (" + Decision.Name + "()) {" +
+			string padding = String.Concat(Enumerable.Repeat("    ", indentationLevel));
+			return padding + "if (" + Decision.Name + "()) {" +
 			       Environment.NewLine +
-				   LeftAction.ToString(indentationLevel + 1) + Environment.NewLine + "} " + Environment.NewLine +
+				   LeftAction.ToString(indentationLevel + 1) + Environment.NewLine + padding + "} " + Environment.NewLine + padding +
 			       "else { " + Environment.NewLine +
-			       RightAction.ToString(indentationLevel + 1) + Environment.NewLine + "}";
+			       RightAction.ToString(indentationLevel + 1) + Environment.NewLine + padding + "}";
+		}
+
+		/// <summary>
+		/// Liefert eine Liste aller <see cref="CodeExpression{}"/>-Knoten unterhalb dieses Elementes
+		/// </summary>
+		/// <returns></returns>
+		public override IEnumerable<CodeExpression<T>> GetChildNodes()
+		{
+			yield return this;
+			foreach (var node in LeftAction.GetChildNodes())
+			{
+				yield return node;
+			}
+			foreach (var node in RightAction.GetChildNodes())
+			{
+				yield return node;
+			}
+		}
+
+		/// <summary>
+		/// Gibt die Tiefe des Teilbaumes zurück
+		/// </summary>
+		/// <returns></returns>
+		public override int GetDepth()
+		{
+			return Math.Max(LeftAction.GetDepth(), RightAction.GetDepth()) + 1;
 		}
 	}
 }

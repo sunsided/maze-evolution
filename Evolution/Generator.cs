@@ -1,9 +1,9 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.Contracts;
 using System.Linq;
-using System.Linq.Expressions;
 using System.Reflection;
 using System.Text;
 
@@ -60,7 +60,9 @@ namespace Evolution
 		{
 			DetermineFunctionsAndTerminals();
 		}
-		
+
+		#region Zufallszahlen
+
 		/// <summary>
 		/// Bezieht eine Zufallszahl im Bereich 0..1
 		/// <para>>Ist keine Zufallsfunktion in <see cref="RandomFunction"/> gesetzt, wird die Standardimplementierung verwendet.</para>
@@ -86,8 +88,12 @@ namespace Evolution
 			Contract.Ensures(Contract.Result<int>() >= minValue && Contract.Result<int>() <= maxValue);
 
 			double randomValue = GetRandomValue();
-			return (int)(randomValue*(maxValue - minValue) + minValue);
+			return (int)Math.Round(randomValue*(maxValue - minValue) + minValue);
 		}
+
+		#endregion Zufallszahlen
+
+		#region Ermitteln der Funktionen und Terminals
 
 		/// <summary>
 		/// Baut einen zufälligen Ausdrucksbaum auf
@@ -137,6 +143,10 @@ namespace Evolution
 			if (_terminals.Count == 0) throw new GeneratorException("Es wurden keine Terminalmethoden ermittelt.");
 		}
 
+		#endregion Ermitteln der Funktionen und Terminals
+
+		#region Bauen des Ausdrucksbaumes
+
 		/// <summary>
 		/// Erzeugt einen zufälligen Ausdrucksbaum
 		/// </summary>
@@ -152,17 +162,18 @@ namespace Evolution
 			Contract.Assert(randomComplexity >= 1);
 			Contract.Assume(_terminals.Count > 0);
 
-			CodeExpression<T> action = BuildExpressionTreeRecursive(randomComplexity, _decisions.Count > 0);
+			CodeExpression<T> action = BuildExpressionTreeRecursive(null, randomComplexity, _decisions.Count > 0);
 			return action;
 		}
-		
+
 		/// <summary>
 		/// Baut den Entscheidungsbaum rekursiv auf
 		/// </summary>
+		/// <param name="parent">Der Elternknoten</param>
 		/// <param name="complexity">Die maximale Tiefe des Baumes</param>
 		/// <param name="forceDecision">Gibt an, ob mit einer Entscheidungsfunktion begonnen werden muss</param>
 		/// <returns></returns>
-		private CodeExpression<T> BuildExpressionTreeRecursive(int complexity, bool forceDecision)
+		private CodeExpression<T> BuildExpressionTreeRecursive(CodeExpression<T> parent, int complexity, bool forceDecision)
 		{
 			Contract.Requires(complexity > 0);
 			Contract.Requires(_terminals.Count > 0);
@@ -178,14 +189,14 @@ namespace Evolution
 			if (complexity == 1 || _decisions.Count == 0 || !isDecisionNode)
 			{
 				MethodInfo method = SelectRandomTerminal();
-				return new CodeExpression<T>(method);
+				return new CodeExpression<T>(parent, method);
 			}
 			
 			MethodInfo decisionMethod = SelectRandomDecision();
 			Contract.Assume(decisionMethod != null);
-			CodeExpression<T> leftAction = BuildExpressionTreeRecursive(complexity - 1, false);
-			CodeExpression<T> rightAction = BuildExpressionTreeRecursive(complexity - 1, false);
-			ConditionalCodeExpression<T> decisionFunc = new ConditionalCodeExpression<T>(decisionMethod, leftAction, rightAction);
+			ConditionalCodeExpression<T> decisionFunc = new ConditionalCodeExpression<T>(parent, decisionMethod);
+			decisionFunc.LeftAction = BuildExpressionTreeRecursive(decisionFunc, complexity - 1, false);
+			decisionFunc.RightAction = BuildExpressionTreeRecursive(decisionFunc, complexity - 1, false);
 			return decisionFunc;
 		}
 
@@ -220,5 +231,84 @@ namespace Evolution
 			Contract.Assume(method != null);
 			return method;
 		}
+
+		#endregion Bauen des Ausdrucksbaumes
+
+		#region Genetische Methoden
+
+		/// <summary>
+		/// Führt eine Crossover-Operation zwischen zwei Knoten durch
+		/// </summary>
+		/// <param name="left">Ein Knoten</param>
+		/// <param name="right">Ein anderer Knoten</param>
+		internal void Crossover(ref CodeExpression<T> left, ref CodeExpression<T> right)
+		{
+			Contract.Requires(left != null && left != null && !ReferenceEquals(left, right));
+
+			IList<CodeExpression<T>> leftNodes = left.GetChildNodes().ToList();
+			IList<CodeExpression<T>> rightNodes = right.GetChildNodes().ToList();
+
+			// Zufällige Nodes aussuchen
+			int leftIndex = GetRandomValue(0, leftNodes.Count);
+			int rightIndex = GetRandomValue(0, rightNodes.Count);
+
+			// Trennpunkte ermitteln
+			CodeExpression<T> leftSubNode = leftNodes[leftIndex];
+			CodeExpression<T> rightSubNode = rightNodes[rightIndex];
+
+			// Links verdrehen
+			ConditionalCodeExpression<T> leftParent = leftSubNode.Parent as ConditionalCodeExpression<T>;
+			if (leftParent != null)
+			{
+				if (leftParent.LeftAction == leftSubNode)
+					leftParent.LeftAction = rightSubNode;
+				else
+					leftParent.RightAction = rightSubNode;
+			}
+
+			// Rechts verdrehen
+			ConditionalCodeExpression<T> rightParent = rightSubNode.Parent as ConditionalCodeExpression<T>;
+			if (rightParent != null)
+			{
+				if (rightParent.LeftAction == rightSubNode)
+					rightParent.LeftAction = leftSubNode;
+				else
+					rightParent.RightAction = leftSubNode;
+			}
+
+			// Neue Eltern setzen
+			rightSubNode.Parent = leftParent;
+			leftSubNode.Parent = rightParent;
+		}
+
+		/// <summary>
+		/// Mutiert den Teilbaum
+		/// </summary>
+		/// <param name="tree"></param>
+		internal void Mutate(ref CodeExpression<T> tree)
+		{
+			IList<CodeExpression<T>> nodes = tree.GetChildNodes().ToList();
+
+			// Zufälligen Node aussuchen
+			int leftIndex = GetRandomValue(0, nodes.Count);
+
+			// Trennpunkte ermitteln
+			CodeExpression<T> subnode = nodes[leftIndex];
+
+			// Links verdrehen
+			ConditionalCodeExpression<T> parent = subnode.Parent as ConditionalCodeExpression<T>;
+			if (parent != null)
+			{
+				int depth = tree.GetDepth();
+				int randomComplexity = GetRandomValue(Math.Max(1, depth/2), depth*2);
+
+				if (parent.LeftAction == tree)
+					parent.LeftAction = BuildExpressionTreeRecursive(parent, randomComplexity, false);
+				else
+					parent.RightAction = BuildExpressionTreeRecursive(parent, randomComplexity, false);
+			}
+		}
+
+		#endregion Genetische Methoden
 	}
 }

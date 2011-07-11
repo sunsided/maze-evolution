@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Reflection;
@@ -12,6 +13,11 @@ namespace Evolution
 	public class CodeExpression<T> where T : class
 	{
 		/// <summary>
+		/// Der Elternknoten
+		/// </summary>
+		public CodeExpression<T> Parent { get; internal set; }
+
+		/// <summary>
 		/// Die auszuführende Aktion
 		/// </summary>
 		public MethodInfo Terminal { get; internal set; }
@@ -19,8 +25,10 @@ namespace Evolution
 		/// <summary>
 		/// Initializes a new instance of the <see cref="CodeExpression&lt;T&gt;"/> class.
 		/// </summary>
+		/// <param name="parent">Der Elternknoten</param>
 		/// <param name="terminal">The terminal.</param>
-		public CodeExpression(MethodInfo terminal)
+		public CodeExpression(CodeExpression<T> parent, MethodInfo terminal)
+			: this(parent)
 		{
 			Contract.Requires(terminal != null);
 			Terminal = terminal;
@@ -29,8 +37,9 @@ namespace Evolution
 		/// <summary>
 		/// Initializes a new instance of the <see cref="CodeExpression&lt;T&gt;"/> class.
 		/// </summary>
-		protected CodeExpression()
+		protected CodeExpression(CodeExpression<T> parent)
 		{
+			Parent = parent;
 		}
 
 		/// <summary>
@@ -61,7 +70,25 @@ namespace Evolution
 		/// <remarks></remarks>
 		internal virtual string ToString(int indentationLevel)
 		{
-			return String.Concat(Enumerable.Repeat("\t", indentationLevel)) + Terminal.Name + "();";
+			return String.Concat(Enumerable.Repeat("    ", indentationLevel)) + Terminal.Name + "();";
+		}
+
+		/// <summary>
+		/// Liefert eine Liste aller <see cref="CodeExpression{}"/>-Knoten unterhalb dieses Elementes
+		/// </summary>
+		/// <returns></returns>
+		public virtual IEnumerable<CodeExpression<T>> GetChildNodes()
+		{
+			yield return this;
+		}
+
+		/// <summary>
+		/// Gibt die Tiefe des Teilbaumes zurück
+		/// </summary>
+		/// <returns></returns>
+		public virtual int GetDepth()
+		{
+			return 1;
 		}
 	}
 }
