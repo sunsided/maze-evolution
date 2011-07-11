@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.Contracts;
@@ -12,7 +11,7 @@ namespace Evolution
 	/// <summary>
 	/// Generatorklasse für evolutionäre Programmierung
 	/// </summary>
-	public sealed class Generator<T> where T: class
+	public sealed class Generator<T> where T : class, IFitnessProvider
 	{
 		/// <summary>
 		/// Einfacher Zufallszahlengenerator
@@ -90,7 +89,7 @@ namespace Evolution
 			double randomValue = GetRandomValue();
 			return (int)Math.Round(randomValue*(maxValue - minValue) + minValue);
 		}
-
+		
 		#endregion Zufallszahlen
 
 		#region Ermitteln der Funktionen und Terminals
@@ -310,5 +309,116 @@ namespace Evolution
 		}
 
 		#endregion Genetische Methoden
+
+		#region Erzeugen von Generationen
+
+		/// <summary>
+		/// Erzeugt eine neue Generation an Elementen
+		/// </summary>
+		/// <param name="creator">Die Erzeugerfunktion.</param>
+		/// <param name="size">Die Anzahl der Elemente.</param>
+		/// <returns></returns>
+		/// <remarks></remarks>
+		public Tuple<IList<T>, IList<CodeExpression<T>>> CreateGeneration(Func<T> creator, int size)
+		{
+			Contract.Requires(size >= 0);
+			List<T> elements = new List<T>(size);
+			List<CodeExpression<T>> generation = new List<CodeExpression<T>>(size);
+			for (int i=0; i<size; ++i)
+			{
+				CodeExpression<T> expression = BuildRandomExpressionTree();
+				generation.Add(expression);
+				elements.Add(creator());
+			}
+			return new Tuple<IList<T>, IList<CodeExpression<T>>>(elements, generation);
+		}
+		
+		/// <summary>
+		/// Erzeugt eine neue Generation aus einer bestehenden
+		/// </summary>
+		/// <param name="creator">Die Erzeugerfunktion</param>
+		/// <param name="fitnesses">The fitnesses.</param>
+		/// <param name="codes">The codes.</param>
+		/// <returns></returns>
+		/// <remarks></remarks>
+		public IList<CodeExpression<T>> EvolveGeneration(Func<T> creator, ref IList<T> fitnesses, IList<CodeExpression<T>> codes)
+		{
+			return EvolveGeneration(creator, ref fitnesses, codes, 0.1D, 0.01d, 0.005d);
+		}
+
+		/// <summary>
+		/// Erzeugt eine neue Generation aus einer bestehenden
+		/// </summary>
+		/// <param name="creator">Die Erzeugerfunktion</param>
+		/// <param name="fitnesses">The fitnesses.</param>
+		/// <param name="codes">The codes.</param>
+		/// <param name="keepPercentage">Anzahl der Elemente, die behalten werden sollen (z.B. <c>0.1</c> für top ten).</param>
+		/// <param name="crossoverPercentage">Die Wahrscheinlichkeit, dass ein crossover auftritt.</param>
+		/// <param name="mutationPercentage">Die Wahrscheinlichkeit, dass eine Mutation auftritt.</param>
+		/// <returns></returns>
+		/// <remarks></remarks>
+		public IList<CodeExpression<T>> EvolveGeneration(Func<T> creator, ref IList<T> fitnesses, IList<CodeExpression<T>> codes, double keepPercentage, double crossoverPercentage, double mutationPercentage)
+		{
+			Contract.Requires(creator != null);
+			Contract.Requires(fitnesses != null);
+			Contract.Requires(codes != null);
+			Contract.Requires(fitnesses.Count == codes.Count);
+			Contract.Requires(keepPercentage > 0 && keepPercentage <= 1);
+			Contract.Requires(crossoverPercentage >= 0 && crossoverPercentage <= 1);
+			Contract.Requires(mutationPercentage >= 0 && mutationPercentage <= 1);
+
+			// Lookup erzeugen
+			IDictionary<T, CodeExpression<T>> lookup = new Dictionary<T, CodeExpression<T>>(fitnesses.Count);
+			for(int i=0; i<fitnesses.Count; ++i)
+			{
+				lookup.Add(fitnesses[i], codes[i]);
+			}
+
+			// Nach Fitness sortieren
+			if (!(fitnesses is List<T>)) fitnesses = new List<T>(fitnesses);
+			((List<T>)fitnesses).Sort((a, b) => a.GetFitness().CompareTo(b.GetFitness()));
+
+			// Selektion
+			int keepCount = (int)Math.Round(keepPercentage*lookup.Count);
+			while (fitnesses.Count > keepCount)
+			{
+				fitnesses.RemoveAt(fitnesses.Count - 1);
+			}
+
+			// Crossover
+			for (int i = 0; i < fitnesses.Count; i += 2)
+			{
+				if (GetRandomValue() > crossoverPercentage) continue;
+				CodeExpression<T> a = lookup[fitnesses[i]];
+				CodeExpression<T> b = lookup[fitnesses[i + 1]];
+				Crossover(ref a, ref b);
+			}
+
+			// Mutation
+			for (int i = 0; i < fitnesses.Count; i += 2)
+			{
+				if (GetRandomValue() > crossoverPercentage) continue;
+				CodeExpression<T> a = lookup[fitnesses[i]];
+				Mutate(ref a);
+			}
+
+			// Neue Elemente erzeugen
+			IList<CodeExpression<T>> list = new List<CodeExpression<T>>(codes.Count);
+			for (int i=0; i<fitnesses.Count; ++i)
+			{
+				CodeExpression<T> expression = BuildRandomExpressionTree();
+				list.Add(lookup[fitnesses[i]]);
+			}
+			for (int i = fitnesses.Count; i < codes.Count; ++i)
+			{
+				CodeExpression<T> expression = BuildRandomExpressionTree();
+				list.Add(expression);
+				fitnesses.Add(creator());
+			}
+
+			return list;
+		}
+
+		#endregion Erzeugen von Generationen
 	}
 }

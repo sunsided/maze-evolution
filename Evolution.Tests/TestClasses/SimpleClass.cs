@@ -4,7 +4,7 @@
 	/// Testklasse für die Evolution
 	/// </summary>
 	[EvolutionaryClass]
-	public class SimpleClass
+	public class SimpleClass : IFitnessProvider
 	{
 		/// <summary>
 		/// Eine Entscheidungsfunktion
@@ -42,6 +42,17 @@
 		[EvolutionaryMethod]
 		public void Action2()
 		{
+		}
+
+		/// <summary>
+		/// Bezieht die Fitness.
+		/// Höhere Werte bedeuten höhere Fitness.
+		/// </summary>
+		/// <returns>Der Fitness-Faktor</returns>
+		/// <remarks></remarks>
+		public double GetFitness()
+		{
+			return 0;
 		}
 	}
 }
