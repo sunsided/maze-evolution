@@ -90,5 +90,15 @@ namespace Evolution
 		{
 			return 1;
 		}
+
+		/// <summary>
+		/// Clones this instance.
+		/// </summary>
+		/// <returns></returns>
+		/// <remarks></remarks>
+		public virtual CodeExpression<T> Clone()
+		{
+			return new CodeExpression<T>(Parent, Terminal);
+		}
 	}
 }

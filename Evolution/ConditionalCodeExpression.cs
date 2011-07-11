@@ -123,5 +123,20 @@ namespace Evolution
 		{
 			return Math.Max(LeftAction.GetDepth(), RightAction.GetDepth()) + 1;
 		}
+
+		/// <summary>
+		/// Clones this instance.
+		/// </summary>
+		/// <returns></returns>
+		/// <remarks></remarks>
+		public override CodeExpression<T> Clone()
+		{
+			CodeExpression<T> leftAction = LeftAction.Clone();
+			CodeExpression<T> rightAction = RightAction.Clone();
+			ConditionalCodeExpression<T> current = new ConditionalCodeExpression<T>(Parent, Decision, leftAction, rightAction);
+			leftAction.Parent = current;
+			rightAction.Parent = current;
+			return current;
+		}
 	}
 }

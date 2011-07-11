@@ -46,6 +46,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Researcher.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -58,6 +61,7 @@
     <Compile Include="MazePanel.Designer.cs">
       <DependentUpon>MazePanel.cs</DependentUpon>
     </Compile>
+    <Compile Include="Proband.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="MainForm.resx">
@@ -83,6 +87,10 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Evolution\Evolution.csproj">
+      <Project>{BC3A3D3C-F6B1-40B4-BA35-23E5BA9D5186}</Project>
+      <Name>Evolution</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Labyrinth\Labyrinth.csproj">
       <Project>{96F3EB25-96D2-4E8A-AC47-371D49ADB975}</Project>
       <Name>Labyrinth</Name>

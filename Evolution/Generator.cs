@@ -156,7 +156,6 @@ namespace Evolution
 
 			int complexityHelperValue = Math.Min(_terminals.Count, _decisions.Count);
 			int randomComplexity = GetRandomValue(1 + complexityHelperValue, 1 + complexityHelperValue*4);
-			Debug.WriteLine("Random complexity is " + randomComplexity);
 
 			Contract.Assert(randomComplexity >= 1);
 			Contract.Assume(_terminals.Count > 0);
@@ -248,8 +247,8 @@ namespace Evolution
 			IList<CodeExpression<T>> rightNodes = right.GetChildNodes().ToList();
 
 			// Zufällige Nodes aussuchen
-			int leftIndex = GetRandomValue(0, leftNodes.Count);
-			int rightIndex = GetRandomValue(0, rightNodes.Count);
+			int leftIndex = GetRandomValue(0, leftNodes.Count-1);
+			int rightIndex = GetRandomValue(0, rightNodes.Count-1);
 
 			// Trennpunkte ermitteln
 			CodeExpression<T> leftSubNode = leftNodes[leftIndex];
@@ -289,7 +288,7 @@ namespace Evolution
 			IList<CodeExpression<T>> nodes = tree.GetChildNodes().ToList();
 
 			// Zufälligen Node aussuchen
-			int leftIndex = GetRandomValue(0, nodes.Count);
+			int leftIndex = GetRandomValue(0, nodes.Count-1);
 
 			// Trennpunkte ermitteln
 			CodeExpression<T> subnode = nodes[leftIndex];
@@ -343,7 +342,7 @@ namespace Evolution
 		/// <remarks></remarks>
 		public IList<CodeExpression<T>> EvolveGeneration(Func<T> creator, ref IList<T> fitnesses, IList<CodeExpression<T>> codes)
 		{
-			return EvolveGeneration(creator, ref fitnesses, codes, 0.1D, 0.01d, 0.005d);
+			return EvolveGeneration(creator, ref fitnesses, codes, 0.1D, 0.1d, 0.05d);
 		}
 
 		/// <summary>
@@ -376,7 +375,7 @@ namespace Evolution
 
 			// Nach Fitness sortieren
 			if (!(fitnesses is List<T>)) fitnesses = new List<T>(fitnesses);
-			((List<T>)fitnesses).Sort((a, b) => a.GetFitness().CompareTo(b.GetFitness()));
+			((List<T>)fitnesses).Sort((a, b) => -1 * a.GetFitness().CompareTo(b.GetFitness()));
 
 			// Selektion
 			int keepCount = (int)Math.Round(keepPercentage*lookup.Count);
@@ -384,29 +383,55 @@ namespace Evolution
 			{
 				fitnesses.RemoveAt(fitnesses.Count - 1);
 			}
+			Debug.WriteLine("Maximum fitness: " + fitnesses[0].GetFitness()+ ".");
+
+			// Zielliste für neue Codes
+			IList<CodeExpression<T>> list = new List<CodeExpression<T>>(codes.Count);
+			HashSet<int> backedUp = new HashSet<int>();
 
 			// Crossover
-			for (int i = 0; i < fitnesses.Count; i += 2)
+			for (int i = 0; i < keepCount-1; ++i)
 			{
 				if (GetRandomValue() > crossoverPercentage) continue;
 				CodeExpression<T> a = lookup[fitnesses[i]];
 				CodeExpression<T> b = lookup[fitnesses[i + 1]];
-				Crossover(ref a, ref b);
+
+				// Sicherheitskopien erstellen
+				if (!backedUp.Contains(i))
+				{
+					list.Add(a.Clone());
+					fitnesses.Add(creator());
+					backedUp.Add(i);
+				}
+				if (!backedUp.Contains(i + 1))
+				{
+					list.Add(b.Clone());
+					fitnesses.Add(creator());
+					backedUp.Add(i + 1);
+				}
+
+				Debug.WriteLine("Crossover between " + i + "x" + (i+1) + " (in the sorted list).");
+				Crossover(ref a, ref b); // TODO: -->Klone<-- müssen gecrosst werden, sonst geht das ursprüngliche Material flöten. Eltern immer beibehalten!
 			}
 
 			// Mutation
-			for (int i = 0; i < fitnesses.Count; i += 2)
+			for (int i = 0; i < keepCount; ++i)
 			{
-				if (GetRandomValue() > crossoverPercentage) continue;
+				if (GetRandomValue() > mutationPercentage) continue;
 				CodeExpression<T> a = lookup[fitnesses[i]];
+
+				// Sicherheitskopie erstellen
+				list.Add(a.Clone());
+				fitnesses.Add(creator());
+
+				Debug.WriteLine("Mutation of " + i + " (in the sorted list).");
 				Mutate(ref a);
 			}
 
 			// Neue Elemente erzeugen
-			IList<CodeExpression<T>> list = new List<CodeExpression<T>>(codes.Count);
 			for (int i=0; i<fitnesses.Count; ++i)
 			{
-				CodeExpression<T> expression = BuildRandomExpressionTree();
+				if (!lookup.ContainsKey(fitnesses[i])) continue;
 				list.Add(lookup[fitnesses[i]]);
 			}
 			for (int i = fitnesses.Count; i < codes.Count; ++i)

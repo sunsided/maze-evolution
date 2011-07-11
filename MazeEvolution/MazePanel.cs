@@ -298,6 +298,8 @@ namespace MazeEvolution
 		protected override void OnClick(EventArgs e)
 		{
 			base.OnClick(e);
+
+			if (DisableMouseInteractions) return;
 			MouseEventArgs me = (MouseEventArgs) e;
 
 			Maze4 maze = Maze;
@@ -348,6 +350,9 @@ namespace MazeEvolution
 		/// <remarks></remarks>
 		protected override void OnMouseMove(MouseEventArgs e)
 		{
+			base.OnMouseMove(e);
+			if (DisableMouseInteractions) return;
+
 			Maze4 maze = Maze;
 			if (maze == null) return;
 
@@ -361,5 +366,10 @@ namespace MazeEvolution
 
 			Invalidate();
 		}
+
+		/// <summary>
+		/// Gibt an, ob Maus-Interaktionen deaktiviert wurden
+		/// </summary>
+		public bool DisableMouseInteractions { get; set; }
 	}
 }

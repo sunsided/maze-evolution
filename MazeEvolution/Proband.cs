@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Diagnostics.Contracts;
 using Evolution;
 using Labyrinth;
@@ -10,6 +11,7 @@ namespace MazeEvolution
 	/// Ein Proband
 	/// </summary>
 	[EvolutionaryClass]
+	[DebuggerDisplay("at {_marcher.X},{_marcher.Y} facing {_marcher.Direction} - Steps taken: {_stepsTaken}, Fitness: {Fitness}")]
 	public sealed class Proband : IFitnessProvider
 	{
 		/// <summary>
@@ -33,9 +35,14 @@ namespace MazeEvolution
 		private int _targetY;
 
 		/// <summary>
-		/// Anzahl der gemachten Schritte
+		/// Anzahl der gemachten Züge
 		/// </summary>
 		private int _stepsTaken = 0;
+
+		/// <summary>
+		/// Anzahl der gemachten Schritte vorwärts
+		/// </summary>
+		private int _stepsTakenForward = 0;
 
 		/// <summary>
 		/// Set der durchschrittenene Türen
@@ -106,6 +113,7 @@ namespace MazeEvolution
 
 			// Und ab dafür
 			_marcher.MoveForward();
+			++_stepsTakenForward;
 		}
 
 		/// <summary>
@@ -151,7 +159,7 @@ namespace MazeEvolution
 		[EvolutionaryMethod]
 		public bool RoomHasExit()
 		{
-			return !CurrentDoors.ExactlyOneValueSet() && !(CurrentDoors == Door4.None);
+			return !CurrentDoors.ExactlyOneValueSet() && CurrentDoors != Door4.None;
 		}
 
 		/// <summary>
@@ -190,10 +198,21 @@ namespace MazeEvolution
 		/// </summary>
 		/// <returns>Der Fitness-Faktor</returns>
 		/// <remarks></remarks>
+		public double Fitness
+		{
+			get { return GetFitness(); }
+		}
+
+		/// <summary>
+		/// Bezieht die Fitness.
+		/// Höhere Werte bedeuten höhere Fitness.
+		/// </summary>
+		/// <returns>Der Fitness-Faktor</returns>
+		/// <remarks></remarks>
 		public double GetFitness()
 		{
 			// TODO: Filtern über die letzten Durchläufe wäre toll.
-			return TargetReached ? -_stepsTaken : Double.MinValue;
+			return TargetReached ? Double.MaxValue - _stepsTaken : Double.MinValue + _stepsTakenForward;
 		}
 	}
 }
