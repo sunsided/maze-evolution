@@ -448,20 +448,19 @@ namespace Evolution
             Func<int, int, double, double> selectionProbability = (index, maxCount, percentage) => Math.Exp(-((1.0D / percentage) * index) / maxCount);
             List<T> selectedElements = new List<T>();
             List<T> deceasedElements = new List<T>();
-            for (int i=0; i<fitnesses.Count; ++i)
+            for (int i = 0; i < fitnessSorted.Count; ++i)
             {
                 double value = GetRandomValue();
-                double judge = selectionProbability(i, fitnesses.Count, keepPercentage);
-                if (value > judge)
+                double judge = selectionProbability(i, fitnessSorted.Count, keepPercentage);
+                if (value > judge || fitnessSorted[i].IsStarved)
                 {
-                    deceasedElements.Add(fitnesses[i]);
+                    deceasedElements.Add(fitnessSorted[i]);
                     continue;
                 }
-                selectedElements.Add(fitnesses[i]);
+                selectedElements.Add(fitnessSorted[i]);
             }
             Contract.Assert(selectedElements.Count > 0);
-            Debug.WriteLine("Maximum kept fitness: " + selectedElements[0].GetFitness() + ".");
-		    int selectedItemCount = selectedElements.Count;
+            int selectedItemCount = selectedElements.Count;
 
 			// Crossover
 		    List<Tuple<T, T, T>> crossoverResults = new List<Tuple<T, T, T>>();
@@ -476,13 +475,13 @@ namespace Evolution
                 for (int c = 0; c < selectedItemCount; ++c)
                 {
                     double value = GetRandomValue();
-                    double judge = crossoverProbability(i, fitnesses.Count, keepPercentage * 0.5);
+                    double judge = crossoverProbability(i, fitnessSorted.Count, keepPercentage * 0.5);
                     if (value > judge) continue;
                     crossoverCandidates.Add(selectedElements[c]);
                 }
 
                 // Aus Kandidaten Element auswählen
-			    int selectedCandidateIndex = GetRandomValue(0, crossoverCandidates.Count);
+			    int selectedCandidateIndex = GetRandomValue(0, crossoverCandidates.Count - 1);
 			    T elementA = selectedElements[i];
                 T elementB = crossoverCandidates[selectedCandidateIndex];
 
@@ -525,14 +524,14 @@ namespace Evolution
             List<T> newElements = new List<T>();
             newElements.AddRange(crossoverResults.Select(element => element.Item3));
             newElements.AddRange(mutationResults.Select(element => element.Item2));
-            newElements.Sort((a, b) => GetRandomValue(-1, 1));
-            newGeneration.AddRange(newElements);
+            newGeneration.AddRange(newElements.OrderBy(r => GetRandomValue()));
 
             // ... zuletzt fehlende Elemente hinzufügen oder Liste trimmen
             if (newGeneration.Count < newGenerationSize)
             {
-                Debug.WriteLine("Fülle neue Generation auf bis zur Zielgröße.");
-                IList<T> missingElements = CreateGeneration(newGenerationSize - newGeneration.Count, regularCreator);
+                int count = newGenerationSize - newGeneration.Count;
+                Debug.WriteLine("Fülle neue Generation auf bis zur Zielgröße. (Erzeuge " + count + ".)");
+                IList<T> missingElements = CreateGeneration(count, regularCreator);
                 newGeneration.AddRange(missingElements);
             }
             else
@@ -547,7 +546,7 @@ namespace Evolution
 
             // Report erzeugen
             GenerationReport<T> report = new GenerationReport<T>(fitnessSorted, selectedElements, deceasedElements, mutationResults, crossoverResults, newGeneration);
-	        return report;
+            return report;
 		}
 
 		#endregion Erzeugen von Generationen
