@@ -236,7 +236,7 @@ namespace MazeEvolution
 		    StringBuilder builder = new StringBuilder();
 		    builder.AppendLine(report.ToString());
 
-		    MessageBox.Show(builder.ToString(), "Report für Durchlauf #" + (GenerationNumber - 1), MessageBoxButtons.OK, MessageBoxIcon.Information);
+		    MessageBox.Show(this, builder.ToString(), "Report für Durchlauf #" + (GenerationNumber - 1), MessageBoxButtons.OK, MessageBoxIcon.Information);
 		    _probanden = report.NewGeneration.ToList();
 
 		    toolStrip1.Enabled = true;
