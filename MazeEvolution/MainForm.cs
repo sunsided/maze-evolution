@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Text;
 using System.Threading;
 using System.Windows.Forms;
 using Evolution;
@@ -221,24 +222,33 @@ namespace MazeEvolution
 		/// <param name="sender">The source of the event.</param>
 		/// <param name="e">The <see cref="System.ComponentModel.RunWorkerCompletedEventArgs"/> instance containing the event data.</param>
 		/// <remarks></remarks>
-		void ResearcherRunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        void ResearcherRunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
 		{
-			_timeout.Stop();
-			_timeoutTick = 0;
+		    _timeout.Stop();
+		    _timeoutTick = 0;
 
-			//MessageBox.Show("Simulation abgeschlossen. Führe Evolution durch.");
-			IList<Proband> probanden = new List<Proband>(_probanden);
-            int generation = GenerationNumber++;
-            int index = 0;
-            GenerationReport<Proband> report = _evolutionGenerator.EvolveGeneration(GenerationSize, probanden, code => new Proband(_maze, generation, Interlocked.Increment(ref index), code));		
-            MessageBox.Show("Durchgang abgeschlossen.");
-            _probanden = report.NewGeneration.ToList();
+		    //MessageBox.Show("Simulation abgeschlossen. Führe Evolution durch.");
+		    IList<Proband> probanden = new List<Proband>(_probanden);
+		    int generation = GenerationNumber++;
+		    int index = 0;
+		    GenerationReport<Proband> report = _evolutionGenerator.EvolveGeneration(GenerationSize, probanden,
+		                                                                            code =>
+		                                                                            new Proband(_maze, generation,
+		                                                                                        Interlocked.Increment(
+		                                                                                            ref index), code));
 
-			toolStrip1.Enabled = true;
-			UseWaitCursor = false;
+		    StringBuilder builder = new StringBuilder();
+		    builder.AppendLine(report.ToString());
+
+		    MessageBox.Show(builder.ToString(), "Report für Durchlauf #" + (GenerationNumber - 1), MessageBoxButtons.OK,
+		                    MessageBoxIcon.Information);
+		    _probanden = report.NewGeneration.ToList();
+
+		    toolStrip1.Enabled = true;
+		    UseWaitCursor = false;
 		}
 
-		#region Labyrinth neugenerieren
+	    #region Labyrinth neugenerieren
 
 		/// <summary>
 		/// Handles the Click event of the x10ToolStripMenuItem control.
