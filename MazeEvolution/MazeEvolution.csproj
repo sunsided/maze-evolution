@@ -34,6 +34,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="MazeEvolution, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
+      <ExecutableExtension>.exe</ExecutableExtension>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -46,20 +49,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="GenerationReport.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="GenerationReport.Designer.cs">
-      <DependentUpon>GenerationReport.cs</DependentUpon>
-    </Compile>
+    <Compile Include="Controller.cs" />
     <Compile Include="Researcher.cs">
       <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="MainForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="MainForm.Designer.cs">
-      <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
     <Compile Include="MazePanel.cs">
       <SubType>Component</SubType>
@@ -70,11 +62,14 @@
     <Compile Include="Proband.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <EmbeddedResource Include="GenerationReport.resx">
-      <DependentUpon>GenerationReport.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="MainForm.resx">
-      <DependentUpon>MainForm.cs</DependentUpon>
+    <Compile Include="Testbed.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Testbed.Designer.cs">
+      <DependentUpon>Testbed.cs</DependentUpon>
+    </Compile>
+    <EmbeddedResource Include="MazePanel.resx">
+      <DependentUpon>MazePanel.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -85,6 +80,9 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="Testbed.resx">
+      <DependentUpon>Testbed.cs</DependentUpon>
+    </EmbeddedResource>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>

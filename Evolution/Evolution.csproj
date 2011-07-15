@@ -70,6 +70,7 @@
     <Compile Include="CodeExpression.cs" />
     <Compile Include="ConditionalCodeExpression.cs" />
     <Compile Include="GenerationReport.cs" />
+    <Compile Include="GenerationReportEventArgs.cs" />
     <Compile Include="ICodeProvider.cs" />
     <Compile Include="IFitnessProvider.cs" />
     <Compile Include="MethodSignatureException.cs" />

@@ -458,7 +458,6 @@ namespace Evolution
                 }
                 selectedElements.Add(fitnessSorted[i]);
             }
-            Contract.Assert(selectedElements.Count > 0);
             int selectedItemCount = selectedElements.Count;
 
 			// TODO: Occam's Razor anwenden -- ggf. ältere, komplexere Hypothesen verwerfen, wenn neuere, gleichwertige, kompakte entstehen

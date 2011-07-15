@@ -122,7 +122,7 @@ namespace Labyrinth
 			int value = Randomizer.Next(0, 40);
 
 			// Wert finden
-			IList<Tuple<int, int>> neighbors = SelectUnvisitedNeibhbors(ref visitMap, widthCoord, heightCoord);
+			IList<Tuple<int, int>> neighbors = SelectUnvisitedNeighbors(ref visitMap, widthCoord, heightCoord);
 			if (neighbors.Count == 0) return null;
 			return neighbors[value%neighbors.Count];
 		}
@@ -153,7 +153,7 @@ namespace Labyrinth
 		/// <param name="widthCoord">Die Breitenkoordinate der gewünschten Zelle</param>
 		/// <param name="visitMap">Die Map der besuchten Zellen</param>
 		/// <returns>Die Liste der unbesuchten Nachbarn</returns>
-		private static IList<Tuple<int, int>> SelectUnvisitedNeibhbors(ref bool[,] visitMap, int widthCoord, int heightCoord)
+		private static IList<Tuple<int, int>> SelectUnvisitedNeighbors(ref bool[,] visitMap, int widthCoord, int heightCoord)
 		{
 			Contract.Requires(visitMap != null);
 			Contract.Ensures(Contract.Result<IList<Tuple<int, int>>>() != null);
