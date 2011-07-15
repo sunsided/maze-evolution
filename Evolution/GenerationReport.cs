@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
+using System.Linq;
+using System.Text;
 
 namespace Evolution
 {
@@ -8,7 +10,7 @@ namespace Evolution
     /// Report über die Generationsveränderung
     /// </summary>
     /// <typeparam name="TElement">Der Elementtyp</typeparam>
-    public sealed class GenerationReport<TElement> where TElement : class
+    public sealed class GenerationReport<TElement> where TElement : class, IFitnessProvider, ICodeProvider<TElement>
     {
         /// <summary>
         /// Die Elemente der alten Generation
@@ -71,6 +73,23 @@ namespace Evolution
             MutatedElements = new HashSet<Tuple<TElement, TElement>>(mutatedElements);
             CrossedElements = new HashSet<Tuple<TElement, TElement, TElement>>(crossedElements);
             NewGeneration = new HashSet<TElement>(newGeneration);
+        }
+
+        /// <summary>
+        /// Returns a <see cref="System.String"/> that represents this instance.
+        /// </summary>
+        /// <returns>A <see cref="System.String"/> that represents this instance.</returns>
+        /// <remarks></remarks>
+        public override string ToString()
+        {
+            StringBuilder builder = new StringBuilder();
+            builder.AppendLine("Selektierte Elemente: " + SelectedElements.Count);
+            builder.AppendLine("Verstorbene Elemente: " + DeceasedElements.Count);
+            builder.AppendLine("Gekreuzte Elemente: " + CrossedElements.Count);
+            builder.AppendLine("Mutierte Elemente: " + MutatedElements.Count);
+            builder.AppendLine("Maximale Fitness: " + SelectedElements.Max(element => element.GetFitness()));
+            builder.AppendLine("Minimale Fitness: " + SelectedElements.Min(element => element.GetFitness()));
+            return builder.ToString().Trim();
         }
     }
 }
