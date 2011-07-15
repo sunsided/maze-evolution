@@ -115,7 +115,16 @@ namespace MazeEvolution
 			get { return _marcher != null && ( _marcher.X == _targetX && _marcher.Y == _targetY ); }
 		}
 
-        /// <summary>
+	    /// <summary>
+	    /// Ermittelt, ob das Element verhungert ist, d.h. unabhängig
+	    /// von der Fitness aus dem Pool genommen werden soll.
+	    /// </summary>
+	    public bool IsStarved
+	    {
+            [Pure] get { return _stepsTakenForward == 0; }
+	    }
+
+	    /// <summary>
         /// Initializes a new instance of the <see cref="Proband"/> class.
         /// </summary>
         /// <param name="maze">The maze.</param>
