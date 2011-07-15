@@ -13,7 +13,8 @@ namespace MazeEvolution
 		{
     	    Application.EnableVisualStyles();
 			Application.SetCompatibleTextRenderingDefault(false);
-			Application.Run(new GenerationReport());
+		    //Application.Run(new GenerationReport());
+            Application.Run(new MainForm());
 		}
 	}
 }

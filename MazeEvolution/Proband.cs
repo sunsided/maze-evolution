@@ -280,7 +280,7 @@ namespace MazeEvolution
 		/// <remarks></remarks>
 		public double GetFitness()
 		{
-			// TODO: Filtern über die letzten Durchläufe wäre toll.
+		    // TODO !? return TargetReached ? _stepsTaken : -(_stepsTaken - _stepsTakenForward);
 			return TargetReached ? Double.MaxValue - _stepsTaken : Double.MinValue + _stepsTakenForward;
 		}
 

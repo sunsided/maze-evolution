@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 using System.Windows.Forms;
 using Evolution;
 using Labyrinth;
@@ -12,7 +13,7 @@ namespace MazeEvolution
 		/// <summary>
 		/// Anzahl der Individuen in einer Generation
 		/// </summary>
-		private const int GenerationSize = 2000;
+		private const int GenerationSize = 3000;
 
 		/// <summary>
 		/// Der Generator
@@ -65,7 +66,7 @@ namespace MazeEvolution
 		/// <remarks></remarks>
 		private void GenerateGeneration(Maze4 maze)
 		{
-			Tuple<IList<Proband>, IList<CodeExpression<Proband>>> result = _evolutionGenerator.CreateGeneration(() => new Proband(maze), GenerationSize);
+			Tuple<IList<Proband>, IList<CodeExpression<Proband>>> result = _evolutionGenerator.CreateGeneration(() => new Proband(maze, 0, 0), GenerationSize);
 			_probanden = result.Item1;
 			_codes = result.Item2;
 		}
@@ -225,7 +226,8 @@ namespace MazeEvolution
 
 			//MessageBox.Show("Simulation abgeschlossen. Führe Evolution durch.");
 			IList<Proband> probanden = new List<Proband>(_probanden);
-			_codes = _evolutionGenerator.EvolveGeneration(() => new Proband(_maze), ref probanden, _codes);
+		    IList<ICodeProvider<Proband>> codeProvider = probanden.Cast<ICodeProvider<Proband>>().ToList();
+          _codes = _evolutionGenerator.EvolveGeneration(() => new Proband(_maze, 0, 0), ref probanden, codeProvider);
 			MessageBox.Show("Durchgang abgeschlossen.");
 			_probanden = probanden;
 

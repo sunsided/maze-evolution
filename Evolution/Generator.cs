@@ -11,8 +11,8 @@ namespace Evolution
 	/// <summary>
 	/// Generatorklasse für evolutionäre Programmierung
 	/// </summary>
-	public sealed class Generator<T> where T : class, IFitnessProvider
-	{
+	public sealed class Generator<T> where T : class, IFitnessProvider, ICodeProvider<T> 
+    {
 		/// <summary>
 		/// Einfacher Zufallszahlengenerator
 		/// </summary>
@@ -366,6 +366,10 @@ namespace Evolution
 			Contract.Requires(crossoverPercentage >= 0 && crossoverPercentage <= 1);
 			Contract.Requires(mutationPercentage >= 0 && mutationPercentage <= 1);
 
+            // Selektion
+            // Mutation
+            // Rekombination
+
 			// Lookup erzeugen
             IDictionary<T, ICodeProvider<T>> lookup = new Dictionary<T, ICodeProvider<T>>(fitnesses.Count);
 			for(int i=0; i<fitnesses.Count; ++i)
@@ -374,44 +378,63 @@ namespace Evolution
 			}
 
 			// Nach Fitness sortieren
-			if (!(fitnesses is List<T>)) fitnesses = new List<T>(fitnesses);
-			((List<T>)fitnesses).Sort((a, b) => -1 * a.GetFitness().CompareTo(b.GetFitness()));
+            List<T> fitnessSorted = new List<T>(fitnesses);
+			fitnessSorted.Sort((a, b) => -1 * a.GetFitness().CompareTo(b.GetFitness()));
 
-			// Selektion
-			int keepCount = (int)Math.Round(keepPercentage*lookup.Count);
-			while (fitnesses.Count > keepCount)
-			{
-				fitnesses.RemoveAt(fitnesses.Count - 1);
-			}
-			Debug.WriteLine("Maximum fitness: " + fitnesses[0].GetFitness()+ ".");
+            // Selektion
+            Func<int, int, double, double> selectionProbability = (index, maxCount, percentage) => Math.Exp(-((1.0D / percentage) * index) / maxCount);
+            List<T> selectedElements = new List<T>();
+            List<T> deceasedElements = new List<T>();
+            for (int i=0; i<fitnesses.Count; ++i)
+            {
+                double value = GetRandomValue();
+                double judge = selectionProbability(i, fitnesses.Count, keepPercentage);
+                if (value > judge)
+                {
+                    deceasedElements.Add(fitnesses[i]);
+                    continue;
+                }
+                selectedElements.Add(fitnesses[i]);
+            }
+            Contract.Assert(selectedElements.Count > 0);
+            Debug.WriteLine("Maximum kept fitness: " + selectedElements[0].GetFitness() + ".");
 
 			// Zielliste für neue Codes
 			IList<CodeExpression<T>> list = new List<CodeExpression<T>>(codes.Count);
 			HashSet<int> backedUp = new HashSet<int>();
 
 			// Crossover
-			for (int i = 0; i < keepCount-1; ++i)
+		    Func<int, int, double, double> crossoverProbability = (index, maxCount, percentage) => selectionProbability(index, maxCount, percentage);
+            for (int i = 0; i < selectedElements.Count; ++i)
 			{
+                // Wahrscheinlichkeit für Crossover-Operation dieses Elementes
 				if (GetRandomValue() > crossoverPercentage) continue;
-				CodeExpression<T> a = lookup[fitnesses[i]].GetCode();
-				CodeExpression<T> b = lookup[fitnesses[i + 1]].GetCode();
 
-				// Sicherheitskopien erstellen
-				if (!backedUp.Contains(i))
-				{
-					list.Add(a.Clone());
-					fitnesses.Add(creator());
-					backedUp.Add(i);
-				}
-				if (!backedUp.Contains(i + 1))
-				{
-					list.Add(b.Clone());
-					fitnesses.Add(creator());
-					backedUp.Add(i + 1);
-				}
+                // Crossover-Kandidaten ermitteln
+                List<T> crossoverCandidates = new List<T>();
+                for (int c = 0; c < selectedElements.Count; ++c)
+                {
+                    double value = GetRandomValue();
+                    double judge = crossoverProbability(i, fitnesses.Count, keepPercentage * 0.5);
+                    if (value > judge) continue;
+                    crossoverCandidates.Add(selectedElements[c]);
+                }
 
-				Debug.WriteLine("Crossover between " + i + "x" + (i+1) + " (in the sorted list).");
-				Crossover(ref a, ref b); // TODO: -->Klone<-- müssen gecrosst werden, sonst geht das ursprüngliche Material flöten. Eltern immer beibehalten!
+                // Aus Kandidaten Element auswählen
+			    int selectedCandidateIndex = GetRandomValue(0, crossoverCandidates.Count);
+			    T elementA = selectedElements[i];
+                T elementB = crossoverCandidates[selectedCandidateIndex];
+
+                // Codes ermitteln
+			    CodeExpression<T> codeA = elementA.GetCode().Clone();
+			    CodeExpression<T> codeB = elementB.GetCode().Clone();
+
+                // Crossen
+        		Debug.WriteLine("Crossover between " + i + "x" + (i+1) + " (in the sorted list).");
+				Crossover(ref codeA, ref codeB);
+
+                // Registrieren
+
 			}
 
 			// Mutation
