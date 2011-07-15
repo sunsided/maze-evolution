@@ -11,7 +11,7 @@ namespace MazeEvolution
 	/// Ein Proband
 	/// </summary>
 	[EvolutionaryClass]
-	[DebuggerDisplay("{Id}, Fitness: {Fitness}")]
+	[DebuggerDisplay("{Id}, Fitness: {Fitness}, Complexity: {GeneticCode.GetDepth()}")]
 	public sealed class Proband : IFitnessProvider, ICodeProvider<Proband>
 	{
         /// <summary>
