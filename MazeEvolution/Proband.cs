@@ -37,17 +37,17 @@ namespace MazeEvolution
 		/// <summary>
 		/// Anzahl der gemachten Züge
 		/// </summary>
-		private int _stepsTaken = 0;
+		private int _stepsTaken;
 
 		/// <summary>
 		/// Anzahl der gemachten Schritte vorwärts
 		/// </summary>
-		private int _stepsTakenForward = 0;
+		private int _stepsTakenForward;
 
 		/// <summary>
 		/// Set der durchschrittenene Türen
 		/// </summary>
-		private HashSet<Tuple<int, int, Door4>> _visitedDoors = new HashSet<Tuple<int, int, Door4>>();
+		private readonly HashSet<Tuple<int, int, Door4>> _visitedDoors = new HashSet<Tuple<int, int, Door4>>();
 
 		/// <summary>
 		/// Der aktuelle Raum
