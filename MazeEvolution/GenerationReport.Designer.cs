@@ -37,7 +37,7 @@
             this.comboBoxSize = new System.Windows.Forms.ComboBox();
             this.labelMazeGenerator = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
-            this.progressBar1 = new System.Windows.Forms.ProgressBar();
+            this.progressBar = new System.Windows.Forms.ProgressBar();
             this.groupBoxGenerationSettings = new System.Windows.Forms.GroupBox();
             this.checkBoxAutoRepeat = new System.Windows.Forms.CheckBox();
             this.groupBoxReport = new System.Windows.Forms.GroupBox();
@@ -48,6 +48,7 @@
             this.columnComplexity = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.columnAge = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.columnState = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.buttonRegenerate = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownGenerationSize)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownRuntime)).BeginInit();
             this.groupBoxGenerationSettings.SuspendLayout();
@@ -57,12 +58,14 @@
             // 
             // buttonStartRun
             // 
-            this.buttonStartRun.Location = new System.Drawing.Point(499, 23);
+            this.buttonStartRun.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.buttonStartRun.Location = new System.Drawing.Point(640, 23);
             this.buttonStartRun.Name = "buttonStartRun";
             this.buttonStartRun.Size = new System.Drawing.Size(136, 46);
             this.buttonStartRun.TabIndex = 0;
             this.buttonStartRun.Text = "Durchlauf &starten";
             this.buttonStartRun.UseVisualStyleBackColor = true;
+            this.buttonStartRun.Click += new System.EventHandler(this.ButtonStartRunClick);
             // 
             // numericUpDownGenerationSize
             // 
@@ -181,15 +184,18 @@
             this.label1.TabIndex = 8;
             this.label1.Text = "Dimensionen";
             // 
-            // progressBar1
+            // progressBar
             // 
-            this.progressBar1.Location = new System.Drawing.Point(12, 115);
-            this.progressBar1.Name = "progressBar1";
-            this.progressBar1.Size = new System.Drawing.Size(623, 23);
-            this.progressBar1.TabIndex = 9;
+            this.progressBar.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.progressBar.Location = new System.Drawing.Point(12, 115);
+            this.progressBar.Name = "progressBar";
+            this.progressBar.Size = new System.Drawing.Size(764, 23);
+            this.progressBar.TabIndex = 9;
             // 
             // groupBoxGenerationSettings
             // 
+            this.groupBoxGenerationSettings.Controls.Add(this.buttonRegenerate);
             this.groupBoxGenerationSettings.Controls.Add(this.labelGenerationSize);
             this.groupBoxGenerationSettings.Controls.Add(this.numericUpDownGenerationSize);
             this.groupBoxGenerationSettings.Controls.Add(this.label1);
@@ -200,16 +206,17 @@
             this.groupBoxGenerationSettings.Controls.Add(this.labelRuntime);
             this.groupBoxGenerationSettings.Location = new System.Drawing.Point(12, 12);
             this.groupBoxGenerationSettings.Name = "groupBoxGenerationSettings";
-            this.groupBoxGenerationSettings.Size = new System.Drawing.Size(463, 87);
+            this.groupBoxGenerationSettings.Size = new System.Drawing.Size(601, 87);
             this.groupBoxGenerationSettings.TabIndex = 10;
             this.groupBoxGenerationSettings.TabStop = false;
             this.groupBoxGenerationSettings.Text = "Einstellungen für nächste Generation";
             // 
             // checkBoxAutoRepeat
             // 
+            this.checkBoxAutoRepeat.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.checkBoxAutoRepeat.AutoSize = true;
             this.checkBoxAutoRepeat.Enabled = false;
-            this.checkBoxAutoRepeat.Location = new System.Drawing.Point(499, 75);
+            this.checkBoxAutoRepeat.Location = new System.Drawing.Point(640, 75);
             this.checkBoxAutoRepeat.Name = "checkBoxAutoRepeat";
             this.checkBoxAutoRepeat.Size = new System.Drawing.Size(144, 17);
             this.checkBoxAutoRepeat.TabIndex = 11;
@@ -218,11 +225,13 @@
             // 
             // groupBoxReport
             // 
+            this.groupBoxReport.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBoxReport.Controls.Add(this.textBoxCode);
             this.groupBoxReport.Controls.Add(this.dataGridViewReport);
             this.groupBoxReport.Location = new System.Drawing.Point(12, 154);
             this.groupBoxReport.Name = "groupBoxReport";
-            this.groupBoxReport.Size = new System.Drawing.Size(623, 380);
+            this.groupBoxReport.Size = new System.Drawing.Size(764, 380);
             this.groupBoxReport.TabIndex = 12;
             this.groupBoxReport.TabStop = false;
             this.groupBoxReport.Text = "Report";
@@ -234,7 +243,7 @@
             this.textBoxCode.Multiline = true;
             this.textBoxCode.Name = "textBoxCode";
             this.textBoxCode.ReadOnly = true;
-            this.textBoxCode.Size = new System.Drawing.Size(310, 330);
+            this.textBoxCode.Size = new System.Drawing.Size(456, 330);
             this.textBoxCode.TabIndex = 14;
             // 
             // dataGridViewReport
@@ -292,15 +301,26 @@
             this.columnState.ReadOnly = true;
             this.columnState.Width = 50;
             // 
+            // buttonRegenerate
+            // 
+            this.buttonRegenerate.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.buttonRegenerate.Location = new System.Drawing.Point(464, 33);
+            this.buttonRegenerate.Name = "buttonRegenerate";
+            this.buttonRegenerate.Size = new System.Drawing.Size(115, 30);
+            this.buttonRegenerate.TabIndex = 9;
+            this.buttonRegenerate.Text = "&Regenerate";
+            this.buttonRegenerate.UseVisualStyleBackColor = true;
+            this.buttonRegenerate.Click += new System.EventHandler(this.ButtonRegenerateClick);
+            // 
             // GenerationReport
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(651, 546);
+            this.ClientSize = new System.Drawing.Size(792, 546);
             this.Controls.Add(this.groupBoxReport);
             this.Controls.Add(this.checkBoxAutoRepeat);
             this.Controls.Add(this.groupBoxGenerationSettings);
-            this.Controls.Add(this.progressBar1);
+            this.Controls.Add(this.progressBar);
             this.Controls.Add(this.buttonStartRun);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
@@ -330,7 +350,7 @@
         private System.Windows.Forms.ComboBox comboBoxSize;
         private System.Windows.Forms.Label labelMazeGenerator;
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.ProgressBar progressBar1;
+        private System.Windows.Forms.ProgressBar progressBar;
         private System.Windows.Forms.GroupBox groupBoxGenerationSettings;
         private System.Windows.Forms.CheckBox checkBoxAutoRepeat;
         private System.Windows.Forms.GroupBox groupBoxReport;
@@ -341,6 +361,7 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn columnComplexity;
         private System.Windows.Forms.DataGridViewTextBoxColumn columnAge;
         private System.Windows.Forms.DataGridViewTextBoxColumn columnState;
+        private System.Windows.Forms.Button buttonRegenerate;
 
     }
 }

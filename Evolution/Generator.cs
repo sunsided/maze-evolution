@@ -340,7 +340,7 @@ namespace Evolution
 		/// <param name="codes">The codes.</param>
 		/// <returns></returns>
 		/// <remarks></remarks>
-		public IList<CodeExpression<T>> EvolveGeneration(Func<T> creator, ref IList<T> fitnesses, IList<CodeExpression<T>> codes)
+		public IList<CodeExpression<T>> EvolveGeneration(Func<T> creator, ref IList<T> fitnesses, IList<ICodeProvider<T>> codes)
 		{
 			return EvolveGeneration(creator, ref fitnesses, codes, 0.1D, 0.1d, 0.05d);
 		}
@@ -356,7 +356,7 @@ namespace Evolution
 		/// <param name="mutationPercentage">Die Wahrscheinlichkeit, dass eine Mutation auftritt.</param>
 		/// <returns></returns>
 		/// <remarks></remarks>
-		public IList<CodeExpression<T>> EvolveGeneration(Func<T> creator, ref IList<T> fitnesses, IList<CodeExpression<T>> codes, double keepPercentage, double crossoverPercentage, double mutationPercentage)
+        public IList<CodeExpression<T>> EvolveGeneration(Func<T> creator, ref IList<T> fitnesses, IList<ICodeProvider<T>> codes, double keepPercentage, double crossoverPercentage, double mutationPercentage)
 		{
 			Contract.Requires(creator != null);
 			Contract.Requires(fitnesses != null);
@@ -367,7 +367,7 @@ namespace Evolution
 			Contract.Requires(mutationPercentage >= 0 && mutationPercentage <= 1);
 
 			// Lookup erzeugen
-			IDictionary<T, CodeExpression<T>> lookup = new Dictionary<T, CodeExpression<T>>(fitnesses.Count);
+            IDictionary<T, ICodeProvider<T>> lookup = new Dictionary<T, ICodeProvider<T>>(fitnesses.Count);
 			for(int i=0; i<fitnesses.Count; ++i)
 			{
 				lookup.Add(fitnesses[i], codes[i]);
@@ -393,8 +393,8 @@ namespace Evolution
 			for (int i = 0; i < keepCount-1; ++i)
 			{
 				if (GetRandomValue() > crossoverPercentage) continue;
-				CodeExpression<T> a = lookup[fitnesses[i]];
-				CodeExpression<T> b = lookup[fitnesses[i + 1]];
+				CodeExpression<T> a = lookup[fitnesses[i]].GetCode();
+				CodeExpression<T> b = lookup[fitnesses[i + 1]].GetCode();
 
 				// Sicherheitskopien erstellen
 				if (!backedUp.Contains(i))
@@ -418,7 +418,7 @@ namespace Evolution
 			for (int i = 0; i < keepCount; ++i)
 			{
 				if (GetRandomValue() > mutationPercentage) continue;
-				CodeExpression<T> a = lookup[fitnesses[i]];
+				CodeExpression<T> a = lookup[fitnesses[i]].GetCode();
 
 				// Sicherheitskopie erstellen
 				list.Add(a.Clone());
@@ -432,7 +432,7 @@ namespace Evolution
 			for (int i=0; i<fitnesses.Count; ++i)
 			{
 				if (!lookup.ContainsKey(fitnesses[i])) continue;
-				list.Add(lookup[fitnesses[i]]);
+				list.Add(lookup[fitnesses[i]].GetCode());
 			}
 			for (int i = fitnesses.Count; i < codes.Count; ++i)
 			{

@@ -12,8 +12,50 @@ namespace MazeEvolution
 	/// </summary>
 	[EvolutionaryClass]
 	[DebuggerDisplay("at {_marcher.X},{_marcher.Y} facing {_marcher.Direction} - Steps taken: {_stepsTaken}, Fitness: {Fitness}")]
-	public sealed class Proband : IFitnessProvider
+	public sealed class Proband : IFitnessProvider, ICodeProvider<Proband>
 	{
+        /// <summary>
+        /// Die Generation, in der das Objekt erzeugt wurde
+        /// </summary>
+        public int SourceGeneration { get; private set; }
+
+        /// <summary>
+        /// Der Index innerhalb dieser Generation
+        /// </summary>
+        public int IntraGenerationIndex { get; private set; }
+
+        /// <summary>
+        /// Der genetische Code
+        /// </summary>
+        public CodeExpression<Proband> GeneticCode { get; private set; }
+
+        /// <summary>
+        /// Bezieht den genetischen Code
+        /// </summary>
+        /// <returns>Der Code</returns>
+        CodeExpression<Proband> ICodeProvider<Proband>.GetCode()
+        {
+            return GeneticCode;
+        }
+
+        /// <summary>
+        /// Sets the code.
+        /// </summary>
+        /// <param name="expression">The expression.</param>
+        public void SetCode(CodeExpression<Proband> expression)
+        {
+            Contract.Requires(expression != null);
+            GeneticCode = expression;
+        }
+
+        /// <summary>
+        /// Die ID des Objektes
+        /// </summary>
+	    public string Id
+	    {
+	        [Pure] get { return SourceGeneration + "-" + IntraGenerationIndex; }
+	    }
+
 		/// <summary>
 		/// Das Labyrinth
 		/// </summary>
@@ -73,16 +115,43 @@ namespace MazeEvolution
 			get { return _marcher.X == _targetX && _marcher.Y == _targetY; }
 		}
 
-		/// <summary>
-		/// Initializes a new instance of the <see cref="Proband"/> class.
-		/// </summary>
-		/// <param name="maze">The maze.</param>
-		/// <remarks></remarks>
-		public Proband(Maze4 maze)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Proband"/> class.
+        /// </summary>
+        /// <param name="maze">The maze.</param>
+        /// <param name="sourceGeneration">The source generation.</param>
+        /// <param name="intraGenerationIndex">Index of the intra generation.</param>
+        /// <param name="code">The code.</param>
+        /// <remarks></remarks>
+		public Proband(Maze4 maze, int sourceGeneration, int intraGenerationIndex, CodeExpression<Proband> code)
+            : this(maze, sourceGeneration, intraGenerationIndex)
 		{
 			Contract.Requires(maze != null);
-			_maze = maze;
+            Contract.Requires(code != null);
+            Contract.Requires(sourceGeneration >= 0);
+            Contract.Requires(intraGenerationIndex >= 0);
+
+            GeneticCode = code;
 		}
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Proband"/> class.
+        /// </summary>
+        /// <param name="maze">The maze.</param>
+        /// <param name="sourceGeneration">The source generation.</param>
+        /// <param name="intraGenerationIndex">Index of the intra generation.</param>
+        /// <param name="code">The code.</param>
+        /// <remarks></remarks>
+        public Proband(Maze4 maze, int sourceGeneration, int intraGenerationIndex)
+        {
+            Contract.Requires(maze != null);
+            Contract.Requires(sourceGeneration >= 0);
+            Contract.Requires(intraGenerationIndex >= 0);
+
+            _maze = maze;
+            SourceGeneration = sourceGeneration;
+            IntraGenerationIndex = intraGenerationIndex;
+        }
 
 		/// <summary>
 		/// Setzt die Instanz für einen neuen Testlauf zurück
@@ -214,5 +283,14 @@ namespace MazeEvolution
 			// TODO: Filtern über die letzten Durchläufe wäre toll.
 			return TargetReached ? Double.MaxValue - _stepsTaken : Double.MinValue + _stepsTakenForward;
 		}
+
+        /// <summary>
+        /// Clones this instance.
+        /// </summary>
+        /// <returns></returns>
+        public Proband Clone()
+        {
+            return new Proband(_maze, SourceGeneration, IntraGenerationIndex, GeneticCode.Clone());
+        }
 	}
 }

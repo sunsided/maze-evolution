@@ -1,5 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Threading;
 using System.Windows.Forms;
+using Evolution;
 using Labyrinth;
 
 namespace MazeEvolution
@@ -22,6 +25,11 @@ namespace MazeEvolution
         }
 
         /// <summary>
+        /// Die Nummer der aktuellen Generation
+        /// </summary>
+        public int CurrentGeneration { get; private set; }
+
+        /// <summary>
         /// Die Dimension des für die nächste Generation zu erzeugenden Labyrinthes
         /// </summary>
         public Tuple<int, int> MazeDimension { get; private set; }
@@ -30,6 +38,11 @@ namespace MazeEvolution
         /// Der für die nächste Generation zu verwendende Labyrinthgenerator
         /// </summary>
         public IMazeGenerator MazeGenerator { get; private set; }
+
+        /// <summary>
+        /// Das verwendete Labyrinth
+        /// </summary>
+        public Maze4 Maze { get; private set; }
 
         /// <summary>
         /// Die Größe der nächsten Generation
@@ -116,6 +129,39 @@ namespace MazeEvolution
         private void NumericUpDownRuntimeValueChanged(object sender, EventArgs e)
         {
             RunDuration = TimeSpan.FromSeconds((int)numericUpDownRuntime.Value);
+        }
+
+        /// <summary>
+        /// Handles the Click event of the buttonStartRun control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="System.EventArgs"/> instance containing the event data.</param>
+        private void ButtonStartRunClick(object sender, EventArgs e)
+        {
+            Generator<Proband> generator = new Generator<Proband>();
+
+            int index = 0;
+            Func<Proband> creator = () => new Proband(Maze, CurrentGeneration, Interlocked.Increment(ref index));
+            Tuple<IList<Proband>, IList<CodeExpression<Proband>>> foo = generator.CreateGeneration(creator, GenerationSize);
+
+            // Codes assoziieren
+            IList<Proband> probanden = foo.Item1;
+            IList<CodeExpression<Proband>> codes = foo.Item2;
+            for(int i=0; i<probanden.Count; ++i)
+            {
+                probanden[i].SetCode(codes[i]);
+            }
+        }
+
+        /// <summary>
+        /// Handles the Click event of the buttonRegenerate control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="System.EventArgs"/> instance containing the event data.</param>
+        private void ButtonRegenerateClick(object sender, EventArgs e)
+        {
+            Maze = new Maze4(MazeGenerator);
+            Maze.GenerateNew(MazeDimension.Item1, MazeDimension.Item2);
         }
     }
 }
