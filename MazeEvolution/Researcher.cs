@@ -1,6 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Diagnostics.Contracts;
 using System.Threading;
 using System.Threading.Tasks;
 using Evolution;
@@ -21,25 +23,21 @@ namespace MazeEvolution
 		/// <summary>
 		/// Die Probanden
 		/// </summary>
-		private readonly IList<Proband> _probanden;
+		private readonly List<Proband> _probanden;
 
-		/// <summary>
-		/// Die genetisch erzeugten Algorithmen
-		/// </summary>
-		private readonly IList<CodeExpression<Proband>> _codes;
-
-		/// <summary>
-		/// Initializes a new instance of the <see cref="Researcher"/> class.
-		/// </summary>
-		/// <param name="probanden">Die Probanden.</param>
-		/// <param name="codes">Die Codes.</param>
-		/// <param name="timeoutInSeconds">Der Timeout in Sekunden, nach dem der Durchlauf abgebrochen wird</param>
-		/// <remarks></remarks>
-		public Researcher(Maze4 maze, IList<Proband> probanden, IList<CodeExpression<Proband>> codes)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Researcher"/> class.
+        /// </summary>
+        /// <param name="maze">The maze.</param>
+        /// <param name="probanden">The probanden.</param>
+        /// <remarks></remarks>
+		public Researcher(Maze4 maze, IEnumerable<Proband> probanden)
 		{
+            Contract.Requires(maze != null, "Labyrinth darf nicht null sein");
+            Contract.Requires(probanden != null, "Elementliste darf nicht null sein");
+
 			Maze = maze;
-			_probanden = probanden;
-			_codes = codes;
+			_probanden = new List<Proband>(probanden);
 
 			WorkerReportsProgress = true;
 			WorkerSupportsCancellation = true;
@@ -52,47 +50,61 @@ namespace MazeEvolution
 		/// <remarks></remarks>
 		protected override void OnDoWork(DoWorkEventArgs e)
 		{
-			// Liste der Probanden, die das Ziel erreicht haben
-			IList<Proband> goalReached = new List<Proband>();
-			const int targetCount = 10;
+            try
+            {
+                // Liste der Probanden, die das Ziel erreicht haben
+                IList<Proband> goalReached = new List<Proband>();
+                const int targetCount = 10;
 
-			Maze4 maze = Maze;
+                // Cache
+                Maze4 maze = Maze;
 
-			int[,] distances;
-			var remoteRooms = maze.SetStartingPoint(0, 0, out distances);
-			var mostDistant = remoteRooms[0];
-			var coordinates = maze.GetPosition(mostDistant.Item2);
-			for (int p = 0; p < _probanden.Count; ++p )
-			{
-				_probanden[p].Reset(coordinates.Item1, coordinates.Item2);
-			}
+                // Distanzen ermitteln
+                int[,] distances;
+                var remoteRooms = maze.SetStartingPoint(0, 0, out distances);
+                var mostDistant = remoteRooms[0];
+                var coordinates = maze.GetPosition(mostDistant.Item2);
 
-			ReportProgress(0);
-			while (true /* goalReached.Count < targetCount*/)
-			{
-				if (CancellationPending) break;
+                // ELemente zurücksetzen
+                _probanden.ForEach(proband => proband.Reset(coordinates.Item1, coordinates.Item2));
 
-				ParallelLoopResult result = Parallel.For(0, _probanden.Count-1, p =>
-				{
-					if (CancellationPending) return;
+                // Hauptschleife beginnen
+                ReportProgress(0);
+                while (!CancellationPending)
+                {
+                    // Schleife durchlaufen
+                    Parallel.For(0, _probanden.Count - 1, p =>
+                                                              {
+                                                                  if (CancellationPending) return;
 
-					Proband proband = _probanden[p];
-					if (proband.TargetReached) return;
+                                                                  // Proband ermitteln
+                                                                  Proband proband = _probanden[p];
+                                                                  if (proband.TargetReached) return;
 
-					CodeExpression<Proband> code = _codes[p];
-					code.Execute(proband);
-					if (proband.TargetReached)
-					{
-						goalReached.Add(proband);
-						ReportProgress(goalReached.Count * 100 / targetCount);
-					}
-				});
+                                                                  // Generierte Funktion ausführen
+                                                                  CodeExpression<Proband> code = proband.GeneticCode;
+                                                                  Contract.Assert(code != null);
+                                                                  code.Execute(proband);
 
-				while (!result.IsCompleted) Thread.Sleep(100);
-			}
+                                                                  // Wenn das Ziel noch nicht erreicht ist, fortfahren
+                                                                  if (!proband.TargetReached) return;
 
-			// Erfolg vermelden
-			e.Result = (goalReached.Count == targetCount);
+                                                                  // Ziel as erreicht markieren
+                                                                  goalReached.Add(proband);
+                                                                  ReportProgress(goalReached.Count*100/targetCount);
+                                                              });
+                }
+
+                // Erfolg vermelden
+                e.Result = (goalReached.Count == targetCount);
+            }
+            catch(ThreadAbortException)
+            {
+            }
+            catch(Exception ex)
+            {
+                Debugger.Break();
+            }
 		}
 	}
 }

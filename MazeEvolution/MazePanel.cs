@@ -1,13 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Diagnostics;
 using System.Diagnostics.Contracts;
 using System.Drawing;
-using System.Data;
 using System.Linq;
-using System.Text;
-using System.Threading;
 using System.Windows.Forms;
 using Labyrinth;
 
@@ -18,7 +13,10 @@ namespace MazeEvolution
 	/// </summary>
 	public partial class MazePanel : Panel
 	{
-		private object lockObject = new object();
+		/// <summary>
+		/// Thread-Sync
+		/// </summary>
+		private readonly object _lockObject = new object();
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="T:System.Windows.Forms.Panel"/> class.
@@ -44,7 +42,7 @@ namespace MazeEvolution
 		{
 			Contract.Requires(maze != null);
 
-			lock (lockObject)
+			lock (_lockObject)
 			{
 				_sourceCellX = null;
 				_sourceCellY = null;
@@ -117,15 +115,18 @@ namespace MazeEvolution
 		/// <remarks></remarks>
 		protected override void OnPaint(PaintEventArgs e)
 		{
-			lock (lockObject)
+			lock (_lockObject)
 			{
 
 				// base.OnPaint(e);
 				Graphics gr = e.Graphics;
-				//gr.Clear(Color.Red);
 
 				Maze4 maze = Maze;
-				if (maze == null) return;
+				if (maze == null)
+				{
+					gr.Clear(Color.Red);
+					return;
+				}
 
 				int mazeWidth = maze.Rooms.GetLength(0);
 				int mazeHeight = maze.Rooms.GetLength(1);
@@ -134,7 +135,7 @@ namespace MazeEvolution
 				float wallHeight = Math.Max(_blockHeight/10.0f, 1.0f);
 
 				Brush floorBrush = new SolidBrush(Color.White);
-				Brush deadEndBrush = new SolidBrush(Color.IndianRed);
+				Brush deadEndBrush = new SolidBrush(Color.Orange);
 				Brush sourceFloorBrush = new SolidBrush(Color.DarkGreen);
 				Brush wallBrush = new SolidBrush(Color.Black);
 
@@ -164,7 +165,7 @@ namespace MazeEvolution
 
 				// Pfad rendern
 				floorBrush = new SolidBrush(Color.Crimson);
-				Brush targetBrush = new SolidBrush(Color.Orange);
+				Brush targetBrush = new SolidBrush(Color.OrangeRed);
 				if (SourceCellSelected && _hoverCellX.HasValue && _hoverCellY.HasValue)
 				{
 					int x = _hoverCellX.Value;
@@ -280,7 +281,10 @@ namespace MazeEvolution
 		/// </summary>
 		private int? _hoverCellY;
 
-		private HashSet<Tuple<int, int>> _deadEnds = new HashSet<Tuple<int, int>>();
+		/// <summary>
+		/// Die Sackgassen
+		/// </summary>
+		private readonly HashSet<Tuple<int, int>> _deadEnds = new HashSet<Tuple<int, int>>();
 
 		/// <summary>
 		/// Gibt an, ob eine Zielzelle gewählt wurde
@@ -288,6 +292,33 @@ namespace MazeEvolution
 		public bool SourceCellSelected
 		{
 			get { return _sourceCellX.HasValue && _sourceCellY.HasValue; }
+		}
+
+		/// <summary>
+		/// Sets the starting point.
+		/// </summary>
+		/// <param name="x">The x.</param>
+		/// <param name="y">The y.</param>
+		/// <remarks></remarks>
+		public void SetStartingPoint(int x, int y)
+		{
+			Contract.Requires(x >= 0 && y >= 0);
+
+			Maze4 maze = Maze;
+			if (maze == null) return;
+
+			_sourceCellX = x;
+			_sourceCellY = y;
+
+			int[,] distances;
+			var deadEnds = maze.SetStartingPoint(_sourceCellX.Value, _sourceCellY.Value, out distances);
+			_distances = distances;
+
+			_deadEnds.Clear();
+			foreach (var entry in deadEnds.Where(entry => entry.Item1 == deadEnds[0].Item1))
+			{
+				_deadEnds.Add(maze.GetPosition(entry.Item2));
+			}
 		}
 
 		/// <summary>
@@ -299,7 +330,7 @@ namespace MazeEvolution
 		{
 			base.OnClick(e);
 
-			if (DisableMouseInteractions) return;
+			if (DisableMouseClickInteractions) return;
 			MouseEventArgs me = (MouseEventArgs) e;
 
 			Maze4 maze = Maze;
@@ -312,21 +343,12 @@ namespace MazeEvolution
 			int controlHeight = ClientRectangle.Height;
 			int sourceCellX = (int) (((float) me.X/controlWidth)*mazeWidth);
 			int sourceCellY = (int) (((float) me.Y/controlHeight)*mazeHeight);
+			Contract.Assume(sourceCellX >= 0);
+			Contract.Assume(sourceCellY >= 0);
 
 			if (sourceCellX != _sourceCellX || sourceCellY != _sourceCellY)
 			{
-				_sourceCellX = sourceCellX;
-				_sourceCellY = sourceCellY;
-
-				int[,] distances;
-				var deadEnds = maze.SetStartingPoint(_sourceCellX.Value, _sourceCellY.Value, out distances);
-				_distances = distances;
-
-				_deadEnds.Clear();
-				foreach (var entry in deadEnds.Where(entry => entry.Item1 == deadEnds[0].Item1))
-				{
-					_deadEnds.Add(maze.GetPosition(entry.Item2));
-				}
+				SetStartingPoint(sourceCellX, sourceCellY);
 			}
 			else
 			{
@@ -351,7 +373,6 @@ namespace MazeEvolution
 		protected override void OnMouseMove(MouseEventArgs e)
 		{
 			base.OnMouseMove(e);
-			if (DisableMouseInteractions) return;
 
 			Maze4 maze = Maze;
 			if (maze == null) return;
@@ -363,13 +384,43 @@ namespace MazeEvolution
 			int controlHeight = ClientRectangle.Height;
 			_hoverCellX = (int)(((float)e.X / controlWidth) * mazeWidth);
 			_hoverCellY = (int)(((float)e.Y / controlHeight) * mazeHeight);
+			SetToolTip(_hoverCellX.Value, _hoverCellY.Value);
 
 			Invalidate();
 		}
 
 		/// <summary>
+		/// Sets the tool Tip.
+		/// </summary>
+		/// <param name="x">The x.</param>
+		/// <param name="y">The y.</param>
+		/// <remarks></remarks>
+		private void SetToolTip(int x, int y)
+		{
+			string value = _distances[x, y].ToString();
+			if (toolTip.GetToolTip(this) == value) return;
+			toolTip.ToolTipTitle = "Distanz";
+			toolTip.SetToolTip(this, value);
+			toolTip.ShowAlways = true;
+		}
+
+		/// <summary>
 		/// Gibt an, ob Maus-Interaktionen deaktiviert wurden
 		/// </summary>
-		public bool DisableMouseInteractions { get; set; }
+		public bool DisableMouseClickInteractions { get; set; }
+
+		/// <summary>
+		/// Raises the <see cref="E:System.Windows.Forms.Control.MouseLeave"/> event.
+		/// </summary>
+		/// <param name="e">An <see cref="T:System.EventArgs"/> that contains the event data.</param>
+		/// <remarks></remarks>
+		protected override void OnMouseLeave(EventArgs e)
+		{
+			base.OnMouseLeave(e);
+			_hoverCellX = null;
+			_hoverCellY = null;
+			toolTip.ShowAlways = false;
+			Invalidate();
+		}
 	}
 }
