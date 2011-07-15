@@ -61,7 +61,7 @@ namespace MazeEvolution
 		/// <summary>
 		/// Die Anazhl der Sekunden pro Generation
 		/// </summary>
-		public const int TotalSecondsPerGeneration = 10;
+		public const int TotalSecondsPerGeneration = 2;
 
 		/// <summary>
 		/// Erzeugt eine neue Generation
