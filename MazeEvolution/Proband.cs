@@ -11,7 +11,7 @@ namespace MazeEvolution
 	/// Ein Proband
 	/// </summary>
 	[EvolutionaryClass]
-	[DebuggerDisplay("at {_marcher.X},{_marcher.Y} facing {_marcher.Direction} - Steps taken: {_stepsTaken}, Fitness: {Fitness}")]
+	[DebuggerDisplay("{Id}, Fitness: {Fitness}")]
 	public sealed class Proband : IFitnessProvider, ICodeProvider<Proband>
 	{
         /// <summary>
@@ -112,7 +112,7 @@ namespace MazeEvolution
 		/// </summary>
 		public bool TargetReached
 		{
-			get { return _marcher.X == _targetX && _marcher.Y == _targetY; }
+			get { return _marcher != null && ( _marcher.X == _targetX && _marcher.Y == _targetY ); }
 		}
 
         /// <summary>
@@ -140,9 +140,8 @@ namespace MazeEvolution
         /// <param name="maze">The maze.</param>
         /// <param name="sourceGeneration">The source generation.</param>
         /// <param name="intraGenerationIndex">Index of the intra generation.</param>
-        /// <param name="code">The code.</param>
         /// <remarks></remarks>
-        public Proband(Maze4 maze, int sourceGeneration, int intraGenerationIndex)
+        private Proband(Maze4 maze, int sourceGeneration, int intraGenerationIndex)
         {
             Contract.Requires(maze != null);
             Contract.Requires(sourceGeneration >= 0);

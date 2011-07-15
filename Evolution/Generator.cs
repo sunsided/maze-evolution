@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Diagnostics.Contracts;
 using System.Linq;
@@ -310,72 +311,134 @@ namespace Evolution
 		#endregion Genetische Methoden
 
 		#region Erzeugen von Generationen
+        
+        /// <summary>
+        /// Erzeugt ein neues Element
+        /// </summary>
+        /// <param name="newCode">Der neue Code</param>
+        /// <returns>Das neu erzeugte Element</returns>
+        public delegate T CreateElement(CodeExpression<T> newCode);
 
-		/// <summary>
-		/// Erzeugt eine neue Generation an Elementen
-		/// </summary>
-		/// <param name="creator">Die Erzeugerfunktion.</param>
-		/// <param name="size">Die Anzahl der Elemente.</param>
-		/// <returns></returns>
-		/// <remarks></remarks>
-		public Tuple<IList<T>, IList<CodeExpression<T>>> CreateGeneration(Func<T> creator, int size)
+        /// <summary>
+        /// Erzeugt ein neues Element mittels Mutation eines Referenzelementes
+        /// </summary>
+        /// <param name="reference">Das Ursprungselement</param>
+        /// <param name="newCode">Der neue Code</param>
+        /// <returns>Das neu erzeugte Element</returns>
+	    public delegate T CreateElementByMutation(T reference, CodeExpression<T> newCode);
+
+        /// <summary>
+        /// Erzeugt ein neues Element mittels Crossover aus zwei Elternelementen
+        /// </summary>
+        /// <param name="parentA">Elternelement A</param>
+        /// <param name="parentB">Elternelement B</param>
+        /// <param name="newCode">Der neue Code</param>
+        /// <returns>Das neu erzeugte Element</returns>
+        public delegate T CreateElementByCrossover(T parentA, T parentB, CodeExpression<T> newCode);
+
+        /// <summary>
+        /// Erzeugt eine neue Generation an Elementen
+        /// </summary>
+        /// <param name="regularCreator">Die Erzeugerfunktion.</param>
+        /// <param name="generationSize">Die Anzahl der Elemente.</param>
+        /// <returns></returns>
+        /// <remarks></remarks>
+        public IList<T> CreateGeneration(int generationSize, CreateElement regularCreator)
+        {
+            Contract.Requires(generationSize >= 0);
+            Contract.Requires(regularCreator != null, "Erzeugerfunktion darf nicht null sein.");
+
+            List<T> elements = new List<T>(generationSize);
+            for (int i = 0; i < generationSize; ++i)
+            {
+                CodeExpression<T> expression = BuildRandomExpressionTree();
+                elements.Add(regularCreator(expression));
+            }
+            return elements;
+        }
+
+
+        /// <summary>
+        /// Erzeugt eine neue Generation aus einer bestehenden
+        /// </summary>
+        /// <param name="newGenerationSize">New size of the generation.</param>
+        /// <param name="fitnesses">The fitnesses.</param>
+        /// <param name="regularCreator">Methode, die ein neues Element erzeugt.</param>
+        /// <param name="crossoverCreator">Methode, die ein neues Element aus einer Crossover-Operation erzeugt.</param>
+        /// <param name="mutationCreator">Methode, die ein neues Element aus einer Mutations-Operation erzeugt.</param>
+        /// <returns></returns>
+        /// <remarks></remarks>
+        public GenerationReport<T> EvolveGeneration(int newGenerationSize, IList<T> fitnesses, CreateElement regularCreator, CreateElementByCrossover crossoverCreator, CreateElementByMutation mutationCreator)
 		{
-			Contract.Requires(size >= 0);
-			List<T> elements = new List<T>(size);
-			List<CodeExpression<T>> generation = new List<CodeExpression<T>>(size);
-			for (int i=0; i<size; ++i)
-			{
-				CodeExpression<T> expression = BuildRandomExpressionTree();
-				generation.Add(expression);
-				elements.Add(creator());
-			}
-			return new Tuple<IList<T>, IList<CodeExpression<T>>>(elements, generation);
-		}
-		
-		/// <summary>
-		/// Erzeugt eine neue Generation aus einer bestehenden
-		/// </summary>
-		/// <param name="creator">Die Erzeugerfunktion</param>
-		/// <param name="fitnesses">The fitnesses.</param>
-		/// <param name="codes">The codes.</param>
-		/// <returns></returns>
-		/// <remarks></remarks>
-		public IList<CodeExpression<T>> EvolveGeneration(Func<T> creator, ref IList<T> fitnesses, IList<ICodeProvider<T>> codes)
-		{
-			return EvolveGeneration(creator, ref fitnesses, codes, 0.1D, 0.1d, 0.05d);
+            Contract.Requires(newGenerationSize > 0, "Größe der Generation muss positiv sein");
+            Contract.Requires(fitnesses != null);
+            Contract.Requires(regularCreator != null, "Erzeugerfunktion darf nicht null sein.");
+            Contract.Requires(crossoverCreator != null, "Erzeugerfunktion darf nicht null sein.");
+            Contract.Requires(mutationCreator != null, "Erzeugerfunktion darf nicht null sein.");
+
+            return EvolveGeneration(newGenerationSize, fitnesses, regularCreator, crossoverCreator, mutationCreator, 0.1D, 0.1d, 0.05d);
 		}
 
-		/// <summary>
-		/// Erzeugt eine neue Generation aus einer bestehenden
-		/// </summary>
-		/// <param name="creator">Die Erzeugerfunktion</param>
-		/// <param name="fitnesses">The fitnesses.</param>
-		/// <param name="codes">The codes.</param>
-		/// <param name="keepPercentage">Anzahl der Elemente, die behalten werden sollen (z.B. <c>0.1</c> für top ten).</param>
-		/// <param name="crossoverPercentage">Die Wahrscheinlichkeit, dass ein crossover auftritt.</param>
-		/// <param name="mutationPercentage">Die Wahrscheinlichkeit, dass eine Mutation auftritt.</param>
-		/// <returns></returns>
-		/// <remarks></remarks>
-        public IList<CodeExpression<T>> EvolveGeneration(Func<T> creator, ref IList<T> fitnesses, IList<ICodeProvider<T>> codes, double keepPercentage, double crossoverPercentage, double mutationPercentage)
+        /// <summary>
+        /// Erzeugt eine neue Generation aus einer bestehenden
+        /// </summary>
+        /// <param name="newGenerationSize">New size of the generation.</param>
+        /// <param name="fitnesses">The fitnesses.</param>
+        /// <param name="regularCreator">Methode, die ein neues Element erzeugt.</param>
+        /// <returns></returns>
+        /// <remarks></remarks>
+        public GenerationReport<T> EvolveGeneration(int newGenerationSize, IList<T> fitnesses, CreateElement regularCreator)
+        {
+            Contract.Requires(newGenerationSize > 0, "Größe der Generation muss positiv sein");
+            Contract.Requires(fitnesses != null);
+            Contract.Requires(regularCreator != null, "Erzeugerfunktion darf nicht null sein.");
+
+            return EvolveGeneration(newGenerationSize, fitnesses, regularCreator, (ignored1, ignored2, code) => regularCreator(code), (ignored, code) => regularCreator(code), 0.1D, 0.1d, 0.05d);
+        }
+
+        /// <summary>
+        /// Erzeugt eine neue Generation aus einer bestehenden
+        /// </summary>
+        /// <param name="newGenerationSize">New size of the generation.</param>
+        /// <param name="fitnesses">The fitnesses.</param>
+        /// <param name="regularCreator">Methode, die ein neues Element erzeugt.</param>
+        /// <param name="keepPercentage">Anzahl der Elemente, die behalten werden sollen (z.B. <c>0.1</c> für top ten).</param>
+        /// <param name="crossoverPercentage">Die Wahrscheinlichkeit, dass ein crossover auftritt.</param>
+        /// <param name="mutationPercentage">Die Wahrscheinlichkeit, dass eine Mutation auftritt.</param>
+        /// <returns></returns>
+        /// <remarks></remarks>
+        public GenerationReport<T> EvolveGeneration(int newGenerationSize, IList<T> fitnesses, CreateElement regularCreator, double keepPercentage, double crossoverPercentage, double mutationPercentage)
+        {
+            Contract.Requires(newGenerationSize > 0, "Größe der Generation muss positiv sein");
+            Contract.Requires(fitnesses != null);
+            Contract.Requires(regularCreator != null, "Erzeugerfunktion darf nicht null sein.");
+
+            return EvolveGeneration(newGenerationSize, fitnesses, regularCreator, (ignored1, ignored2, code) => regularCreator(code), (ignored, code) => regularCreator(code), keepPercentage, crossoverPercentage, mutationPercentage);
+        }
+
+        /// <summary>
+        /// Erzeugt eine neue Generation aus einer bestehenden
+        /// </summary>
+        /// <param name="newGenerationSize">New size of the generation.</param>
+        /// <param name="fitnesses">The fitnesses.</param>
+        /// <param name="regularCreator">Methode, die ein neues Element erzeugt.</param>
+        /// <param name="crossoverCreator">Methode, die ein neues Element aus einer Crossover-Operation erzeugt.</param>
+        /// <param name="mutationCreator">Methode, die ein neues Element aus einer Mutations-Operation erzeugt.</param>
+        /// <param name="keepPercentage">Anzahl der Elemente, die behalten werden sollen (z.B. <c>0.1</c> für top ten).</param>
+        /// <param name="crossoverPercentage">Die Wahrscheinlichkeit, dass ein crossover auftritt.</param>
+        /// <param name="mutationPercentage">Die Wahrscheinlichkeit, dass eine Mutation auftritt.</param>
+        /// <returns></returns>
+        /// <remarks></remarks>
+        public GenerationReport<T> EvolveGeneration(int newGenerationSize, IList<T> fitnesses, CreateElement regularCreator, CreateElementByCrossover crossoverCreator, CreateElementByMutation mutationCreator, double keepPercentage, double crossoverPercentage, double mutationPercentage)
 		{
-			Contract.Requires(creator != null);
+            Contract.Requires(newGenerationSize > 0, "Größe der Generation muss positiv sein");
+            Contract.Requires(regularCreator != null, "Erzeugerfunktion darf nicht null sein.");
+            Contract.Requires(crossoverCreator != null, "Erzeugerfunktion darf nicht null sein.");
+            Contract.Requires(mutationCreator != null, "Erzeugerfunktion darf nicht null sein.");
 			Contract.Requires(fitnesses != null);
-			Contract.Requires(codes != null);
-			Contract.Requires(fitnesses.Count == codes.Count);
 			Contract.Requires(keepPercentage > 0 && keepPercentage <= 1);
 			Contract.Requires(crossoverPercentage >= 0 && crossoverPercentage <= 1);
 			Contract.Requires(mutationPercentage >= 0 && mutationPercentage <= 1);
-
-            // Selektion
-            // Mutation
-            // Rekombination
-
-			// Lookup erzeugen
-            IDictionary<T, ICodeProvider<T>> lookup = new Dictionary<T, ICodeProvider<T>>(fitnesses.Count);
-			for(int i=0; i<fitnesses.Count; ++i)
-			{
-				lookup.Add(fitnesses[i], codes[i]);
-			}
 
 			// Nach Fitness sortieren
             List<T> fitnessSorted = new List<T>(fitnesses);
@@ -398,21 +461,19 @@ namespace Evolution
             }
             Contract.Assert(selectedElements.Count > 0);
             Debug.WriteLine("Maximum kept fitness: " + selectedElements[0].GetFitness() + ".");
-
-			// Zielliste für neue Codes
-			IList<CodeExpression<T>> list = new List<CodeExpression<T>>(codes.Count);
-			HashSet<int> backedUp = new HashSet<int>();
+		    int selectedItemCount = selectedElements.Count;
 
 			// Crossover
-		    Func<int, int, double, double> crossoverProbability = (index, maxCount, percentage) => selectionProbability(index, maxCount, percentage);
-            for (int i = 0; i < selectedElements.Count; ++i)
+		    List<Tuple<T, T, T>> crossoverResults = new List<Tuple<T, T, T>>();
+		    Func<int, int, double, double> crossoverProbability = selectionProbability;
+            for (int i = 0; i < selectedItemCount; ++i)
 			{
                 // Wahrscheinlichkeit für Crossover-Operation dieses Elementes
 				if (GetRandomValue() > crossoverPercentage) continue;
 
                 // Crossover-Kandidaten ermitteln
                 List<T> crossoverCandidates = new List<T>();
-                for (int c = 0; c < selectedElements.Count; ++c)
+                for (int c = 0; c < selectedItemCount; ++c)
                 {
                     double value = GetRandomValue();
                     double judge = crossoverProbability(i, fitnesses.Count, keepPercentage * 0.5);
@@ -429,42 +490,64 @@ namespace Evolution
 			    CodeExpression<T> codeA = elementA.GetCode().Clone();
 			    CodeExpression<T> codeB = elementB.GetCode().Clone();
 
-                // Crossen
-        		Debug.WriteLine("Crossover between " + i + "x" + (i+1) + " (in the sorted list).");
+                // Crossen der Codes
 				Crossover(ref codeA, ref codeB);
 
-                // Registrieren
-
+                // Erzeugen und registrieren
+                T newElementA = crossoverCreator(elementA, elementB, codeA);
+                T newElementB = crossoverCreator(elementA, elementB, codeB);
+                crossoverResults.Add(new Tuple<T, T, T>(elementA, elementB, newElementA));
+                crossoverResults.Add(new Tuple<T, T, T>(elementA, elementB, newElementB));
 			}
 
 			// Mutation
-			for (int i = 0; i < keepCount; ++i)
+            List<Tuple<T, T>> mutationResults = new List<Tuple<T, T>>();
+            for (int i = 0; i < selectedItemCount; ++i)
 			{
+                // Nach Wahrscheinlichkeit Element auswählen
 				if (GetRandomValue() > mutationPercentage) continue;
-				CodeExpression<T> a = lookup[fitnesses[i]].GetCode();
+                T element = selectedElements[i];
+				CodeExpression<T> a = element.GetCode().Clone();
 
-				// Sicherheitskopie erstellen
-				list.Add(a.Clone());
-				fitnesses.Add(creator());
-
-				Debug.WriteLine("Mutation of " + i + " (in the sorted list).");
+                // Mutieren des Codes
 				Mutate(ref a);
+
+                // Erzeugen und registrieren
+                T newElement = mutationCreator(element, a);
+                mutationResults.Add(new Tuple<T, T>(element, newElement));
 			}
 
-			// Neue Elemente erzeugen
-			for (int i=0; i<fitnesses.Count; ++i)
-			{
-				if (!lookup.ContainsKey(fitnesses[i])) continue;
-				list.Add(lookup[fitnesses[i]].GetCode());
-			}
-			for (int i = fitnesses.Count; i < codes.Count; ++i)
-			{
-				CodeExpression<T> expression = BuildRandomExpressionTree();
-				list.Add(expression);
-				fitnesses.Add(creator());
-			}
+            // Neue Generation beginnen ...
+            List<T> newGeneration = new List<T>();
+            newGeneration.AddRange(selectedElements);
 
-			return list;
+            // ... gecrosste und mutierte Elemente durchmischen, dann hinzufügen ...
+            List<T> newElements = new List<T>();
+            newElements.AddRange(crossoverResults.Select(element => element.Item3));
+            newElements.AddRange(mutationResults.Select(element => element.Item2));
+            newElements.Sort((a, b) => GetRandomValue(-1, 1));
+            newGeneration.AddRange(newElements);
+
+            // ... zuletzt fehlende Elemente hinzufügen oder Liste trimmen
+            if (newGeneration.Count < newGenerationSize)
+            {
+                Debug.WriteLine("Fülle neue Generation auf bis zur Zielgröße.");
+                IList<T> missingElements = CreateGeneration(newGenerationSize - newGeneration.Count, regularCreator);
+                newGeneration.AddRange(missingElements);
+            }
+            else
+            {
+                // Vom Ende entfernen
+                Debug.WriteLine("Reduziere neue Generation auf neue Zielgröße.");
+                while (newGeneration.Count > newGenerationSize)
+                {
+                    newGeneration.RemoveAt(newGeneration.Count - 1);
+                }
+            }
+
+            // Report erzeugen
+            GenerationReport<T> report = new GenerationReport<T>(fitnessSorted, selectedElements, deceasedElements, mutationResults, crossoverResults, newGeneration);
+	        return report;
 		}
 
 		#endregion Erzeugen von Generationen

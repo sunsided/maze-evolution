@@ -2,9 +2,11 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Threading;
 using System.Windows.Forms;
 using Evolution;
 using Labyrinth;
+using Timer = System.Windows.Forms.Timer;
 
 namespace MazeEvolution
 {
@@ -15,6 +17,11 @@ namespace MazeEvolution
 		/// </summary>
 		private const int GenerationSize = 3000;
 
+        /// <summary>
+        /// Die Nummer der Generation
+        /// </summary>
+	    private int GenerationNumber = 0;
+
 		/// <summary>
 		/// Der Generator
 		/// </summary>
@@ -23,17 +30,12 @@ namespace MazeEvolution
 		/// <summary>
 		/// Der Evo-Generator
 		/// </summary>
-		private Generator<Proband> _evolutionGenerator = new Generator<Proband>();
+		private readonly Generator<Proband> _evolutionGenerator = new Generator<Proband>();
 
 		/// <summary>
 		/// Die Probanden
 		/// </summary>
 		private IList<Proband> _probanden;
-
-		/// <summary>
-		/// Die genetisch erzeugten Algorithmen
-		/// </summary>
-		private IList<CodeExpression<Proband>> _codes;
 
 		/// <summary>
 		/// Der Forscher
@@ -66,9 +68,9 @@ namespace MazeEvolution
 		/// <remarks></remarks>
 		private void GenerateGeneration(Maze4 maze)
 		{
-			Tuple<IList<Proband>, IList<CodeExpression<Proband>>> result = _evolutionGenerator.CreateGeneration(() => new Proband(maze, 0, 0), GenerationSize);
-			_probanden = result.Item1;
-			_codes = result.Item2;
+		    int generation = GenerationNumber++;
+		    int index = 0;
+            _probanden = _evolutionGenerator.CreateGeneration(GenerationSize, code => new Proband(maze, generation, Interlocked.Increment(ref index), code));
 		}
 
 		/// <summary>
@@ -176,7 +178,7 @@ namespace MazeEvolution
 			toolStrip1.Enabled = false;
 			UseWaitCursor = true;
 
-			_researcher = new Researcher(_maze, _probanden, _codes);
+			_researcher = new Researcher(_maze, _probanden);
 			_researcher.RunWorkerCompleted += ResearcherRunWorkerCompleted;
 			_researcher.ProgressChanged += ResearcherProgressChanged;
 			_researcher.RunWorkerAsync();
@@ -226,10 +228,11 @@ namespace MazeEvolution
 
 			//MessageBox.Show("Simulation abgeschlossen. Führe Evolution durch.");
 			IList<Proband> probanden = new List<Proband>(_probanden);
-		    IList<ICodeProvider<Proband>> codeProvider = probanden.Cast<ICodeProvider<Proband>>().ToList();
-          _codes = _evolutionGenerator.EvolveGeneration(() => new Proband(_maze, 0, 0), ref probanden, codeProvider);
-			MessageBox.Show("Durchgang abgeschlossen.");
-			_probanden = probanden;
+            int generation = GenerationNumber++;
+            int index = 0;
+            GenerationReport<Proband> report = _evolutionGenerator.EvolveGeneration(GenerationSize, probanden, code => new Proband(_maze, generation, Interlocked.Increment(ref index), code));		
+            MessageBox.Show("Durchgang abgeschlossen.");
+            _probanden = report.NewGeneration.ToList();
 
 			toolStrip1.Enabled = true;
 			UseWaitCursor = false;

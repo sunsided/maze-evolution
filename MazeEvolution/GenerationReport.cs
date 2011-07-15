@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Windows.Forms;
 using Evolution;
@@ -53,6 +54,11 @@ namespace MazeEvolution
         /// Laufzeit einer Generation
         /// </summary>
         public TimeSpan RunDuration { get; private set; }
+
+        /// <summary>
+        /// Die Probanden
+        /// </summary>
+        public IList<Proband> Probanden { get; private set; }
 
         /// <summary>
         /// Handles the SelectedIndexChanged event of the comboBoxGenerator control.
@@ -140,17 +146,11 @@ namespace MazeEvolution
         {
             Generator<Proband> generator = new Generator<Proband>();
 
+            int generation = CurrentGeneration++;
             int index = 0;
-            Func<Proband> creator = () => new Proband(Maze, CurrentGeneration, Interlocked.Increment(ref index));
-            Tuple<IList<Proband>, IList<CodeExpression<Proband>>> foo = generator.CreateGeneration(creator, GenerationSize);
-
-            // Codes assoziieren
-            IList<Proband> probanden = foo.Item1;
-            IList<CodeExpression<Proband>> codes = foo.Item2;
-            for(int i=0; i<probanden.Count; ++i)
-            {
-                probanden[i].SetCode(codes[i]);
-            }
+            IList<Proband> probanden = new List<Proband>(Probanden);
+            GenerationReport<Proband> report = generator.EvolveGeneration(GenerationSize, probanden, code => new Proband(Maze, generation, Interlocked.Increment(ref index), code));
+            Probanden = report.NewGeneration.ToList();
         }
 
         /// <summary>
