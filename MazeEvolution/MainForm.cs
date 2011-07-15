@@ -231,17 +231,12 @@ namespace MazeEvolution
 		    IList<Proband> probanden = new List<Proband>(_probanden);
 		    int generation = GenerationNumber++;
 		    int index = 0;
-		    GenerationReport<Proband> report = _evolutionGenerator.EvolveGeneration(GenerationSize, probanden,
-		                                                                            code =>
-		                                                                            new Proband(_maze, generation,
-		                                                                                        Interlocked.Increment(
-		                                                                                            ref index), code));
+		    GenerationReport<Proband> report = _evolutionGenerator.EvolveGeneration(GenerationSize, probanden, code => new Proband(_maze, generation, Interlocked.Increment( ref index), code));
 
 		    StringBuilder builder = new StringBuilder();
 		    builder.AppendLine(report.ToString());
 
-		    MessageBox.Show(builder.ToString(), "Report für Durchlauf #" + (GenerationNumber - 1), MessageBoxButtons.OK,
-		                    MessageBoxIcon.Information);
+		    MessageBox.Show(builder.ToString(), "Report für Durchlauf #" + (GenerationNumber - 1), MessageBoxButtons.OK, MessageBoxIcon.Information);
 		    _probanden = report.NewGeneration.ToList();
 
 		    toolStrip1.Enabled = true;
