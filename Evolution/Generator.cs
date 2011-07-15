@@ -462,6 +462,8 @@ namespace Evolution
             Contract.Assert(selectedElements.Count > 0);
             int selectedItemCount = selectedElements.Count;
 
+			// TODO: Occam's Razor anwenden -- ggf. ältere, komplexere Hypothesen verwerfen, wenn neuere, gleichwertige, kompakte entstehen
+
 			// Crossover
 		    List<Tuple<T, T, T>> crossoverResults = new List<Tuple<T, T, T>>();
 		    Func<int, int, double, double> crossoverProbability = selectionProbability;
