@@ -174,7 +174,7 @@ namespace MazeEvolution
 			int index = 0;
 			foreach (Proband proband in e.Report.SelectedElements.OrderBy(element => -1 * element.GetFitness()).ThenBy(element => element.GeneticCode.GetDepth()))
 			{
-				dataGridViewReport.Rows[index].SetValues(proband.Id, proband.GetFitness(), proband.GeneticCode.GetDepth(), _controller.CurrentGeneration - proband.SourceGeneration - 1, "selected");
+				dataGridViewReport.Rows[index].SetValues(proband.Id, proband.GetFitness().ToString(), proband.GeneticCode.GetDepth(), _controller.CurrentGeneration - proband.SourceGeneration - 1, "selected");
 				dataGridViewReport.Rows[index++].Tag = proband;
 			}
 			foreach (Proband proband in e.Report.CrossedElements.Select(tuple => tuple.Item3))
@@ -189,7 +189,7 @@ namespace MazeEvolution
 			}
 			foreach (Proband proband in e.Report.DeceasedElements)
 			{
-				dataGridViewReport.Rows[index].SetValues(proband.Id, proband.GetFitness(), proband.GeneticCode.GetDepth(), _controller.CurrentGeneration - proband.SourceGeneration - 1, "deceased");
+				dataGridViewReport.Rows[index].SetValues(proband.Id, proband.GetFitness().ToString(), proband.GeneticCode.GetDepth(), _controller.CurrentGeneration - proband.SourceGeneration - 1, "deceased");
 				dataGridViewReport.Rows[index++].Tag = proband;
 			}
 
@@ -245,6 +245,24 @@ namespace MazeEvolution
 
 			CodeView view = new CodeView(proband.GeneticCode);
 			view.ShowDialog(this);
+		}
+
+		/// <summary>
+		/// Handles the Click event of the toolStripButtonSettings control.
+		/// </summary>
+		/// <param name="sender">The source of the event.</param>
+		/// <param name="e">The <see cref="System.EventArgs"/> instance containing the event data.</param>
+		/// <remarks></remarks>
+		private void ToolStripButtonSettingsClick(object sender, EventArgs e)
+		{
+			GenerationSettings settings = new GenerationSettings();
+			settings.GenerationSize = _controller.GenerationSize;
+			settings.GenerationRunTime = _controller.RunDuration;
+			if (settings.ShowDialog(this) == DialogResult.OK)
+			{
+				_controller.SetRuntime(settings.GenerationRunTime);
+				_controller.SetGenerationSize(settings.GenerationSize);
+			}
 		}
 	}
 }

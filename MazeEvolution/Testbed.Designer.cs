@@ -52,7 +52,6 @@ namespace MazeEvolution
 			this.label2 = new System.Windows.Forms.Label();
 			this.label1 = new System.Windows.Forms.Label();
 			this.panelMazeBlock = new System.Windows.Forms.Panel();
-			this.mazePanel = new MazeEvolution.MazePanel();
 			this.panelMazeControl = new System.Windows.Forms.Panel();
 			this.buttonRegenerateMaze = new System.Windows.Forms.Button();
 			this.buttonConfigureMaze = new System.Windows.Forms.Button();
@@ -68,6 +67,9 @@ namespace MazeEvolution
 			this.toolStripButtonRun = new System.Windows.Forms.ToolStripButton();
 			this.toolStripButtonAutoEvolve = new System.Windows.Forms.ToolStripButton();
 			this.toolStripButtonAbort = new System.Windows.Forms.ToolStripButton();
+			this.mazePanel = new MazeEvolution.MazePanel();
+			this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
+			this.toolStripButtonSettings = new System.Windows.Forms.ToolStripButton();
 			this.statusStrip.SuspendLayout();
 			this.toolStripContainer1.ContentPanel.SuspendLayout();
 			this.toolStripContainer1.TopToolStripPanel.SuspendLayout();
@@ -301,17 +303,6 @@ namespace MazeEvolution
 			this.panelMazeBlock.Size = new System.Drawing.Size(395, 379);
 			this.panelMazeBlock.TabIndex = 19;
 			// 
-			// mazePanel
-			// 
-			this.mazePanel.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-						| System.Windows.Forms.AnchorStyles.Left)
-						| System.Windows.Forms.AnchorStyles.Right)));
-			this.mazePanel.DisableMouseClickInteractions = false;
-			this.mazePanel.Location = new System.Drawing.Point(3, 32);
-			this.mazePanel.Name = "mazePanel";
-			this.mazePanel.Size = new System.Drawing.Size(389, 347);
-			this.mazePanel.TabIndex = 3;
-			// 
 			// panelMazeControl
 			// 
 			this.panelMazeControl.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
@@ -410,6 +401,8 @@ namespace MazeEvolution
 			this.toolStripMain.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripButtonExit,
             this.toolStripSeparator1,
+            this.toolStripButtonSettings,
+            this.toolStripSeparator2,
             this.toolStripButtonRun,
             this.toolStripButtonAutoEvolve,
             this.toolStripButtonAbort});
@@ -457,6 +450,32 @@ namespace MazeEvolution
 			this.toolStripButtonAbort.Size = new System.Drawing.Size(69, 22);
 			this.toolStripButtonAbort.Text = "&Abbrechen";
 			this.toolStripButtonAbort.Click += new System.EventHandler(this.ToolStripButtonAbortClick);
+			// 
+			// mazePanel
+			// 
+			this.mazePanel.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+						| System.Windows.Forms.AnchorStyles.Left)
+						| System.Windows.Forms.AnchorStyles.Right)));
+			this.mazePanel.DisableMouseClickInteractions = false;
+			this.mazePanel.Location = new System.Drawing.Point(3, 32);
+			this.mazePanel.Name = "mazePanel";
+			this.mazePanel.Size = new System.Drawing.Size(389, 347);
+			this.mazePanel.TabIndex = 3;
+			// 
+			// toolStripSeparator2
+			// 
+			this.toolStripSeparator2.Name = "toolStripSeparator2";
+			this.toolStripSeparator2.Size = new System.Drawing.Size(6, 25);
+			// 
+			// toolStripButtonSettings
+			// 
+			this.toolStripButtonSettings.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+			this.toolStripButtonSettings.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButtonSettings.Image")));
+			this.toolStripButtonSettings.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.toolStripButtonSettings.Name = "toolStripButtonSettings";
+			this.toolStripButtonSettings.Size = new System.Drawing.Size(82, 22);
+			this.toolStripButtonSettings.Text = "&Einstellungen";
+			this.toolStripButtonSettings.Click += new System.EventHandler(this.ToolStripButtonSettingsClick);
 			// 
 			// Testbed
 			// 
@@ -526,5 +545,7 @@ namespace MazeEvolution
 		private System.Windows.Forms.Label label6;
 		private System.Windows.Forms.Label labelComplexity;
 		private System.Windows.Forms.Label label8;
+		private System.Windows.Forms.ToolStripButton toolStripButtonSettings;
+		private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
 	}
 }
