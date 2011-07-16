@@ -70,9 +70,19 @@ namespace MazeEvolution
 		/// <remarks></remarks>
 		private void ToolStripButtonExitClick(object sender, EventArgs e)
 		{
-			if (MessageBox.Show(this, "Wirklich beenden?", "Beenden", MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2) == DialogResult.Yes)
+			Close();
+		}
+
+		/// <summary>
+		/// Raises the <see cref="E:System.Windows.Forms.Form.Closing"/> event.
+		/// </summary>
+		/// <param name="e">A <see cref="T:System.ComponentModel.CancelEventArgs"/> that contains the event data.</param>
+		/// <remarks></remarks>
+		protected override void OnClosing(System.ComponentModel.CancelEventArgs e)
+		{
+			if (MessageBox.Show(this, "Wirklich beenden?", "Beenden", MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2) != DialogResult.Yes)
 			{
-				Close();
+				e.Cancel = true;
 			}
 		}
 
@@ -120,6 +130,7 @@ namespace MazeEvolution
 			toolStripButtonAbort.Enabled = true;
 			panelMazeControl.Enabled = false;
 			dataGridViewReport.Enabled = false;
+			toolStripButtonSettings.Enabled = false;
 		}
 
 		/// <summary>
@@ -214,6 +225,7 @@ namespace MazeEvolution
 			toolStripButtonAutoEvolve.Enabled = true;
 			toolStripButtonAbort.Enabled = false;
 			panelMazeControl.Enabled = true;
+			toolStripButtonSettings.Enabled = true;
 		}
 
 		/// <summary>
