@@ -263,6 +263,11 @@ namespace Evolution
 				else
 					leftParent.RightAction = rightSubNode;
 			}
+			else
+			{
+				left = rightSubNode;
+				left.Parent = null;
+			}
 
 			// Rechts verdrehen
 			ConditionalCodeExpression<T> rightParent = rightSubNode.Parent as ConditionalCodeExpression<T>;
@@ -272,6 +277,11 @@ namespace Evolution
 					rightParent.LeftAction = leftSubNode;
 				else
 					rightParent.RightAction = leftSubNode;
+			}
+			else
+			{
+				right = leftSubNode;
+				right.Parent = null;
 			}
 
 			// Neue Eltern setzen
