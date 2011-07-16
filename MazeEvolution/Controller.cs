@@ -279,6 +279,8 @@ namespace MazeEvolution
 		/// </summary>
 		private void Evolve()
 		{
+			Timeout.Stop();
+			OnRuntimeChanged(100);
 			Debug.WriteLine("Evolving ...");
 			Generator<Proband> evolutionGenerator = new Generator<Proband>();
 			
@@ -295,13 +297,16 @@ namespace MazeEvolution
 			IsRunning = false;
 
 			// Erfolg vermelden
-			OnRuntimeChanged(100);
 			EventHandler<GenerationReportEventArgs<Proband>> func = RunCompleted;
 			if (func == null) return;
 			func(this, new GenerationReportEventArgs<Proband>(report));
 
 			// AutoEvolve verwenden
-			if (AutoEvolveMode) PerformRun(true);
+			if (AutoEvolveMode)
+			{
+				if (CurrentGeneration % 3 == 0) RegenerateMaze();
+				PerformRun(true);
+			}
 		}
 
 		/// <summary>
