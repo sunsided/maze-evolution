@@ -4,7 +4,7 @@
 	/// Testklasse für die Evolution
 	/// </summary>
 	[EvolutionaryClass]
-	public class SimpleClass : IFitnessProvider
+	public class SimpleClass : IFitnessProvider, ICodeProvider<SimpleClass>
 	{
 		/// <summary>
 		/// Eine Entscheidungsfunktion
@@ -45,6 +45,16 @@
 		}
 
 		/// <summary>
+		/// Ermittelt, ob das Element verhungert ist, d.h. unabhängig
+		/// von der Fitness aus dem Pool genommen werden soll.
+		/// </summary>
+		/// <remarks></remarks>
+		public bool IsStarved
+		{
+			get { return false; }
+		}
+
+		/// <summary>
 		/// Bezieht die Fitness.
 		/// Höhere Werte bedeuten höhere Fitness.
 		/// </summary>
@@ -53,6 +63,16 @@
 		public double GetFitness()
 		{
 			return 0;
+		}
+
+		/// <summary>
+		/// Gets the code.
+		/// </summary>
+		/// <returns></returns>
+		/// <remarks></remarks>
+		public CodeExpression<SimpleClass> GetCode()
+		{
+			throw new System.NotImplementedException();
 		}
 	}
 }
