@@ -450,11 +450,11 @@ namespace Evolution
 			Contract.Requires(mutationPercentage >= 0 && mutationPercentage <= 1);
 
 			// Nach Fitness sortieren
-            List<T> fitnessSorted = new List<T>(fitnesses);
-			fitnessSorted.Sort((a, b) => -1 * a.GetFitness().CompareTo(b.GetFitness()));
+			// Elemente mit kürzeren Hypothesen werden bevorzugt (Ockhams Skalpell)
+            List<T> fitnessSorted = new List<T>(fitnesses.OrderBy(element => element.GetFitness()).ThenBy(element => element.GetCode().GetDepth()));
 
             // Selektion
-            Func<int, int, double, double> selectionProbability = (index, maxCount, percentage) => Math.Exp(-((1.0D / percentage) * index) / maxCount);
+            Func<int, int, double, double> selectionProbability = (index, maxCount, percentage) => Math.Exp(-((1.0D / percentage) * index) / maxCount); // TODO: Sigmoid-Funktion verwenden
             List<T> selectedElements = new List<T>();
             List<T> deceasedElements = new List<T>();
             for (int i = 0; i < fitnessSorted.Count; ++i)
@@ -469,8 +469,6 @@ namespace Evolution
                 selectedElements.Add(fitnessSorted[i]);
             }
             int selectedItemCount = selectedElements.Count;
-
-			// TODO: Occam's Razor anwenden -- ggf. ältere, komplexere Hypothesen verwerfen, wenn neuere, gleichwertige, kompakte entstehen
 
 			// Crossover
 		    List<Tuple<T, T, T>> crossoverResults = new List<Tuple<T, T, T>>();
