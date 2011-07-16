@@ -52,7 +52,6 @@ namespace MazeEvolution
 			this.label2 = new System.Windows.Forms.Label();
 			this.label1 = new System.Windows.Forms.Label();
 			this.panelMazeBlock = new System.Windows.Forms.Panel();
-			this.mazePanel = new MazeEvolution.MazePanel();
 			this.panelMazeControl = new System.Windows.Forms.Panel();
 			this.buttonRegenerateMaze = new System.Windows.Forms.Button();
 			this.buttonConfigureMaze = new System.Windows.Forms.Button();
@@ -71,6 +70,8 @@ namespace MazeEvolution
 			this.toolStripButtonAutoEvolve = new System.Windows.Forms.ToolStripButton();
 			this.toolStripButtonAbort = new System.Windows.Forms.ToolStripButton();
 			this.toolStripTimeProgress = new System.Windows.Forms.ToolStripProgressBar();
+			this.toolStripStatusLabelSpring = new System.Windows.Forms.ToolStripStatusLabel();
+			this.mazePanel = new MazeEvolution.MazePanel();
 			this.statusStrip.SuspendLayout();
 			this.toolStripContainer1.ContentPanel.SuspendLayout();
 			this.toolStripContainer1.TopToolStripPanel.SuspendLayout();
@@ -86,6 +87,7 @@ namespace MazeEvolution
 			// 
 			this.statusStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripStatusLabelGeneration,
+            this.toolStripStatusLabelSpring,
             this.toolStripTimeProgress});
 			this.statusStrip.Location = new System.Drawing.Point(0, 411);
 			this.statusStrip.Name = "statusStrip";
@@ -305,17 +307,6 @@ namespace MazeEvolution
 			this.panelMazeBlock.Size = new System.Drawing.Size(395, 379);
 			this.panelMazeBlock.TabIndex = 19;
 			// 
-			// mazePanel
-			// 
-			this.mazePanel.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-						| System.Windows.Forms.AnchorStyles.Left)
-						| System.Windows.Forms.AnchorStyles.Right)));
-			this.mazePanel.DisableMouseClickInteractions = false;
-			this.mazePanel.Location = new System.Drawing.Point(3, 32);
-			this.mazePanel.Name = "mazePanel";
-			this.mazePanel.Size = new System.Drawing.Size(389, 347);
-			this.mazePanel.TabIndex = 3;
-			// 
 			// panelMazeControl
 			// 
 			this.panelMazeControl.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
@@ -484,6 +475,23 @@ namespace MazeEvolution
 			this.toolStripTimeProgress.Name = "toolStripTimeProgress";
 			this.toolStripTimeProgress.Size = new System.Drawing.Size(100, 16);
 			// 
+			// toolStripStatusLabelSpring
+			// 
+			this.toolStripStatusLabelSpring.Name = "toolStripStatusLabelSpring";
+			this.toolStripStatusLabelSpring.Size = new System.Drawing.Size(443, 17);
+			this.toolStripStatusLabelSpring.Spring = true;
+			// 
+			// mazePanel
+			// 
+			this.mazePanel.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+						| System.Windows.Forms.AnchorStyles.Left)
+						| System.Windows.Forms.AnchorStyles.Right)));
+			this.mazePanel.DisableMouseClickInteractions = false;
+			this.mazePanel.Location = new System.Drawing.Point(3, 32);
+			this.mazePanel.Name = "mazePanel";
+			this.mazePanel.Size = new System.Drawing.Size(389, 347);
+			this.mazePanel.TabIndex = 3;
+			// 
 			// Testbed
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -493,7 +501,7 @@ namespace MazeEvolution
 			this.Controls.Add(this.statusStrip);
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
 			this.Name = "Testbed";
-			this.Text = "Testbed";
+			this.Text = "Evolutionary Programming Testbed";
 			this.statusStrip.ResumeLayout(false);
 			this.statusStrip.PerformLayout();
 			this.toolStripContainer1.ContentPanel.ResumeLayout(false);
@@ -555,5 +563,6 @@ namespace MazeEvolution
 		private System.Windows.Forms.ToolStripButton toolStripButtonSettings;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
 		private System.Windows.Forms.ToolStripProgressBar toolStripTimeProgress;
+		private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabelSpring;
 	}
 }

@@ -181,8 +181,6 @@ namespace MazeEvolution
 				labelComplexity.Text = "-";
 			}
 			
-			if (_controller.AutoEvolveMode) return;
-
 			// Tabelle bauen
 			dataGridViewReport.RowCount = e.Report.SelectedElements.Count + e.Report.MutatedElements.Count +
 										  e.Report.CrossedElements.Count + e.Report.DeceasedElements.Count;
@@ -207,6 +205,8 @@ namespace MazeEvolution
 				dataGridViewReport.Rows[index].SetValues(proband.Id, proband.GetFitness().ToString(), proband.GeneticCode.GetDepth(), _controller.CurrentGeneration - proband.SourceGeneration - 1, "deceased");
 				dataGridViewReport.Rows[index++].Tag = proband;
 			}
+
+			if (_controller.AutoEvolveMode) return;
 
 			UseWaitCursor = false;
 			dataGridViewReport.Enabled = true;
