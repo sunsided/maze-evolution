@@ -112,7 +112,7 @@ namespace Labyrinth
 			_walls = walls;
 
 			// Feuer frei.
-			OnMazeChanged(EventArgs.Empty);
+			OnMazeChanged(new MazeEventArgs(this));
 		}
 
 		/// <summary>
@@ -305,16 +305,16 @@ namespace Labyrinth
 		/// <summary>
 		/// Wird gerufen, wenn sich das Labyrinth verändert hat
 		/// </summary>
-		public event EventHandler MazeChanged;
+		public event EventHandler<MazeEventArgs> MazeChanged;
 
 		/// <summary>
 		/// Raises the <see cref="MazeChanged"/> event.
 		/// </summary>
 		/// <param name="e">The <see cref="System.EventArgs"/> instance containing the event data.</param>
 		/// <remarks></remarks>
-		private void OnMazeChanged(EventArgs e)
+		private void OnMazeChanged(MazeEventArgs e)
 		{
-			EventHandler handler = MazeChanged;
+			EventHandler<MazeEventArgs> handler = MazeChanged;
 			if (handler != null) handler(this, e);
 		}
 

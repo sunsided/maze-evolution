@@ -1,4 +1,6 @@
-﻿namespace MazeEvolution
+﻿using MazeEvolution.Properties;
+
+namespace MazeEvolution
 {
 	partial class Testbed
 	{
@@ -30,69 +32,82 @@
 		{
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Testbed));
 			this.statusStrip = new System.Windows.Forms.StatusStrip();
+			this.toolStripStatusLabelGeneration = new System.Windows.Forms.ToolStripStatusLabel();
 			this.toolStripContainer1 = new System.Windows.Forms.ToolStripContainer();
-			this.tableLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
-			this.panelSettings = new System.Windows.Forms.Panel();
+			this.groupBoxLastGeneration = new System.Windows.Forms.GroupBox();
+			this.labelComplexity = new System.Windows.Forms.Label();
+			this.label8 = new System.Windows.Forms.Label();
+			this.labelMinFitness = new System.Windows.Forms.Label();
+			this.labelMaxFitness = new System.Windows.Forms.Label();
+			this.label7 = new System.Windows.Forms.Label();
+			this.label6 = new System.Windows.Forms.Label();
+			this.labelBorn = new System.Windows.Forms.Label();
+			this.labelCrossover = new System.Windows.Forms.Label();
+			this.labelMutated = new System.Windows.Forms.Label();
+			this.labelDeceased = new System.Windows.Forms.Label();
+			this.labelSelected = new System.Windows.Forms.Label();
+			this.label5 = new System.Windows.Forms.Label();
+			this.label4 = new System.Windows.Forms.Label();
+			this.label3 = new System.Windows.Forms.Label();
+			this.label2 = new System.Windows.Forms.Label();
+			this.label1 = new System.Windows.Forms.Label();
+			this.panelMazeBlock = new System.Windows.Forms.Panel();
+			this.mazePanel = new MazeEvolution.MazePanel();
+			this.panelMazeControl = new System.Windows.Forms.Panel();
+			this.buttonRegenerateMaze = new System.Windows.Forms.Button();
+			this.buttonConfigureMaze = new System.Windows.Forms.Button();
 			this.dataGridViewReport = new System.Windows.Forms.DataGridView();
 			this.columnId = new System.Windows.Forms.DataGridViewTextBoxColumn();
 			this.columnFitness = new System.Windows.Forms.DataGridViewTextBoxColumn();
 			this.columnComplexity = new System.Windows.Forms.DataGridViewTextBoxColumn();
 			this.columnAge = new System.Windows.Forms.DataGridViewTextBoxColumn();
 			this.columnState = new System.Windows.Forms.DataGridViewTextBoxColumn();
-			this.groupBoxLabyrinth = new System.Windows.Forms.GroupBox();
-			this.labelMazeGenerator = new System.Windows.Forms.Label();
-			this.comboBoxGenerator = new System.Windows.Forms.ComboBox();
-			this.buttonRegenerate = new System.Windows.Forms.Button();
-			this.comboBoxSize = new System.Windows.Forms.ComboBox();
-			this.labelDimension = new System.Windows.Forms.Label();
-			this.groupBoxGeneration = new System.Windows.Forms.GroupBox();
-			this.labelGenerationSize = new System.Windows.Forms.Label();
-			this.labelRuntime = new System.Windows.Forms.Label();
-			this.numericUpDownRuntime = new System.Windows.Forms.NumericUpDown();
-			this.numericUpDownGenerationSize = new System.Windows.Forms.NumericUpDown();
-			this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
-			this.panelInformation = new System.Windows.Forms.Panel();
-			this.panel1 = new System.Windows.Forms.Panel();
-			this.labelGeneration = new System.Windows.Forms.Label();
-			this.buttonRun = new System.Windows.Forms.Button();
 			this.toolStripMain = new System.Windows.Forms.ToolStrip();
 			this.toolStripButtonExit = new System.Windows.Forms.ToolStripButton();
-			this.mazePanel = new MazeEvolution.MazePanel();
+			this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+			this.toolStripButtonRun = new System.Windows.Forms.ToolStripButton();
+			this.toolStripButtonAutoEvolve = new System.Windows.Forms.ToolStripButton();
+			this.toolStripButtonAbort = new System.Windows.Forms.ToolStripButton();
+			this.statusStrip.SuspendLayout();
 			this.toolStripContainer1.ContentPanel.SuspendLayout();
 			this.toolStripContainer1.TopToolStripPanel.SuspendLayout();
 			this.toolStripContainer1.SuspendLayout();
-			this.tableLayoutPanel.SuspendLayout();
-			this.panelSettings.SuspendLayout();
+			this.groupBoxLastGeneration.SuspendLayout();
+			this.panelMazeBlock.SuspendLayout();
+			this.panelMazeControl.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.dataGridViewReport)).BeginInit();
-			this.groupBoxLabyrinth.SuspendLayout();
-			this.groupBoxGeneration.SuspendLayout();
-			((System.ComponentModel.ISupportInitialize)(this.numericUpDownRuntime)).BeginInit();
-			((System.ComponentModel.ISupportInitialize)(this.numericUpDownGenerationSize)).BeginInit();
-			this.tableLayoutPanel1.SuspendLayout();
-			this.panelInformation.SuspendLayout();
-			this.panel1.SuspendLayout();
 			this.toolStripMain.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// statusStrip
 			// 
-			this.statusStrip.Location = new System.Drawing.Point(0, 521);
+			this.statusStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toolStripStatusLabelGeneration});
+			this.statusStrip.Location = new System.Drawing.Point(0, 411);
 			this.statusStrip.Name = "statusStrip";
-			this.statusStrip.Size = new System.Drawing.Size(711, 22);
+			this.statusStrip.Size = new System.Drawing.Size(663, 22);
 			this.statusStrip.TabIndex = 0;
 			this.statusStrip.Text = "statusStrip1";
+			// 
+			// toolStripStatusLabelGeneration
+			// 
+			this.toolStripStatusLabelGeneration.Name = "toolStripStatusLabelGeneration";
+			this.toolStripStatusLabelGeneration.Size = new System.Drawing.Size(103, 17);
+			this.toolStripStatusLabelGeneration.Text = "Initiale Generation";
 			// 
 			// toolStripContainer1
 			// 
 			// 
 			// toolStripContainer1.ContentPanel
 			// 
-			this.toolStripContainer1.ContentPanel.Controls.Add(this.tableLayoutPanel);
-			this.toolStripContainer1.ContentPanel.Size = new System.Drawing.Size(711, 496);
+			this.toolStripContainer1.ContentPanel.Controls.Add(this.groupBoxLastGeneration);
+			this.toolStripContainer1.ContentPanel.Controls.Add(this.panelMazeBlock);
+			this.toolStripContainer1.ContentPanel.Controls.Add(this.dataGridViewReport);
+			this.toolStripContainer1.ContentPanel.Size = new System.Drawing.Size(663, 386);
 			this.toolStripContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.toolStripContainer1.Location = new System.Drawing.Point(0, 0);
 			this.toolStripContainer1.Name = "toolStripContainer1";
-			this.toolStripContainer1.Size = new System.Drawing.Size(711, 521);
+			this.toolStripContainer1.Size = new System.Drawing.Size(663, 411);
 			this.toolStripContainer1.TabIndex = 1;
 			this.toolStripContainer1.Text = "toolStripContainer";
 			// 
@@ -100,40 +115,239 @@
 			// 
 			this.toolStripContainer1.TopToolStripPanel.Controls.Add(this.toolStripMain);
 			// 
-			// tableLayoutPanel
+			// groupBoxLastGeneration
 			// 
-			this.tableLayoutPanel.ColumnCount = 2;
-			this.tableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 42.75668F));
-			this.tableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 57.24332F));
-			this.tableLayoutPanel.Controls.Add(this.panelSettings, 0, 0);
-			this.tableLayoutPanel.Controls.Add(this.tableLayoutPanel1, 1, 0);
-			this.tableLayoutPanel.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.tableLayoutPanel.Location = new System.Drawing.Point(0, 0);
-			this.tableLayoutPanel.Name = "tableLayoutPanel";
-			this.tableLayoutPanel.RowCount = 1;
-			this.tableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-			this.tableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 496F));
-			this.tableLayoutPanel.Size = new System.Drawing.Size(711, 496);
-			this.tableLayoutPanel.TabIndex = 0;
+			this.groupBoxLastGeneration.Controls.Add(this.labelComplexity);
+			this.groupBoxLastGeneration.Controls.Add(this.label8);
+			this.groupBoxLastGeneration.Controls.Add(this.labelMinFitness);
+			this.groupBoxLastGeneration.Controls.Add(this.labelMaxFitness);
+			this.groupBoxLastGeneration.Controls.Add(this.label7);
+			this.groupBoxLastGeneration.Controls.Add(this.label6);
+			this.groupBoxLastGeneration.Controls.Add(this.labelBorn);
+			this.groupBoxLastGeneration.Controls.Add(this.labelCrossover);
+			this.groupBoxLastGeneration.Controls.Add(this.labelMutated);
+			this.groupBoxLastGeneration.Controls.Add(this.labelDeceased);
+			this.groupBoxLastGeneration.Controls.Add(this.labelSelected);
+			this.groupBoxLastGeneration.Controls.Add(this.label5);
+			this.groupBoxLastGeneration.Controls.Add(this.label4);
+			this.groupBoxLastGeneration.Controls.Add(this.label3);
+			this.groupBoxLastGeneration.Controls.Add(this.label2);
+			this.groupBoxLastGeneration.Controls.Add(this.label1);
+			this.groupBoxLastGeneration.Location = new System.Drawing.Point(401, 6);
+			this.groupBoxLastGeneration.Name = "groupBoxLastGeneration";
+			this.groupBoxLastGeneration.Size = new System.Drawing.Size(257, 129);
+			this.groupBoxLastGeneration.TabIndex = 20;
+			this.groupBoxLastGeneration.TabStop = false;
+			this.groupBoxLastGeneration.Text = "Initiale Generation";
 			// 
-			// panelSettings
+			// labelComplexity
 			// 
-			this.panelSettings.Controls.Add(this.dataGridViewReport);
-			this.panelSettings.Controls.Add(this.groupBoxLabyrinth);
-			this.panelSettings.Controls.Add(this.groupBoxGeneration);
-			this.panelSettings.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.panelSettings.Location = new System.Drawing.Point(3, 3);
-			this.panelSettings.Name = "panelSettings";
-			this.panelSettings.Size = new System.Drawing.Size(297, 490);
-			this.panelSettings.TabIndex = 0;
+			this.labelComplexity.AutoSize = true;
+			this.labelComplexity.Location = new System.Drawing.Point(181, 106);
+			this.labelComplexity.Name = "labelComplexity";
+			this.labelComplexity.Size = new System.Drawing.Size(10, 13);
+			this.labelComplexity.TabIndex = 15;
+			this.labelComplexity.Text = "-";
+			// 
+			// label8
+			// 
+			this.label8.AutoSize = true;
+			this.label8.Font = new System.Drawing.Font("Microsoft Sans Serif", 6.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.label8.Location = new System.Drawing.Point(181, 93);
+			this.label8.Name = "label8";
+			this.label8.Size = new System.Drawing.Size(69, 12);
+			this.label8.TabIndex = 14;
+			this.label8.Text = "Komplexität:";
+			// 
+			// labelMinFitness
+			// 
+			this.labelMinFitness.AutoSize = true;
+			this.labelMinFitness.Location = new System.Drawing.Point(97, 106);
+			this.labelMinFitness.Name = "labelMinFitness";
+			this.labelMinFitness.Size = new System.Drawing.Size(10, 13);
+			this.labelMinFitness.TabIndex = 13;
+			this.labelMinFitness.Text = "-";
+			// 
+			// labelMaxFitness
+			// 
+			this.labelMaxFitness.AutoSize = true;
+			this.labelMaxFitness.Location = new System.Drawing.Point(6, 106);
+			this.labelMaxFitness.Name = "labelMaxFitness";
+			this.labelMaxFitness.Size = new System.Drawing.Size(10, 13);
+			this.labelMaxFitness.TabIndex = 12;
+			this.labelMaxFitness.Text = "-";
+			// 
+			// label7
+			// 
+			this.label7.AutoSize = true;
+			this.label7.Font = new System.Drawing.Font("Microsoft Sans Serif", 6.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.label7.Location = new System.Drawing.Point(96, 93);
+			this.label7.Name = "label7";
+			this.label7.Size = new System.Drawing.Size(73, 12);
+			this.label7.TabIndex = 11;
+			this.label7.Text = "Min. Fitness:";
+			// 
+			// label6
+			// 
+			this.label6.AutoSize = true;
+			this.label6.Font = new System.Drawing.Font("Microsoft Sans Serif", 6.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.label6.Location = new System.Drawing.Point(6, 93);
+			this.label6.Name = "label6";
+			this.label6.Size = new System.Drawing.Size(76, 12);
+			this.label6.TabIndex = 10;
+			this.label6.Text = "Max. Fitness:";
+			// 
+			// labelBorn
+			// 
+			this.labelBorn.AutoSize = true;
+			this.labelBorn.Location = new System.Drawing.Point(181, 32);
+			this.labelBorn.Name = "labelBorn";
+			this.labelBorn.Size = new System.Drawing.Size(10, 13);
+			this.labelBorn.TabIndex = 9;
+			this.labelBorn.Text = "-";
+			// 
+			// labelCrossover
+			// 
+			this.labelCrossover.AutoSize = true;
+			this.labelCrossover.Location = new System.Drawing.Point(97, 70);
+			this.labelCrossover.Name = "labelCrossover";
+			this.labelCrossover.Size = new System.Drawing.Size(10, 13);
+			this.labelCrossover.TabIndex = 8;
+			this.labelCrossover.Text = "-";
+			// 
+			// labelMutated
+			// 
+			this.labelMutated.AutoSize = true;
+			this.labelMutated.Location = new System.Drawing.Point(6, 70);
+			this.labelMutated.Name = "labelMutated";
+			this.labelMutated.Size = new System.Drawing.Size(10, 13);
+			this.labelMutated.TabIndex = 7;
+			this.labelMutated.Text = "-";
+			// 
+			// labelDeceased
+			// 
+			this.labelDeceased.AutoSize = true;
+			this.labelDeceased.Location = new System.Drawing.Point(97, 32);
+			this.labelDeceased.Name = "labelDeceased";
+			this.labelDeceased.Size = new System.Drawing.Size(10, 13);
+			this.labelDeceased.TabIndex = 6;
+			this.labelDeceased.Text = "-";
+			// 
+			// labelSelected
+			// 
+			this.labelSelected.AutoSize = true;
+			this.labelSelected.Location = new System.Drawing.Point(6, 32);
+			this.labelSelected.Name = "labelSelected";
+			this.labelSelected.Size = new System.Drawing.Size(10, 13);
+			this.labelSelected.TabIndex = 5;
+			this.labelSelected.Text = "-";
+			// 
+			// label5
+			// 
+			this.label5.AutoSize = true;
+			this.label5.Font = new System.Drawing.Font("Microsoft Sans Serif", 6.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.label5.Location = new System.Drawing.Point(181, 19);
+			this.label5.Name = "label5";
+			this.label5.Size = new System.Drawing.Size(70, 12);
+			this.label5.TabIndex = 4;
+			this.label5.Text = "Neu erzeugt:";
+			// 
+			// label4
+			// 
+			this.label4.AutoSize = true;
+			this.label4.Font = new System.Drawing.Font("Microsoft Sans Serif", 6.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.label4.Location = new System.Drawing.Point(96, 57);
+			this.label4.Name = "label4";
+			this.label4.Size = new System.Drawing.Size(62, 12);
+			this.label4.TabIndex = 3;
+			this.label4.Text = "Crossover:";
+			// 
+			// label3
+			// 
+			this.label3.AutoSize = true;
+			this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 6.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.label3.Location = new System.Drawing.Point(6, 57);
+			this.label3.Name = "label3";
+			this.label3.Size = new System.Drawing.Size(54, 12);
+			this.label3.TabIndex = 2;
+			this.label3.Text = "Mutation:";
+			// 
+			// label2
+			// 
+			this.label2.AutoSize = true;
+			this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 6.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.label2.Location = new System.Drawing.Point(96, 19);
+			this.label2.Name = "label2";
+			this.label2.Size = new System.Drawing.Size(65, 12);
+			this.label2.TabIndex = 1;
+			this.label2.Text = "Verstorben:";
+			// 
+			// label1
+			// 
+			this.label1.AutoSize = true;
+			this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 6.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.label1.Location = new System.Drawing.Point(6, 19);
+			this.label1.Name = "label1";
+			this.label1.Size = new System.Drawing.Size(75, 12);
+			this.label1.TabIndex = 0;
+			this.label1.Text = "Übernommen:";
+			// 
+			// panelMazeBlock
+			// 
+			this.panelMazeBlock.Controls.Add(this.mazePanel);
+			this.panelMazeBlock.Controls.Add(this.panelMazeControl);
+			this.panelMazeBlock.Location = new System.Drawing.Point(3, 3);
+			this.panelMazeBlock.Name = "panelMazeBlock";
+			this.panelMazeBlock.Size = new System.Drawing.Size(395, 379);
+			this.panelMazeBlock.TabIndex = 19;
+			// 
+			// mazePanel
+			// 
+			this.mazePanel.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+						| System.Windows.Forms.AnchorStyles.Left)
+						| System.Windows.Forms.AnchorStyles.Right)));
+			this.mazePanel.DisableMouseClickInteractions = false;
+			this.mazePanel.Location = new System.Drawing.Point(3, 32);
+			this.mazePanel.Name = "mazePanel";
+			this.mazePanel.Size = new System.Drawing.Size(389, 347);
+			this.mazePanel.TabIndex = 3;
+			// 
+			// panelMazeControl
+			// 
+			this.panelMazeControl.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
+						| System.Windows.Forms.AnchorStyles.Right)));
+			this.panelMazeControl.Controls.Add(this.buttonRegenerateMaze);
+			this.panelMazeControl.Controls.Add(this.buttonConfigureMaze);
+			this.panelMazeControl.Location = new System.Drawing.Point(3, 3);
+			this.panelMazeControl.Name = "panelMazeControl";
+			this.panelMazeControl.Size = new System.Drawing.Size(389, 28);
+			this.panelMazeControl.TabIndex = 18;
+			// 
+			// buttonRegenerateMaze
+			// 
+			this.buttonRegenerateMaze.Location = new System.Drawing.Point(0, 3);
+			this.buttonRegenerateMaze.Name = "buttonRegenerateMaze";
+			this.buttonRegenerateMaze.Size = new System.Drawing.Size(103, 21);
+			this.buttonRegenerateMaze.TabIndex = 13;
+			this.buttonRegenerateMaze.Text = "&Regenerate";
+			this.buttonRegenerateMaze.UseVisualStyleBackColor = true;
+			this.buttonRegenerateMaze.Click += new System.EventHandler(this.ButtonRegenerateClick);
+			// 
+			// buttonConfigureMaze
+			// 
+			this.buttonConfigureMaze.Location = new System.Drawing.Point(109, 3);
+			this.buttonConfigureMaze.Name = "buttonConfigureMaze";
+			this.buttonConfigureMaze.Size = new System.Drawing.Size(103, 21);
+			this.buttonConfigureMaze.TabIndex = 17;
+			this.buttonConfigureMaze.Text = "&Konfigurieren";
+			this.buttonConfigureMaze.UseVisualStyleBackColor = true;
+			this.buttonConfigureMaze.Click += new System.EventHandler(this.ButtonConfigureMazeClick);
 			// 
 			// dataGridViewReport
 			// 
 			this.dataGridViewReport.AllowUserToAddRows = false;
 			this.dataGridViewReport.AllowUserToDeleteRows = false;
-			this.dataGridViewReport.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-						| System.Windows.Forms.AnchorStyles.Left)
-						| System.Windows.Forms.AnchorStyles.Right)));
+			this.dataGridViewReport.AllowUserToResizeRows = false;
 			this.dataGridViewReport.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
 			this.dataGridViewReport.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.columnId,
@@ -141,13 +355,17 @@
             this.columnComplexity,
             this.columnAge,
             this.columnState});
-			this.dataGridViewReport.Location = new System.Drawing.Point(9, 223);
+			this.dataGridViewReport.EditMode = System.Windows.Forms.DataGridViewEditMode.EditProgrammatically;
+			this.dataGridViewReport.Location = new System.Drawing.Point(401, 141);
+			this.dataGridViewReport.MultiSelect = false;
 			this.dataGridViewReport.Name = "dataGridViewReport";
 			this.dataGridViewReport.ReadOnly = true;
 			this.dataGridViewReport.RowHeadersVisible = false;
+			this.dataGridViewReport.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
 			this.dataGridViewReport.ShowEditingIcon = false;
-			this.dataGridViewReport.Size = new System.Drawing.Size(285, 264);
+			this.dataGridViewReport.Size = new System.Drawing.Size(257, 239);
 			this.dataGridViewReport.TabIndex = 16;
+			this.dataGridViewReport.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.DataGridViewReportCellDoubleClick);
 			// 
 			// columnId
 			// 
@@ -185,239 +403,19 @@
 			this.columnState.ReadOnly = true;
 			this.columnState.Width = 50;
 			// 
-			// groupBoxLabyrinth
-			// 
-			this.groupBoxLabyrinth.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-						| System.Windows.Forms.AnchorStyles.Right)));
-			this.groupBoxLabyrinth.Controls.Add(this.labelMazeGenerator);
-			this.groupBoxLabyrinth.Controls.Add(this.comboBoxGenerator);
-			this.groupBoxLabyrinth.Controls.Add(this.buttonRegenerate);
-			this.groupBoxLabyrinth.Controls.Add(this.comboBoxSize);
-			this.groupBoxLabyrinth.Controls.Add(this.labelDimension);
-			this.groupBoxLabyrinth.Location = new System.Drawing.Point(9, 99);
-			this.groupBoxLabyrinth.Name = "groupBoxLabyrinth";
-			this.groupBoxLabyrinth.Size = new System.Drawing.Size(288, 118);
-			this.groupBoxLabyrinth.TabIndex = 15;
-			this.groupBoxLabyrinth.TabStop = false;
-			this.groupBoxLabyrinth.Text = "Labyrinth";
-			// 
-			// labelMazeGenerator
-			// 
-			this.labelMazeGenerator.AutoSize = true;
-			this.labelMazeGenerator.Location = new System.Drawing.Point(6, 26);
-			this.labelMazeGenerator.Name = "labelMazeGenerator";
-			this.labelMazeGenerator.Size = new System.Drawing.Size(54, 13);
-			this.labelMazeGenerator.TabIndex = 11;
-			this.labelMazeGenerator.Text = "Generator";
-			// 
-			// comboBoxGenerator
-			// 
-			this.comboBoxGenerator.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-						| System.Windows.Forms.AnchorStyles.Right)));
-			this.comboBoxGenerator.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-			this.comboBoxGenerator.FormattingEnabled = true;
-			this.comboBoxGenerator.Items.AddRange(new object[] {
-            "Recursive Backtracker",
-            "Randomized Prim",
-            "Randomized Kruskal"});
-			this.comboBoxGenerator.Location = new System.Drawing.Point(87, 26);
-			this.comboBoxGenerator.Name = "comboBoxGenerator";
-			this.comboBoxGenerator.Size = new System.Drawing.Size(184, 21);
-			this.comboBoxGenerator.TabIndex = 9;
-			this.comboBoxGenerator.SelectedIndexChanged += new System.EventHandler(this.ComboBoxGeneratorSelectedIndexChanged);
-			// 
-			// buttonRegenerate
-			// 
-			this.buttonRegenerate.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-						| System.Windows.Forms.AnchorStyles.Right)));
-			this.buttonRegenerate.Location = new System.Drawing.Point(87, 79);
-			this.buttonRegenerate.Name = "buttonRegenerate";
-			this.buttonRegenerate.Size = new System.Drawing.Size(185, 25);
-			this.buttonRegenerate.TabIndex = 13;
-			this.buttonRegenerate.Text = "&Regenerate";
-			this.buttonRegenerate.UseVisualStyleBackColor = true;
-			this.buttonRegenerate.Click += new System.EventHandler(this.ButtonRegenerateClick);
-			// 
-			// comboBoxSize
-			// 
-			this.comboBoxSize.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-						| System.Windows.Forms.AnchorStyles.Right)));
-			this.comboBoxSize.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-			this.comboBoxSize.FormattingEnabled = true;
-			this.comboBoxSize.Items.AddRange(new object[] {
-            "10x10",
-            "15x15",
-            "20x20",
-            "30x30",
-            "40x40"});
-			this.comboBoxSize.Location = new System.Drawing.Point(87, 52);
-			this.comboBoxSize.Name = "comboBoxSize";
-			this.comboBoxSize.Size = new System.Drawing.Size(184, 21);
-			this.comboBoxSize.TabIndex = 10;
-			this.comboBoxSize.SelectedIndexChanged += new System.EventHandler(this.ComboBoxSizeSelectedIndexChanged);
-			// 
-			// labelDimension
-			// 
-			this.labelDimension.AutoSize = true;
-			this.labelDimension.Location = new System.Drawing.Point(6, 52);
-			this.labelDimension.Name = "labelDimension";
-			this.labelDimension.Size = new System.Drawing.Size(56, 13);
-			this.labelDimension.TabIndex = 12;
-			this.labelDimension.Text = "Dimension";
-			// 
-			// groupBoxGeneration
-			// 
-			this.groupBoxGeneration.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-						| System.Windows.Forms.AnchorStyles.Right)));
-			this.groupBoxGeneration.Controls.Add(this.labelGenerationSize);
-			this.groupBoxGeneration.Controls.Add(this.labelRuntime);
-			this.groupBoxGeneration.Controls.Add(this.numericUpDownRuntime);
-			this.groupBoxGeneration.Controls.Add(this.numericUpDownGenerationSize);
-			this.groupBoxGeneration.Location = new System.Drawing.Point(9, 3);
-			this.groupBoxGeneration.Name = "groupBoxGeneration";
-			this.groupBoxGeneration.Size = new System.Drawing.Size(288, 90);
-			this.groupBoxGeneration.TabIndex = 14;
-			this.groupBoxGeneration.TabStop = false;
-			this.groupBoxGeneration.Text = "Generation";
-			// 
-			// labelGenerationSize
-			// 
-			this.labelGenerationSize.AutoSize = true;
-			this.labelGenerationSize.Location = new System.Drawing.Point(6, 30);
-			this.labelGenerationSize.Name = "labelGenerationSize";
-			this.labelGenerationSize.Size = new System.Drawing.Size(56, 13);
-			this.labelGenerationSize.TabIndex = 6;
-			this.labelGenerationSize.Text = "Individuen";
-			// 
-			// labelRuntime
-			// 
-			this.labelRuntime.AutoSize = true;
-			this.labelRuntime.Location = new System.Drawing.Point(6, 56);
-			this.labelRuntime.Name = "labelRuntime";
-			this.labelRuntime.Size = new System.Drawing.Size(75, 13);
-			this.labelRuntime.TabIndex = 8;
-			this.labelRuntime.Text = "Laufzeit (Sek.)";
-			// 
-			// numericUpDownRuntime
-			// 
-			this.numericUpDownRuntime.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-						| System.Windows.Forms.AnchorStyles.Right)));
-			this.numericUpDownRuntime.Location = new System.Drawing.Point(87, 54);
-			this.numericUpDownRuntime.Maximum = new decimal(new int[] {
-            30,
-            0,
-            0,
-            0});
-			this.numericUpDownRuntime.Minimum = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
-			this.numericUpDownRuntime.Name = "numericUpDownRuntime";
-			this.numericUpDownRuntime.Size = new System.Drawing.Size(184, 20);
-			this.numericUpDownRuntime.TabIndex = 7;
-			this.numericUpDownRuntime.Value = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
-			this.numericUpDownRuntime.ValueChanged += new System.EventHandler(this.NumericUpDownRuntimeValueChanged);
-			// 
-			// numericUpDownGenerationSize
-			// 
-			this.numericUpDownGenerationSize.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-						| System.Windows.Forms.AnchorStyles.Right)));
-			this.numericUpDownGenerationSize.Increment = new decimal(new int[] {
-            500,
-            0,
-            0,
-            0});
-			this.numericUpDownGenerationSize.Location = new System.Drawing.Point(87, 28);
-			this.numericUpDownGenerationSize.Maximum = new decimal(new int[] {
-            10000,
-            0,
-            0,
-            0});
-			this.numericUpDownGenerationSize.Minimum = new decimal(new int[] {
-            100,
-            0,
-            0,
-            0});
-			this.numericUpDownGenerationSize.Name = "numericUpDownGenerationSize";
-			this.numericUpDownGenerationSize.Size = new System.Drawing.Size(184, 20);
-			this.numericUpDownGenerationSize.TabIndex = 5;
-			this.numericUpDownGenerationSize.Value = new decimal(new int[] {
-            100,
-            0,
-            0,
-            0});
-			this.numericUpDownGenerationSize.ValueChanged += new System.EventHandler(this.NumericUpDownGenerationSizeValueChanged);
-			// 
-			// tableLayoutPanel1
-			// 
-			this.tableLayoutPanel1.ColumnCount = 1;
-			this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-			this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-			this.tableLayoutPanel1.Controls.Add(this.panelInformation, 0, 1);
-			this.tableLayoutPanel1.Controls.Add(this.panel1, 0, 0);
-			this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.tableLayoutPanel1.Location = new System.Drawing.Point(306, 3);
-			this.tableLayoutPanel1.Name = "tableLayoutPanel1";
-			this.tableLayoutPanel1.Padding = new System.Windows.Forms.Padding(0, 0, 5, 0);
-			this.tableLayoutPanel1.RowCount = 2;
-			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 21.63265F));
-			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 78.36735F));
-			this.tableLayoutPanel1.Size = new System.Drawing.Size(402, 490);
-			this.tableLayoutPanel1.TabIndex = 1;
-			// 
-			// panelInformation
-			// 
-			this.panelInformation.Controls.Add(this.mazePanel);
-			this.panelInformation.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.panelInformation.Location = new System.Drawing.Point(3, 108);
-			this.panelInformation.Name = "panelInformation";
-			this.panelInformation.Size = new System.Drawing.Size(391, 379);
-			this.panelInformation.TabIndex = 3;
-			// 
-			// panel1
-			// 
-			this.panel1.Controls.Add(this.labelGeneration);
-			this.panel1.Controls.Add(this.buttonRun);
-			this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.panel1.Location = new System.Drawing.Point(3, 3);
-			this.panel1.Name = "panel1";
-			this.panel1.Size = new System.Drawing.Size(391, 99);
-			this.panel1.TabIndex = 4;
-			// 
-			// labelGeneration
-			// 
-			this.labelGeneration.AutoSize = true;
-			this.labelGeneration.Font = new System.Drawing.Font("Microsoft Sans Serif", 24F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.labelGeneration.Location = new System.Drawing.Point(116, 30);
-			this.labelGeneration.Name = "labelGeneration";
-			this.labelGeneration.Size = new System.Drawing.Size(51, 37);
-			this.labelGeneration.TabIndex = 1;
-			this.labelGeneration.Text = "#1";
-			// 
-			// buttonRun
-			// 
-			this.buttonRun.Location = new System.Drawing.Point(19, 25);
-			this.buttonRun.Name = "buttonRun";
-			this.buttonRun.Size = new System.Drawing.Size(91, 44);
-			this.buttonRun.TabIndex = 0;
-			this.buttonRun.Text = "&Start";
-			this.buttonRun.UseVisualStyleBackColor = true;
-			this.buttonRun.Click += new System.EventHandler(this.ButtonRunClick);
-			// 
 			// toolStripMain
 			// 
 			this.toolStripMain.Dock = System.Windows.Forms.DockStyle.None;
 			this.toolStripMain.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
 			this.toolStripMain.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.toolStripButtonExit});
+            this.toolStripButtonExit,
+            this.toolStripSeparator1,
+            this.toolStripButtonRun,
+            this.toolStripButtonAutoEvolve,
+            this.toolStripButtonAbort});
 			this.toolStripMain.Location = new System.Drawing.Point(0, 0);
 			this.toolStripMain.Name = "toolStripMain";
-			this.toolStripMain.Size = new System.Drawing.Size(711, 25);
+			this.toolStripMain.Size = new System.Drawing.Size(663, 25);
 			this.toolStripMain.Stretch = true;
 			this.toolStripMain.TabIndex = 0;
 			// 
@@ -431,43 +429,57 @@
 			this.toolStripButtonExit.Text = "&Beenden";
 			this.toolStripButtonExit.Click += new System.EventHandler(this.ToolStripButtonExitClick);
 			// 
-			// mazePanel
+			// toolStripSeparator1
 			// 
-			this.mazePanel.DisableMouseClickInteractions = false;
-			this.mazePanel.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.mazePanel.Location = new System.Drawing.Point(0, 0);
-			this.mazePanel.Name = "mazePanel";
-			this.mazePanel.Size = new System.Drawing.Size(391, 379);
-			this.mazePanel.TabIndex = 3;
+			this.toolStripSeparator1.Name = "toolStripSeparator1";
+			this.toolStripSeparator1.Size = new System.Drawing.Size(6, 25);
+			// 
+			// toolStripButtonRun
+			// 
+			this.toolStripButtonRun.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.toolStripButtonRun.Name = "toolStripButtonRun";
+			this.toolStripButtonRun.Size = new System.Drawing.Size(102, 22);
+			this.toolStripButtonRun.Text = "Durchlauf &starten";
+			this.toolStripButtonRun.Click += new System.EventHandler(this.ToolStripButtonRunClick);
+			// 
+			// toolStripButtonAutoEvolve
+			// 
+			this.toolStripButtonAutoEvolve.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.toolStripButtonAutoEvolve.Name = "toolStripButtonAutoEvolve";
+			this.toolStripButtonAutoEvolve.Size = new System.Drawing.Size(76, 22);
+			this.toolStripButtonAutoEvolve.Text = "Auto-&Evolve";
+			this.toolStripButtonAutoEvolve.Click += new System.EventHandler(this.ToolStripButtonAutoEvolveClick);
+			// 
+			// toolStripButtonAbort
+			// 
+			this.toolStripButtonAbort.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.toolStripButtonAbort.Name = "toolStripButtonAbort";
+			this.toolStripButtonAbort.Size = new System.Drawing.Size(69, 22);
+			this.toolStripButtonAbort.Text = "&Abbrechen";
+			this.toolStripButtonAbort.Click += new System.EventHandler(this.ToolStripButtonAbortClick);
 			// 
 			// Testbed
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(711, 543);
+			this.ClientSize = new System.Drawing.Size(663, 433);
 			this.Controls.Add(this.toolStripContainer1);
 			this.Controls.Add(this.statusStrip);
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
 			this.Name = "Testbed";
 			this.Text = "Testbed";
+			this.statusStrip.ResumeLayout(false);
+			this.statusStrip.PerformLayout();
 			this.toolStripContainer1.ContentPanel.ResumeLayout(false);
 			this.toolStripContainer1.TopToolStripPanel.ResumeLayout(false);
 			this.toolStripContainer1.TopToolStripPanel.PerformLayout();
 			this.toolStripContainer1.ResumeLayout(false);
 			this.toolStripContainer1.PerformLayout();
-			this.tableLayoutPanel.ResumeLayout(false);
-			this.panelSettings.ResumeLayout(false);
+			this.groupBoxLastGeneration.ResumeLayout(false);
+			this.groupBoxLastGeneration.PerformLayout();
+			this.panelMazeBlock.ResumeLayout(false);
+			this.panelMazeControl.ResumeLayout(false);
 			((System.ComponentModel.ISupportInitialize)(this.dataGridViewReport)).EndInit();
-			this.groupBoxLabyrinth.ResumeLayout(false);
-			this.groupBoxLabyrinth.PerformLayout();
-			this.groupBoxGeneration.ResumeLayout(false);
-			this.groupBoxGeneration.PerformLayout();
-			((System.ComponentModel.ISupportInitialize)(this.numericUpDownRuntime)).EndInit();
-			((System.ComponentModel.ISupportInitialize)(this.numericUpDownGenerationSize)).EndInit();
-			this.tableLayoutPanel1.ResumeLayout(false);
-			this.panelInformation.ResumeLayout(false);
-			this.panel1.ResumeLayout(false);
-			this.panel1.PerformLayout();
 			this.toolStripMain.ResumeLayout(false);
 			this.toolStripMain.PerformLayout();
 			this.ResumeLayout(false);
@@ -479,32 +491,40 @@
 
 		private System.Windows.Forms.StatusStrip statusStrip;
 		private System.Windows.Forms.ToolStripContainer toolStripContainer1;
-		private System.Windows.Forms.TableLayoutPanel tableLayoutPanel;
-		private System.Windows.Forms.Panel panelSettings;
-		private System.Windows.Forms.Label labelGenerationSize;
-		private System.Windows.Forms.NumericUpDown numericUpDownGenerationSize;
-		private System.Windows.Forms.NumericUpDown numericUpDownRuntime;
-		private System.Windows.Forms.Label labelRuntime;
-		private System.Windows.Forms.Label labelDimension;
-		private System.Windows.Forms.ComboBox comboBoxSize;
-		private System.Windows.Forms.ComboBox comboBoxGenerator;
-		private System.Windows.Forms.Label labelMazeGenerator;
-		private System.Windows.Forms.GroupBox groupBoxLabyrinth;
-		private System.Windows.Forms.Button buttonRegenerate;
-		private System.Windows.Forms.GroupBox groupBoxGeneration;
+		private System.Windows.Forms.Button buttonRegenerateMaze;
 		private System.Windows.Forms.DataGridView dataGridViewReport;
 		private System.Windows.Forms.DataGridViewTextBoxColumn columnId;
 		private System.Windows.Forms.DataGridViewTextBoxColumn columnFitness;
 		private System.Windows.Forms.DataGridViewTextBoxColumn columnComplexity;
 		private System.Windows.Forms.DataGridViewTextBoxColumn columnAge;
 		private System.Windows.Forms.DataGridViewTextBoxColumn columnState;
-		private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
-		private System.Windows.Forms.Panel panelInformation;
 		private MazePanel mazePanel;
 		private System.Windows.Forms.ToolStrip toolStripMain;
 		private System.Windows.Forms.ToolStripButton toolStripButtonExit;
-		private System.Windows.Forms.Panel panel1;
-		private System.Windows.Forms.Label labelGeneration;
-		private System.Windows.Forms.Button buttonRun;
+		private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
+		private System.Windows.Forms.ToolStripButton toolStripButtonRun;
+		private System.Windows.Forms.ToolStripButton toolStripButtonAutoEvolve;
+		private System.Windows.Forms.ToolStripButton toolStripButtonAbort;
+		private System.Windows.Forms.Button buttonConfigureMaze;
+		private System.Windows.Forms.Panel panelMazeControl;
+		private System.Windows.Forms.Panel panelMazeBlock;
+		private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabelGeneration;
+		private System.Windows.Forms.GroupBox groupBoxLastGeneration;
+		private System.Windows.Forms.Label label5;
+		private System.Windows.Forms.Label label4;
+		private System.Windows.Forms.Label label3;
+		private System.Windows.Forms.Label label2;
+		private System.Windows.Forms.Label label1;
+		private System.Windows.Forms.Label labelBorn;
+		private System.Windows.Forms.Label labelCrossover;
+		private System.Windows.Forms.Label labelMutated;
+		private System.Windows.Forms.Label labelDeceased;
+		private System.Windows.Forms.Label labelSelected;
+		private System.Windows.Forms.Label labelMinFitness;
+		private System.Windows.Forms.Label labelMaxFitness;
+		private System.Windows.Forms.Label label7;
+		private System.Windows.Forms.Label label6;
+		private System.Windows.Forms.Label labelComplexity;
+		private System.Windows.Forms.Label label8;
 	}
 }

@@ -58,6 +58,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Door4.cs" />
+    <Compile Include="MazeEventArgs.cs" />
     <Compile Include="IRoom4.cs" />
     <Compile Include="Marcher4.cs" />
     <Compile Include="Maze4.cs" />

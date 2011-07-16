@@ -49,7 +49,25 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CodeView.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="CodeView.Designer.cs">
+      <DependentUpon>CodeView.cs</DependentUpon>
+    </Compile>
     <Compile Include="Controller.cs" />
+    <Compile Include="MazeSettings.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="MazeSettings.Designer.cs">
+      <DependentUpon>MazeSettings.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GenerationSettings.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GenerationSettings.Designer.cs">
+      <DependentUpon>GenerationSettings.cs</DependentUpon>
+    </Compile>
     <Compile Include="Researcher.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -68,6 +86,15 @@
     <Compile Include="Testbed.Designer.cs">
       <DependentUpon>Testbed.cs</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="CodeView.resx">
+      <DependentUpon>CodeView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MazeSettings.resx">
+      <DependentUpon>MazeSettings.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GenerationSettings.resx">
+      <DependentUpon>GenerationSettings.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="MazePanel.resx">
       <DependentUpon>MazePanel.cs</DependentUpon>
     </EmbeddedResource>
@@ -79,6 +106,7 @@
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
     </Compile>
     <EmbeddedResource Include="Testbed.resx">
       <DependentUpon>Testbed.cs</DependentUpon>
@@ -102,6 +130,15 @@
       <Project>{96F3EB25-96D2-4E8A-AC47-371D49ADB975}</Project>
       <Name>Labyrinth</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\abortrun.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\run.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\runloop.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

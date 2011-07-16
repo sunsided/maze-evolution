@@ -37,27 +37,34 @@ namespace Evolution
         /// </summary>
         public ICollection<Tuple<TElement, TElement, TElement>> CrossedElements { get; private set; }
 
+		/// <summary>
+		/// Die Elemente der neu erzeugten Elemente
+		/// </summary>
+		public ICollection<TElement> NewlyGeneratedElements { get; private set; }
+
         /// <summary>
         /// Die Elemente der neuen Generation
         /// </summary>
         public ICollection<TElement> NewGeneration { get; private set; }
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="GenerationReport&lt;TElement&gt;"/> class.
-        /// </summary>
-        /// <param name="oldGeneration">The old generation.</param>
-        /// <param name="selectedElements">The selected elements.</param>
-        /// <param name="deceasedElements">The deceased elements.</param>
-        /// <param name="mutatedElements">The mutated elements.</param>
-        /// <param name="crossedElements">The crossed elements.</param>
-        /// <param name="newGeneration">The new generation.</param>
-        /// <remarks></remarks>
+		/// <summary>
+		/// Initializes a new instance of the <see cref="GenerationReport&lt;TElement&gt;"/> class.
+		/// </summary>
+		/// <param name="oldGeneration">The old generation.</param>
+		/// <param name="selectedElements">The selected elements.</param>
+		/// <param name="deceasedElements">The deceased elements.</param>
+		/// <param name="mutatedElements">The mutated elements.</param>
+		/// <param name="crossedElements">The crossed elements.</param>
+		/// <param name="newlyGenerated">The newly generated.</param>
+		/// <param name="newGeneration">The new generation.</param>
+		/// <remarks></remarks>
         public GenerationReport(
             IEnumerable<TElement> oldGeneration,
             IEnumerable<TElement> selectedElements,
             IEnumerable<TElement> deceasedElements,
             IEnumerable<Tuple<TElement, TElement>> mutatedElements,
             IEnumerable<Tuple<TElement, TElement, TElement>> crossedElements,
+			IEnumerable<TElement> newlyGenerated,
             IEnumerable<TElement> newGeneration)
         {
             Contract.Requires(oldGeneration != null);
@@ -65,6 +72,7 @@ namespace Evolution
             Contract.Requires(deceasedElements != null);
             Contract.Requires(mutatedElements != null);
             Contract.Requires(crossedElements != null);
+			Contract.Requires(newlyGenerated != null);
             Contract.Requires(newGeneration != null);
 
             OldGeneration = new HashSet<TElement>(oldGeneration);
@@ -73,6 +81,7 @@ namespace Evolution
             MutatedElements = new HashSet<Tuple<TElement, TElement>>(mutatedElements);
             CrossedElements = new HashSet<Tuple<TElement, TElement, TElement>>(crossedElements);
             NewGeneration = new HashSet<TElement>(newGeneration);
+			NewlyGeneratedElements = new HashSet<TElement>(newlyGenerated);
         }
 
         /// <summary>
@@ -87,6 +96,7 @@ namespace Evolution
             builder.AppendLine("Verstorbene Elemente: " + DeceasedElements.Count);
             builder.AppendLine("Gekreuzte Elemente: " + CrossedElements.Count);
             builder.AppendLine("Mutierte Elemente: " + MutatedElements.Count);
+			builder.AppendLine("Neu erzeugte Elemente: " + NewlyGeneratedElements.Count);
             builder.AppendLine("Maximale Fitness: " + SelectedElements.Max(element => element.GetFitness()));
             builder.AppendLine("Minimale Fitness: " + SelectedElements.Min(element => element.GetFitness()));
             return builder.ToString().Trim();

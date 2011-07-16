@@ -527,15 +527,17 @@ namespace Evolution
             newGeneration.AddRange(newElements.OrderBy(r => GetRandomValue()));
 
             // ... zuletzt fehlende Elemente hinzufügen oder Liste trimmen
+        	IList<T> newlyGenerated;
             if (newGeneration.Count < newGenerationSize)
             {
                 int count = newGenerationSize - newGeneration.Count;
                 Debug.WriteLine("Fülle neue Generation auf bis zur Zielgröße. (Erzeuge " + count + ".)");
-                IList<T> missingElements = CreateGeneration(count, regularCreator);
-                newGeneration.AddRange(missingElements);
+				newlyGenerated = CreateGeneration(count, regularCreator);
+				newGeneration.AddRange(newlyGenerated);
             }
             else
             {
+				newlyGenerated = new List<T>(0);
                 // Vom Ende entfernen
                 Debug.WriteLine("Reduziere neue Generation auf neue Zielgröße.");
                 while (newGeneration.Count > newGenerationSize)
@@ -545,7 +547,7 @@ namespace Evolution
             }
 
             // Report erzeugen
-            GenerationReport<T> report = new GenerationReport<T>(fitnessSorted, selectedElements, deceasedElements, mutationResults, crossoverResults, newGeneration);
+			GenerationReport<T> report = new GenerationReport<T>(fitnessSorted, selectedElements, deceasedElements, mutationResults, crossoverResults, newlyGenerated, newGeneration);
             return report;
 		}
 

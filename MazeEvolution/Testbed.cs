@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Diagnostics.Contracts;
+using System.Linq;
 using System.Windows.Forms;
 using Evolution;
-using Labyrinth;
+using MazeEvolution.Properties;
 
 namespace MazeEvolution
 {
@@ -23,109 +25,28 @@ namespace MazeEvolution
 
 			_controller = new Controller(mazePanel);
 			_controller.RunCompleted += ControllerRunCompleted;
+			_controller.SetGenerationSize(2000);
+			_controller.SetRuntime(TimeSpan.FromSeconds(1));
 
-			// Defaults
-			comboBoxGenerator.SelectedIndex = 0;
-			comboBoxSize.SelectedIndex = 0;
-			numericUpDownGenerationSize.Value = 2000;
-			numericUpDownRuntime.Value = 5;
-
+			// Icons setzen
+			toolStripButtonRun.Image = Resources.run;
+			toolStripButtonAutoEvolve.Image = Resources.runloop;
+			toolStripButtonAbort.Image = Resources.abortrun;
+			
 			// Initiales erzeugen
 			_controller.RegenerateMaze();
-		}
+			_controller.CreateGeneration();
 
-		/// <summary>
-		/// Handles the SelectedIndexChanged event of the comboBoxGenerator control.
-		/// </summary>
-		/// <param name="sender">The source of the event.</param>
-		/// <param name="e">The <see cref="System.EventArgs"/> instance containing the event data.</param>
-		/// <remarks></remarks>
-		private void ComboBoxGeneratorSelectedIndexChanged(object sender, EventArgs e)
-		{
-			switch (comboBoxGenerator.SelectedIndex)
+			// Probanden eintragen
+			dataGridViewReport.RowCount = _controller.Probanden.Count;
+			int index = 0;
+			foreach (Proband proband in _controller.Probanden)
 			{
-				case 0:
-					_controller.SetGenerator(new RecursiveBacktracker4());
-					break;
-				case 1:
-					_controller.SetGenerator(new RandomizedPrim4());
-					break;
-				case 2:
-					_controller.SetGenerator(new RandomizedKruskal4());
-					break;
-				default:
-					throw new InvalidOperationException("Unbekannter State.");
+				dataGridViewReport.Rows[index].SetValues(proband.Id, "-", proband.GeneticCode.GetDepth(), 0, "initial");
+				dataGridViewReport.Rows[index++].Tag = proband;
 			}
 		}
-
-		/// <summary>
-		/// Handles the SelectedIndexChanged event of the comboBoxSize control.
-		/// </summary>
-		/// <param name="sender">The source of the event.</param>
-		/// <param name="e">The <see cref="System.EventArgs"/> instance containing the event data.</param>
-		/// <remarks></remarks>
-		private void ComboBoxSizeSelectedIndexChanged(object sender, EventArgs e)
-		{
-			switch (comboBoxSize.SelectedIndex)
-			{
-				// 10x10
-				case 0:
-					_controller.SetDimension(10, 10);
-					break;
-				// 15x15
-				case 1:
-					_controller.SetDimension(15, 15);
-					break;
-				// 20x20
-				case 2:
-					_controller.SetDimension(20, 20);
-					break;
-				// 30x30
-				case 3:
-					_controller.SetDimension(30, 30);
-					break;
-				// 40x40
-				case 4:
-					_controller.SetDimension(40, 40);
-					break;
-				default:
-					throw new InvalidOperationException("Unbekannter State.");
-			}
-		}
-
-		/// <summary>
-		/// Handles the Click event of the buttonRegenerate control.
-		/// </summary>
-		/// <param name="sender">The source of the event.</param>
-		/// <param name="e">The <see cref="System.EventArgs"/> instance containing the event data.</param>
-		/// <remarks></remarks>
-		private void ButtonRegenerateClick(object sender, EventArgs e)
-		{
-			_controller.RegenerateMaze();
-		}
-
-		/// <summary>
-		/// Handles the ValueChanged event of the numericUpDownGenerationSize control.
-		/// </summary>
-		/// <param name="sender">The source of the event.</param>
-		/// <param name="e">The <see cref="System.EventArgs"/> instance containing the event data.</param>
-		/// <remarks></remarks>
-		private void NumericUpDownGenerationSizeValueChanged(object sender, EventArgs e)
-		{
-			_controller.SetGenerationSize((int)numericUpDownGenerationSize.Value);
-		}
-
-		/// <summary>
-		/// Handles the ValueChanged event of the numericUpDownRuntime control.
-		/// </summary>
-		/// <param name="sender">The source of the event.</param>
-		/// <param name="e">The <see cref="System.EventArgs"/> instance containing the event data.</param>
-		/// <remarks></remarks>
-		private void NumericUpDownRuntimeValueChanged(object sender, EventArgs e)
-		{
-			_controller.SetRuntime(TimeSpan.FromSeconds((int)numericUpDownRuntime.Value));
-		}
-
+		
 		/// <summary>
 		/// Handles the Click event of the toolStripButtonExit control.
 		/// </summary>
@@ -141,20 +62,75 @@ namespace MazeEvolution
 		}
 
 		/// <summary>
-		/// Handles the Click event of the buttonRun control.
+		/// Handles the Click event of the toolStripButtonRun control.
 		/// </summary>
 		/// <param name="sender">The source of the event.</param>
 		/// <param name="e">The <see cref="System.EventArgs"/> instance containing the event data.</param>
 		/// <remarks></remarks>
-		private void ButtonRunClick(object sender, EventArgs e)
+		private void ToolStripButtonRunClick(object sender, EventArgs e)
+		{
+			Run();
+		}
+
+		/// <summary>
+		/// Handles the Click event of the toolStripButtonAutoEvolve control.
+		/// </summary>
+		/// <param name="sender">The source of the event.</param>
+		/// <param name="e">The <see cref="System.EventArgs"/> instance containing the event data.</param>
+		/// <remarks></remarks>
+		private void ToolStripButtonAutoEvolveClick(object sender, EventArgs e)
+		{
+			RunLoop();
+		}
+
+		/// <summary>
+		/// Handles the Click event of the toolStripButtonAbort control.
+		/// </summary>
+		/// <param name="sender">The source of the event.</param>
+		/// <param name="e">The <see cref="System.EventArgs"/> instance containing the event data.</param>
+		/// <remarks></remarks>
+		private void ToolStripButtonAbortClick(object sender, EventArgs e)
+		{
+			AbortRun();
+		}
+
+		/// <summary>
+		/// Sperrt die GUI ab, so dass ein Durchlauf sicher geschehen kann
+		/// </summary>
+		private void LockGuiForRun()
 		{
 			UseWaitCursor = true;
-			panelSettings.Enabled = false;
-			toolStripMain.Enabled = false;
-			
-			if (_controller.IsRunning) _controller.AbortRun();
-			else _controller.PerformRun();
-			buttonRun.Text = _controller.IsRunning ? "&Abbrechen" : "&Start";
+			toolStripButtonRun.Enabled = false;
+			toolStripButtonAutoEvolve.Enabled = false;
+			toolStripButtonAbort.Enabled = true;
+			panelMazeControl.Enabled = false;
+			dataGridViewReport.Enabled = false;
+		}
+
+		/// <summary>
+		/// Startet einen Durchlauf
+		/// </summary>
+		private void Run()
+		{
+			LockGuiForRun();
+			_controller.PerformRun(false);
+		}
+
+		/// <summary>
+		/// Startet eine Schleife
+		/// </summary>
+		private void RunLoop()
+		{
+			LockGuiForRun();
+			_controller.PerformRun(true);
+		}
+
+		/// <summary>
+		/// Bricht einen Durchlauf ab
+		/// </summary>
+		private void AbortRun()
+		{
+			_controller.AbortRun();
 		}
 
 		/// <summary>
@@ -165,11 +141,110 @@ namespace MazeEvolution
 		/// <remarks></remarks>
 		void ControllerRunCompleted(object sender, GenerationReportEventArgs<Proband> e)
 		{
+			toolStripStatusLabelGeneration.Text = "Generation " + _controller.CurrentGeneration;
+			groupBoxLastGeneration.Text = "Generation " + (_controller.CurrentGeneration - 1) + " -> " +
+			                              _controller.CurrentGeneration;
+
+			// Report übernehmen
+			labelSelected.Text = e.Report.SelectedElements.Count.ToString();
+			labelDeceased.Text = e.Report.DeceasedElements.Count.ToString();
+			labelMutated.Text = e.Report.MutatedElements.Count.ToString();
+			labelCrossover.Text = e.Report.CrossedElements.Count.ToString();
+			labelBorn.Text = e.Report.NewlyGeneratedElements.Count.ToString();
+
+			if (e.Report.SelectedElements.Count > 0)
+			{
+				labelMaxFitness.Text = e.Report.SelectedElements.Max(element => element.GetFitness()).ToString();
+				labelMinFitness.Text = e.Report.SelectedElements.Min(element => element.GetFitness()).ToString();
+				labelComplexity.Text = e.Report.SelectedElements.Min(element => element.GeneticCode.GetDepth()) + " .. " +
+				                       e.Report.SelectedElements.Max(element => element.GeneticCode.GetDepth());
+			}
+			else
+			{
+				labelMaxFitness.Text = "-";
+				labelMinFitness.Text = "-";
+				labelComplexity.Text = "-";
+			}
+			
+			if (_controller.AutoEvolveMode) return;
+
+			// Tabelle bauen
+			dataGridViewReport.RowCount = e.Report.SelectedElements.Count + e.Report.MutatedElements.Count +
+										  e.Report.CrossedElements.Count + e.Report.DeceasedElements.Count;
+			int index = 0;
+			foreach (Proband proband in e.Report.SelectedElements.OrderBy(element => -1 * element.GetFitness()).ThenBy(element => element.GeneticCode.GetDepth()))
+			{
+				dataGridViewReport.Rows[index].SetValues(proband.Id, proband.GetFitness(), proband.GeneticCode.GetDepth(), _controller.CurrentGeneration - proband.SourceGeneration - 1, "selected");
+				dataGridViewReport.Rows[index++].Tag = proband;
+			}
+			foreach (Proband proband in e.Report.CrossedElements.Select(tuple => tuple.Item3))
+			{
+				dataGridViewReport.Rows[index].SetValues(proband.Id, "-", proband.GeneticCode.GetDepth(), 1, "crossed");
+				dataGridViewReport.Rows[index++].Tag = proband;
+			}
+			foreach (Proband proband in e.Report.MutatedElements.Select(tuple => tuple.Item2))
+			{
+				dataGridViewReport.Rows[index].SetValues(proband.Id, "-", proband.GeneticCode.GetDepth(), 1, "mutated");
+				dataGridViewReport.Rows[index++].Tag = proband;
+			}
+			foreach (Proband proband in e.Report.DeceasedElements)
+			{
+				dataGridViewReport.Rows[index].SetValues(proband.Id, proband.GetFitness(), proband.GeneticCode.GetDepth(), _controller.CurrentGeneration - proband.SourceGeneration - 1, "deceased");
+				dataGridViewReport.Rows[index++].Tag = proband;
+			}
+
 			UseWaitCursor = false;
-			panelSettings.Enabled = true;
-			toolStripMain.Enabled = true;
-			buttonRun.Text = _controller.IsRunning ? "&Abbrechen" : "&Start";
-			labelGeneration.Text = "#" + _controller.CurrentGeneration;
+			dataGridViewReport.Enabled = true;
+			toolStripButtonRun.Enabled = true;
+			toolStripButtonAutoEvolve.Enabled = true;
+			toolStripButtonAbort.Enabled = false;
+			panelMazeControl.Enabled = true;
+		}
+
+		/// <summary>
+		/// Handles the Click event of the buttonConfigureMaze control.
+		/// </summary>
+		/// <param name="sender">The source of the event.</param>
+		/// <param name="e">The <see cref="System.EventArgs"/> instance containing the event data.</param>
+		/// <remarks></remarks>
+		private void ButtonConfigureMazeClick(object sender, EventArgs e)
+		{
+			MazeSettings settings = new MazeSettings();
+			settings.MazeGenerator = _controller.MazeGenerator;
+			settings.MazeDimension = _controller.MazeDimension.Item1;
+			if (settings.ShowDialog(this) == DialogResult.OK)
+			{
+				_controller.SetDimension(settings.MazeDimension, settings.MazeDimension);
+				_controller.SetGenerator(settings.MazeGenerator);
+				_controller.RegenerateMaze();
+			}
+		}
+
+		/// <summary>
+		/// Handles the Click event of the buttonRegenerate control.
+		/// </summary>
+		/// <param name="sender">The source of the event.</param>
+		/// <param name="e">The <see cref="System.EventArgs"/> instance containing the event data.</param>
+		/// <remarks></remarks>
+		private void ButtonRegenerateClick(object sender, EventArgs e)
+		{
+			_controller.RegenerateMaze();
+		}
+
+		/// <summary>
+		/// Handles the CellDoubleClick event of the dataGridViewReport control.
+		/// </summary>
+		/// <param name="sender">The source of the event.</param>
+		/// <param name="e">The <see cref="System.Windows.Forms.DataGridViewCellEventArgs"/> instance containing the event data.</param>
+		/// <remarks></remarks>
+		private void DataGridViewReportCellDoubleClick(object sender, DataGridViewCellEventArgs e)
+		{
+			if (e.RowIndex < 0) return;
+			Proband proband = dataGridViewReport.Rows[e.RowIndex].Tag as Proband;
+			Contract.Assert(proband != null);
+
+			CodeView view = new CodeView(proband.GeneticCode);
+			view.ShowDialog(this);
 		}
 	}
 }

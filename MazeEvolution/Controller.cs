@@ -80,6 +80,16 @@ namespace MazeEvolution
 		private int _timeoutTick;
 
 		/// <summary>
+		/// Gibt an, ob der Controller in den AutoEvolve-Modus geschaltet wird
+		/// </summary>
+		public bool AutoEvolveMode { get; private set; }
+
+		/// <summary>
+		/// Wird gerufen, wenn das Labyrinth verändert wurde
+		/// </summary>
+		public event EventHandler<MazeEventArgs> MazeChanged;
+
+		/// <summary>
 		/// Initializes a new instance of the <see cref="Controller"/> class.
 		/// </summary>
 		/// <param name="panel">The panel.</param>
@@ -87,9 +97,12 @@ namespace MazeEvolution
 		public Controller(MazePanel panel)
 		{
 			Contract.Requires(panel != null);
+
+			MazeGenerator = new RecursiveBacktracker4();
+			MazeDimension = new Tuple<int, int>(10, 10);
+
 			_panel = panel;
 			Timeout.Tick += TimeoutTick;
-
 			CreateGeneration();
 		}
 
@@ -161,6 +174,7 @@ namespace MazeEvolution
 		public void RegenerateMaze()
 		{
 			Maze = new Maze4(MazeGenerator);
+			Maze.MazeChanged += MazeMazeChanged;
 			Maze.GenerateNew(MazeDimension.Item1, MazeDimension.Item2);
 
 			// Aktualisieren
@@ -174,6 +188,18 @@ namespace MazeEvolution
 				_panel.SetMaze(Maze);
 				_panel.SetStartingPoint(0, 0);
 			}
+		}
+
+		/// <summary>
+		/// Handles the MazeChanged event of the Maze control.
+		/// </summary>
+		/// <param name="sender">The source of the event.</param>
+		/// <param name="e">The <see cref="Labyrinth.MazeEventArgs"/> instance containing the event data.</param>
+		/// <remarks></remarks>
+		void MazeMazeChanged(object sender, MazeEventArgs e)
+		{
+			EventHandler<MazeEventArgs> handler = MazeChanged;
+			if (handler != null) handler(this, new MazeEventArgs(Maze));
 		}
 
 		/// <summary>
@@ -199,9 +225,10 @@ namespace MazeEvolution
 		/// <summary>
 		/// Führt einen Run durch
 		/// </summary>
-		public void PerformRun()
+		public void PerformRun(bool autoLoop)
 		{
 			Debug.WriteLine("Starte Lauf ...");
+			AutoEvolveMode = autoLoop;
 			
 			IsRunning = true;
 			
@@ -249,6 +276,9 @@ namespace MazeEvolution
 			EventHandler<GenerationReportEventArgs<Proband>> func = RunCompleted;
 			if (func == null) return;
 			func(this, new GenerationReportEventArgs<Proband>(report));
+
+			// AutoEvolve verwenden
+			if (AutoEvolveMode) PerformRun(true);
 		}
 
 		/// <summary>
@@ -257,6 +287,12 @@ namespace MazeEvolution
 		public void AbortRun()
 		{
 			if (_researcher == null) return;
+			if (AutoEvolveMode)
+			{
+				AutoEvolveMode = false;
+				return;
+			}
+			
 			_researcher.CancelAsync();
 			Timeout.Stop();
 			_timeoutTick = 0;
