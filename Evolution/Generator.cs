@@ -451,7 +451,7 @@ namespace Evolution
 
 			// Nach Fitness sortieren
 			// Elemente mit kürzeren Hypothesen werden bevorzugt (Ockhams Skalpell)
-            List<T> fitnessSorted = new List<T>(fitnesses.OrderBy(element => element.GetFitness()).ThenBy(element => element.GetCode().GetDepth()));
+            List<T> fitnessSorted = new List<T>(fitnesses.OrderBy(element => -1* element.GetFitness()).ThenBy(element => element.GetCode().GetDepth()));
 
             // Selektion
             Func<int, int, double, double> selectionProbability = (index, maxCount, percentage) => Math.Exp(-((1.0D / percentage) * index) / maxCount); // TODO: Sigmoid-Funktion verwenden
