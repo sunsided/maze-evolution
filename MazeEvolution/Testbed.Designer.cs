@@ -52,6 +52,7 @@ namespace MazeEvolution
 			this.label2 = new System.Windows.Forms.Label();
 			this.label1 = new System.Windows.Forms.Label();
 			this.panelMazeBlock = new System.Windows.Forms.Panel();
+			this.mazePanel = new MazeEvolution.MazePanel();
 			this.panelMazeControl = new System.Windows.Forms.Panel();
 			this.buttonRegenerateMaze = new System.Windows.Forms.Button();
 			this.buttonConfigureMaze = new System.Windows.Forms.Button();
@@ -64,12 +65,12 @@ namespace MazeEvolution
 			this.toolStripMain = new System.Windows.Forms.ToolStrip();
 			this.toolStripButtonExit = new System.Windows.Forms.ToolStripButton();
 			this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+			this.toolStripButtonSettings = new System.Windows.Forms.ToolStripButton();
+			this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
 			this.toolStripButtonRun = new System.Windows.Forms.ToolStripButton();
 			this.toolStripButtonAutoEvolve = new System.Windows.Forms.ToolStripButton();
 			this.toolStripButtonAbort = new System.Windows.Forms.ToolStripButton();
-			this.mazePanel = new MazeEvolution.MazePanel();
-			this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
-			this.toolStripButtonSettings = new System.Windows.Forms.ToolStripButton();
+			this.toolStripTimeProgress = new System.Windows.Forms.ToolStripProgressBar();
 			this.statusStrip.SuspendLayout();
 			this.toolStripContainer1.ContentPanel.SuspendLayout();
 			this.toolStripContainer1.TopToolStripPanel.SuspendLayout();
@@ -84,7 +85,8 @@ namespace MazeEvolution
 			// statusStrip
 			// 
 			this.statusStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.toolStripStatusLabelGeneration});
+            this.toolStripStatusLabelGeneration,
+            this.toolStripTimeProgress});
 			this.statusStrip.Location = new System.Drawing.Point(0, 411);
 			this.statusStrip.Name = "statusStrip";
 			this.statusStrip.Size = new System.Drawing.Size(663, 22);
@@ -303,6 +305,17 @@ namespace MazeEvolution
 			this.panelMazeBlock.Size = new System.Drawing.Size(395, 379);
 			this.panelMazeBlock.TabIndex = 19;
 			// 
+			// mazePanel
+			// 
+			this.mazePanel.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+						| System.Windows.Forms.AnchorStyles.Left)
+						| System.Windows.Forms.AnchorStyles.Right)));
+			this.mazePanel.DisableMouseClickInteractions = false;
+			this.mazePanel.Location = new System.Drawing.Point(3, 32);
+			this.mazePanel.Name = "mazePanel";
+			this.mazePanel.Size = new System.Drawing.Size(389, 347);
+			this.mazePanel.TabIndex = 3;
+			// 
 			// panelMazeControl
 			// 
 			this.panelMazeControl.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
@@ -427,6 +440,21 @@ namespace MazeEvolution
 			this.toolStripSeparator1.Name = "toolStripSeparator1";
 			this.toolStripSeparator1.Size = new System.Drawing.Size(6, 25);
 			// 
+			// toolStripButtonSettings
+			// 
+			this.toolStripButtonSettings.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+			this.toolStripButtonSettings.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButtonSettings.Image")));
+			this.toolStripButtonSettings.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.toolStripButtonSettings.Name = "toolStripButtonSettings";
+			this.toolStripButtonSettings.Size = new System.Drawing.Size(82, 22);
+			this.toolStripButtonSettings.Text = "&Einstellungen";
+			this.toolStripButtonSettings.Click += new System.EventHandler(this.ToolStripButtonSettingsClick);
+			// 
+			// toolStripSeparator2
+			// 
+			this.toolStripSeparator2.Name = "toolStripSeparator2";
+			this.toolStripSeparator2.Size = new System.Drawing.Size(6, 25);
+			// 
 			// toolStripButtonRun
 			// 
 			this.toolStripButtonRun.ImageTransparentColor = System.Drawing.Color.Magenta;
@@ -451,31 +479,10 @@ namespace MazeEvolution
 			this.toolStripButtonAbort.Text = "&Abbrechen";
 			this.toolStripButtonAbort.Click += new System.EventHandler(this.ToolStripButtonAbortClick);
 			// 
-			// mazePanel
+			// toolStripTimeProgress
 			// 
-			this.mazePanel.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-						| System.Windows.Forms.AnchorStyles.Left)
-						| System.Windows.Forms.AnchorStyles.Right)));
-			this.mazePanel.DisableMouseClickInteractions = false;
-			this.mazePanel.Location = new System.Drawing.Point(3, 32);
-			this.mazePanel.Name = "mazePanel";
-			this.mazePanel.Size = new System.Drawing.Size(389, 347);
-			this.mazePanel.TabIndex = 3;
-			// 
-			// toolStripSeparator2
-			// 
-			this.toolStripSeparator2.Name = "toolStripSeparator2";
-			this.toolStripSeparator2.Size = new System.Drawing.Size(6, 25);
-			// 
-			// toolStripButtonSettings
-			// 
-			this.toolStripButtonSettings.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-			this.toolStripButtonSettings.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButtonSettings.Image")));
-			this.toolStripButtonSettings.ImageTransparentColor = System.Drawing.Color.Magenta;
-			this.toolStripButtonSettings.Name = "toolStripButtonSettings";
-			this.toolStripButtonSettings.Size = new System.Drawing.Size(82, 22);
-			this.toolStripButtonSettings.Text = "&Einstellungen";
-			this.toolStripButtonSettings.Click += new System.EventHandler(this.ToolStripButtonSettingsClick);
+			this.toolStripTimeProgress.Name = "toolStripTimeProgress";
+			this.toolStripTimeProgress.Size = new System.Drawing.Size(100, 16);
 			// 
 			// Testbed
 			// 
@@ -547,5 +554,6 @@ namespace MazeEvolution
 		private System.Windows.Forms.Label label8;
 		private System.Windows.Forms.ToolStripButton toolStripButtonSettings;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
+		private System.Windows.Forms.ToolStripProgressBar toolStripTimeProgress;
 	}
 }

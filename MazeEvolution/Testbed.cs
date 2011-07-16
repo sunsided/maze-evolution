@@ -25,6 +25,7 @@ namespace MazeEvolution
 
 			_controller = new Controller(mazePanel);
 			_controller.RunCompleted += ControllerRunCompleted;
+			_controller.TimeProgress += ControllerTimeProgress;
 			_controller.SetGenerationSize(2000);
 			_controller.SetRuntime(TimeSpan.FromSeconds(1));
 
@@ -45,6 +46,20 @@ namespace MazeEvolution
 				dataGridViewReport.Rows[index].SetValues(proband.Id, "-", proband.GeneticCode.GetDepth(), 0, "initial");
 				dataGridViewReport.Rows[index++].Tag = proband;
 			}
+		}
+
+		/// <summary>
+		/// Handles the TimeProgress event of the _controller control.
+		/// </summary>
+		/// <param name="sender">The source of the event.</param>
+		/// <param name="e">The <see cref="System.ComponentModel.ProgressChangedEventArgs"/> instance containing the event data.</param>
+		/// <remarks></remarks>
+		void ControllerTimeProgress(object sender, System.ComponentModel.ProgressChangedEventArgs e)
+		{
+			Invoke((MethodInvoker) delegate
+			                       	{
+			                       		toolStripTimeProgress.Value = e.ProgressPercentage;
+			                       	});
 		}
 		
 		/// <summary>

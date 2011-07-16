@@ -70,9 +70,14 @@ namespace MazeEvolution
 		public event EventHandler<GenerationReportEventArgs<Proband>> RunCompleted;
 
 		/// <summary>
+		/// Der Zeitfortschritt
+		/// </summary>
+		public event ProgressChangedEventHandler TimeProgress;
+
+		/// <summary>
 		/// Der Watchdog-Timer
 		/// </summary>
-		private Timer Timeout = new Timer { Interval = 1000 };
+		private Timer Timeout = new Timer { Interval = 500 };
 
 		/// <summary>
 		/// Der Timeout-Tick (überschrittene Sekunden)
@@ -107,6 +112,20 @@ namespace MazeEvolution
 		}
 
 		/// <summary>
+		/// Called when the run time has changed
+		/// </summary>
+		/// <param name="percentage">The percentage.</param>
+		/// <remarks></remarks>
+		private void OnRuntimeChanged(int percentage)
+		{
+			var handler = TimeProgress;
+			if (handler != null)
+			{
+				handler(this, new ProgressChangedEventArgs(percentage, null));
+			}
+		}
+
+		/// <summary>
 		/// Handles the Tick event of the Timeout control.
 		/// </summary>
 		/// <param name="sender">The source of the event.</param>
@@ -115,7 +134,9 @@ namespace MazeEvolution
 		void TimeoutTick(object sender, EventArgs e)
 		{
 			++_timeoutTick;
-			if (_timeoutTick >= RunDuration.TotalSeconds)
+
+			OnRuntimeChanged((int)(_timeoutTick * 50 / RunDuration.TotalSeconds));
+			if (_timeoutTick/2 >= RunDuration.TotalSeconds)
 			{
 				_researcher.CancelAsync();
 				Timeout.Stop();
@@ -238,6 +259,7 @@ namespace MazeEvolution
 
 			// Timer starten
 			_timeoutTick = 0;
+			OnRuntimeChanged(0);
 			Timeout.Start();
 		}
 
@@ -273,6 +295,7 @@ namespace MazeEvolution
 			IsRunning = false;
 
 			// Erfolg vermelden
+			OnRuntimeChanged(100);
 			EventHandler<GenerationReportEventArgs<Proband>> func = RunCompleted;
 			if (func == null) return;
 			func(this, new GenerationReportEventArgs<Proband>(report));
