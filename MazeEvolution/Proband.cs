@@ -173,6 +173,7 @@ namespace MazeEvolution
 			_targetY = targetY;
 			_marcher = new Marcher4(Door4.East, 0, 0);
 			_stepsTaken = 0;
+		    _stepsTakenForward = 0;
 			_visitedDoors.Clear();
 		}
 
