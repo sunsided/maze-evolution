@@ -135,7 +135,8 @@ namespace MazeEvolution
 		{
 			++_timeoutTick;
 
-			OnRuntimeChanged((int)(_timeoutTick * 50 / RunDuration.TotalSeconds));
+		    double fraction = RunDuration.TotalSeconds*50;
+            OnRuntimeChanged((int)(_timeoutTick * fraction / RunDuration.TotalSeconds));
 			if (_timeoutTick/2 >= RunDuration.TotalSeconds)
 			{
 				_researcher.CancelAsync();
@@ -186,6 +187,7 @@ namespace MazeEvolution
 		public void SetRuntime(TimeSpan timeout)
 		{
 			RunDuration = timeout;
+		    Timeout.Interval = (int)(timeout.TotalSeconds*1000/2);
 		}
 
 		/// <summary>

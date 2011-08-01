@@ -36,11 +36,11 @@ namespace MazeEvolution
 		/// </summary>
 		public TimeSpan GenerationRunTime
 		{
-			get { return TimeSpan.FromSeconds((int) numericUpDownRuntime.Value); }
+			get { return TimeSpan.FromSeconds((float) numericUpDownRuntime.Value); }
 			set
 			{
 				// TODO: Bereich abtesten
-				numericUpDownRuntime.Value = (int)value.TotalSeconds;
+				numericUpDownRuntime.Value = (decimal)value.TotalSeconds;
 			}
 		}
 
