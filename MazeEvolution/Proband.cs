@@ -291,7 +291,7 @@ namespace MazeEvolution
 		{
 		    // TODO !? return TargetReached ? _stepsTaken : -(_stepsTaken - _stepsTakenForward);
 			//return TargetReached ? Double.MaxValue - _stepsTaken : Double.MinValue + _stepsTakenForward;
-			return TargetReached ? 100000 - _stepsTaken : -100000 + _stepsTakenForward;
+			return TargetReached ? (100000 - _stepsTaken) : (-100000 + _visitedDoors.Count);
 		}
 
         /// <summary>
