@@ -26,8 +26,8 @@ namespace MazeEvolution
 			_controller = new Controller(mazePanel);
 			_controller.RunCompleted += ControllerRunCompleted;
 			_controller.TimeProgress += ControllerTimeProgress;
-			_controller.SetGenerationSize(2000);
-			_controller.SetRuntime(TimeSpan.FromSeconds(1));
+			_controller.SetGenerationSize(5000);
+			_controller.SetRuntime(TimeSpan.FromSeconds(0.5));
 
 			// Icons setzen
 			toolStripButtonRun.Image = Resources.run;
