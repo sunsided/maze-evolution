@@ -6,8 +6,8 @@ A simulation tool to generate maze-solving algorithms by means of evolutionary p
 
 After each generation, each proband gets assigned a fitness value depending on the effective steps taken in the maze and the actual reaching of the target. The fitness is evaluated as follows:
 
-  * if the proband reached the target ''100000 - stepsTaken''
-  * if the proband did not reach the targen: ''-100000 + stepsTaken''
+  * if the proband reached the target `100000 - stepsTaken`
+  * if the proband did not reach the targen: `-100000 + stepsTaken`
 
 This way, faster probands will be evaluated better, while probands not reaching the goal get weightend on their ability to try not to starve.
 
@@ -15,11 +15,11 @@ Probands that did not move (i.e. are starved) will be removed.
 
 ### Methods available
 
-Each proband has a set of methods and boolean functions, tagged with the ''[EvolutionaryMethod]'' attribute. Such methods are, for example
+Each proband has a set of methods and boolean functions, tagged with the `[EvolutionaryMethod]` attribute. Such methods are, for example
 
-  * ''MoveForward()'' and ''CanMoveForward()''
-  * ''TurnLeft()'' and ''CanTurnLeft()''
-  * ''DoorInViewingDirectionVisited()''
+  * `MoveForward()` and `CanMoveForward()`
+  * `TurnLeft()` and `CanTurnLeft()`
+  * `DoorInViewingDirectionVisited()`
 
 ### Selection, Mutation and cross-over
 
