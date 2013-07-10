@@ -2,6 +2,10 @@
 
 A simulation tool to generate maze-solving algorithms by means of evolutionary programming.
 
+<p align="center">
+  <img src="https://raw.github.com/sunsided/maze-evolution/master/screenshot.jpg" alt="Screenshot"/>
+</p>
+
 ### Fitness evaluation
 
 After each generation, each proband gets assigned a fitness value depending on the effective steps taken in the maze and the actual reaching of the target. The fitness is evaluated as follows:
