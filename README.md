@@ -41,7 +41,7 @@ Three maze generators are implemented:
 
 ## License
 
-Copyright &copy; 2013 Markus Mayer &lt;widemeadows@gmail.com&gt;
+Copyright &copy; 2013 Markus Mayer
 
 MazeEvolution is licensed under the EUPL, Version 1.1 or - as soon they will be approved by the European Commission -
 subsequent versions of the EUPL (the "Licence"); you may not use this work except in compliance with the Licence.
