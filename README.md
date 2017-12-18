@@ -1,4 +1,4 @@
-#MazeEvolution - Maze Solving using Evolutionary Programming
+# MazeEvolution - Maze Solving using Evolutionary Programming
 
 A simulation tool to generate maze-solving algorithms by means of evolutionary programming.
 
