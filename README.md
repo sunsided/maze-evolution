@@ -10,10 +10,11 @@ A simulation tool to generate maze-solving algorithms by means of evolutionary p
 
 After each generation, each proband gets assigned a fitness value depending on the effective steps taken in the maze and the actual reaching of the target. The fitness is evaluated as follows:
 
-  * if the proband reached the target `big number - stepsTaken`
-  * if the proband did not reach the targen: `stepsTaken - big number`
+  * if the proband reached the target: `fitness = big number - stepsTaken` (e.g. `10000 - 123 = 9877`)
+  * if the proband did not reach the target: `fitness = stepsTaken - big number` (e.g. `123 - 10000 = -9877`)
 
-This way, faster probands will be evaluated better, while probands not reaching the goal get weightend on their ability to try not to starve.
+This way, faster probands will be evaluated better, while probands not reaching the goal still get judged on their
+ability to try not to starve (by exploring, rather than just turning around).
 
 Probands that did not move (i.e. are starved) will be removed.
 
